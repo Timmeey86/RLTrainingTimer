@@ -145,7 +145,7 @@ namespace Core::Configuration::Domain
                 "TrainingProgram",
                 variableName,
                 0,
-                (int)_entries.size(),
+                (int)_entries.size() - 1,
                 position
             );
         }

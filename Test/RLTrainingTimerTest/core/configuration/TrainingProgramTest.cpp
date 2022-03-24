@@ -1,6 +1,7 @@
 #include <gmock/gmock.h>
 
 #include <Plugin/core/configuration/domain/TrainingProgram.h>
+#include <Plugin/core/kernel/IndexOutOfBoundsException.h>
 
 namespace Core::Configuration::Test
 {
@@ -44,7 +45,7 @@ namespace Core::Configuration::Test
 
 	// Tests that an entry will be added properly, and that a proper event is being created
 	TEST_F(TrainingProgramTestFixture, addEntry_when_calledOnce_then_producesOneEntry)
-	{		
+	{
 		auto entryName = "New Entry";
 		auto entryDuration = 2000U;
 		auto result = sut->addEntry({ entryName, entryDuration });
@@ -98,5 +99,53 @@ namespace Core::Configuration::Test
 		EXPECT_EQ(manuallyCreatedProgram.programDuration(), restoredProgram.programDuration());
 		EXPECT_EQ(manualEntries.back().name(), restoredEntries.back().name());
 		EXPECT_EQ(manualEntries.back().duration(), restoredEntries.back().duration());
+	}
+
+	TEST_F(TrainingProgramTestFixture, removeEntry_when_calledWithInvalidPosition_will_throw)
+	{
+		auto firstExpectedException = Kernel::IndexOutOfBoundsException(
+			"Configuration",	// name of the bounded context
+			"Aggregate",		// DDD type of the throwing class
+			"TrainingProgram",	// Name of the throwing class
+			"position",			// Name of the violating argument
+			0,					// Possible minimum value
+			InitialSize - 1,	// Possible maximum value
+			-1);				// Value which will be supplied by this test
+		auto secondExpectedException = Kernel::IndexOutOfBoundsException(
+			"Configuration",	// name of the bounded context
+			"Aggregate",		// DDD type of the throwing class
+			"TrainingProgram",	// Name of the throwing class
+			"position",			// Name of the violating argument
+			0,					// Possible minimum value
+			InitialSize - 1,	// Possible maximum value
+			InitialSize);		// Value which will be supplied by this test
+
+		EXPECT_THROW(
+			{
+				try
+				{
+					sut->removeEntry(-1);
+				}
+				catch (Kernel::IndexOutOfBoundsException& ex)
+				{
+					EXPECT_STREQ(ex.what(), firstExpectedException.what());
+					throw;
+				}
+			}, Kernel::IndexOutOfBoundsException
+		);
+		EXPECT_THROW(
+			{
+				try
+				{
+					sut->removeEntry(InitialSize);
+				}
+				catch (Kernel::IndexOutOfBoundsException& ex)
+				{
+					EXPECT_STREQ(ex.what(), secondExpectedException.what());
+					throw;
+				}
+			}, Kernel::IndexOutOfBoundsException
+		);
+
 	}
 }

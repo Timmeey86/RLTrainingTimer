@@ -3,10 +3,12 @@
 #include <string>
 #include <stdexcept>
 
+#include <DLLImportExport.h>
+
 namespace Core::Kernel
 {
 	/** C++ Exception for cases where an index was out of bounds */
-	class IndexOutOfBoundsException : std::runtime_error
+	class RLTT_IMPORT_EXPORT IndexOutOfBoundsException : public std::runtime_error
 	{
 	public:
 		IndexOutOfBoundsException(

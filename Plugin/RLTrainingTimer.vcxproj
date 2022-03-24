@@ -80,7 +80,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalIncludeDirectories>$(ProjectDir)external\fmt\include;$(ProjectDir);$(ProjectDir)\external;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4251</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4251;4275</DisableSpecificWarnings>
       <Optimization>MaxSpeed</Optimization>
     </ClCompile>
     <Link>
