@@ -192,4 +192,94 @@ namespace Core::Configuration::Test
 		EXPECT_EQ(sutEntries.size(), restoredEntries.size());
 		EXPECT_EQ(sut->programDuration(), restoredTrainingProgram.programDuration());
 	}
+
+	TEST_F(TrainingProgramTestFixture, replaceEntry_when_calledWithInvlaidPosition_will_throw)
+	{
+		auto firstExpectedException = Kernel::IndexOutOfBoundsException(
+			"Configuration",	// name of the bounded context
+			"Aggregate",		// DDD type of the throwing class
+			"TrainingProgram",	// Name of the throwing class
+			"position",			// Name of the violating argument
+			0,					// Possible minimum value
+			InitialSize - 1,	// Possible maximum value
+			-1);				// Value which will be supplied by this test
+		auto secondExpectedException = Kernel::IndexOutOfBoundsException(
+			"Configuration",	// name of the bounded context
+			"Aggregate",		// DDD type of the throwing class
+			"TrainingProgram",	// Name of the throwing class
+			"position",			// Name of the violating argument
+			0,					// Possible minimum value
+			InitialSize - 1,	// Possible maximum value
+			InitialSize);		// Value which will be supplied by this test
+
+		EXPECT_THROW(
+			{
+				try
+				{
+					sut->replaceEntry(-1, { "", 0 });
+				}
+				catch (Kernel::IndexOutOfBoundsException& ex)
+				{
+					EXPECT_STREQ(ex.what(), firstExpectedException.what());
+					throw;
+				}
+			}, Kernel::IndexOutOfBoundsException
+		);
+		EXPECT_THROW(
+			{
+				try
+				{
+					sut->replaceEntry(InitialSize, { "", 0 });
+				}
+				catch (Kernel::IndexOutOfBoundsException& ex)
+				{
+					EXPECT_STREQ(ex.what(), secondExpectedException.what());
+					throw;
+				}
+			}, Kernel::IndexOutOfBoundsException
+		);
+
+	}
+
+	TEST_F(TrainingProgramTestFixture, replaceEntry_when_calledWithFirstPos_then_replacesFirstEntry)
+	{
+		ASSERT_GE(sut->entries().size(), 1);
+
+		auto newName = "New entry name";
+		auto newDuration = 15000U;
+
+		auto replacementEvent = sut->replaceEntry(0, { newName, newDuration });
+
+		auto sutEntries = sut->entries();
+		EXPECT_EQ(sutEntries.size(), InitialSize);
+		EXPECT_EQ(sut->programDuration(), InitialDuration - FirstEntryDuration + newDuration);
+		
+		EXPECT_EQ(replacementEvent->TrainingProgramId, DefaultId);
+		EXPECT_EQ(replacementEvent->TrainingProgramEntryDuration, newDuration);
+		EXPECT_EQ(replacementEvent->TrainingProgramEntryName, newName);
+		EXPECT_EQ(replacementEvent->TrainingProgramEntryPosition, 0);
+	}
+
+	TEST_F(TrainingProgramTestFixture, replaceEntry_when_restored_then_producesSameResult)
+	{
+		ASSERT_GE(sut->entries().size(), 1);
+
+		auto newName = "New entry name";
+		auto newDuration = 15000U;
+
+		auto restoredTrainingProgram = Domain::TrainingProgram(*sut);
+
+		auto replacementEvent = sut->replaceEntry(0, { newName, newDuration });
+
+		restoredTrainingProgram.applyEvents({ replacementEvent });
+
+		auto sutEntries = sut->entries();
+		auto restoredEntries = restoredTrainingProgram.entries();
+
+		ASSERT_GE(sutEntries.size(), InitialSize);
+		ASSERT_GE(restoredEntries.size(), InitialSize);
+
+		EXPECT_EQ(sutEntries.size(), restoredEntries.size());
+		EXPECT_EQ(sut->programDuration(), restoredTrainingProgram.programDuration());
+	}
 }
