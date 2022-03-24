@@ -8,7 +8,7 @@
 namespace Core::Kernel
 {
 	/** C++ Exception for cases where an invalid value was passed to a method */
-	class RLTT_IMPORT_EXPORT InvalidValueException : std::runtime_error
+	class RLTT_IMPORT_EXPORT InvalidValueException : public std::runtime_error
 	{
 	public:
 		InvalidValueException(

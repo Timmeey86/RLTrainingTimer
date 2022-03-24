@@ -19,3 +19,14 @@ void replace(std::vector<T>& vec, size_t pos, const T& newValue)
     std::advance(it, pos);
     *it = newValue;
 }
+
+template <typename T>
+bool removeOne(std::vector<T>& vec, const T& value)
+{
+    auto it = std::find(vec.begin(), vec.end(), value);
+    if (it != vec.end()) {
+        vec.erase(it);
+        return true;
+    }
+    return false;
+}

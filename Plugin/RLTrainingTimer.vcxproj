@@ -95,6 +95,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="core\configuration\domain\TrainingProgram.cpp" />
+    <ClCompile Include="core\configuration\domain\TrainingProgramList.cpp" />
     <ClCompile Include="core\kernel\IndexOutOfBoundsException.cpp" />
     <ClCompile Include="external\fmt\src\format.cc" />
     <ClCompile Include="external\fmt\src\os.cc" />

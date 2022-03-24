@@ -106,11 +106,6 @@ namespace Core::Configuration::Domain
                 if (swapEvent->TrainingProgramId != _id) { continue; }
                 swapEntries(swapEvent->FirstTrainingProgramEntryPosition, swapEvent->SecondTrainingProgramEntryPosition);
             }
-            else if (auto renameEvent = dynamic_cast<Events::TrainingProgramRenamedEvent*>(genericEvent.get()))
-            {
-                if (renameEvent->TrainingProgramId != _id) { continue; }
-                renameProgram(renameEvent->TrainingProgramName);
-            }
             // else: the event was most likely intended for a different object
         }
     }
