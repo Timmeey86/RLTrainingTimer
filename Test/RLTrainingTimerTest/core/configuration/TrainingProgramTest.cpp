@@ -89,7 +89,7 @@ namespace Core::Configuration::Test
 
 		// Create another empty training program, but this time restore it through events
 		Domain::TrainingProgram restoredProgram(DefaultId);
-		restoredProgram.loadFromEvents({ additionEvent });
+		restoredProgram.applyEvents({ additionEvent });
 
 		auto manualEntries = manuallyCreatedProgram.entries();
 		auto restoredEntries = restoredProgram.entries();
@@ -147,5 +147,49 @@ namespace Core::Configuration::Test
 			}, Kernel::IndexOutOfBoundsException
 		);
 
+	}
+
+	TEST_F(TrainingProgramTestFixture, removeEntry_when_calledWithFirstPos_then_removesFirstElement)
+	{
+		ASSERT_GE(sut->entries().size(), 2);
+
+		auto removalEvent = sut->removeEntry(0);
+
+		EXPECT_EQ(removalEvent->TrainingProgramId, DefaultId);
+		EXPECT_EQ(removalEvent->TrainingProgramEntryPosition, 0);
+
+		EXPECT_EQ(sut->entries().size(), 1);
+		EXPECT_EQ(sut->programDuration(), SecondEntryDuration);
+	}
+	TEST_F(TrainingProgramTestFixture, removeEntry_when_calledWithLastPos_then_removesLastElement)
+	{
+		ASSERT_GE(sut->entries().size(), 2);
+
+		auto removalEvent = sut->removeEntry(InitialSize - 1);
+
+		EXPECT_EQ(removalEvent->TrainingProgramId, DefaultId);
+		EXPECT_EQ(removalEvent->TrainingProgramEntryPosition, InitialSize - 1);
+
+		EXPECT_EQ(sut->entries().size(), 1);
+		EXPECT_EQ(sut->programDuration(), FirstEntryDuration);
+	}
+	TEST_F(TrainingProgramTestFixture, removeEntry_when_restored_then_producesSameResult)
+	{
+		ASSERT_GE(sut->entries().size(), 2);
+
+		auto restoredTrainingProgram = Domain::TrainingProgram(*sut);
+
+		auto removalEvent = sut->removeEntry(0);
+
+		restoredTrainingProgram.applyEvents({ removalEvent });
+
+		auto sutEntries = sut->entries();
+		auto restoredEntries = restoredTrainingProgram.entries();
+
+		ASSERT_GE(sutEntries.size(), 1);
+		ASSERT_GE(restoredEntries.size(), 1);
+
+		EXPECT_EQ(sutEntries.size(), restoredEntries.size());
+		EXPECT_EQ(sut->programDuration(), restoredTrainingProgram.programDuration());
 	}
 }

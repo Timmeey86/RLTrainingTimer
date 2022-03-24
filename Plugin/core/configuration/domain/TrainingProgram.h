@@ -46,8 +46,8 @@ namespace Core::Configuration::Domain
 		/** Changes the name of the training program. */
 		std::shared_ptr<Events::TrainingProgramRenamedEvent> renameProgram(const std::string& newName);
 
-		/** Re-creates a training program based on events which had occurred on it in the past. */
-		void loadFromEvents(const std::vector<std::shared_ptr<Kernel::DomainEvent>>& events);
+		/** Applies the given list of events to this object. */
+		void applyEvents(const std::vector<std::shared_ptr<Kernel::DomainEvent>>& events);
 
 		/** Retrieves the total program duration. */
 		uint32_t programDuration() const;

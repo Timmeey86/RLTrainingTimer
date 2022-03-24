@@ -82,7 +82,7 @@ namespace Core::Configuration::Domain
         return eventData;
     }
 
-    void TrainingProgram::loadFromEvents(const std::vector<std::shared_ptr<Kernel::DomainEvent>>& events)
+    void TrainingProgram::applyEvents(const std::vector<std::shared_ptr<Kernel::DomainEvent>>& events)
     {
         for (auto genericEvent : events)
         {
