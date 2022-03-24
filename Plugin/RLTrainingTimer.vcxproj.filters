@@ -51,7 +51,12 @@
     <ClCompile Include="core\kernel\InvalidValueException.cpp">
       <Filter>core\kernel</Filter>
     </ClCompile>
-    <ClCompile Include="core\configuration\domain\TrainingProgramList.cpp" />
+    <ClCompile Include="core\configuration\domain\TrainingProgramList.cpp">
+      <Filter>core\configuration\domain</Filter>
+    </ClCompile>
+    <ClCompile Include="adapter\TrainingProgramListUiAdapter.cpp">
+      <Filter>adapter</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -160,6 +165,9 @@
       <Filter>qol</Filter>
     </ClInclude>
     <ClInclude Include="DLLImportExport.h" />
+    <ClInclude Include="adapter\TrainingProgramListUiAdapter.h">
+      <Filter>adapter</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="RLTrainingTimer.rc" />
@@ -194,6 +202,9 @@
     </Filter>
     <Filter Include="ports">
       <UniqueIdentifier>{1b0dd963-7739-483a-ab93-9a2f13a93344}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="adapter">
+      <UniqueIdentifier>{2ab53b75-c475-44c9-9bf5-8c54c3037b9f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

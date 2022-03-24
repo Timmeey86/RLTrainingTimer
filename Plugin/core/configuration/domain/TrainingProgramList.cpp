@@ -98,7 +98,8 @@ namespace Core::Configuration::Domain
             const auto& trainingProgram = _trainingPrograms.at(trainingProgramId);
             entries.push_back({
                 trainingProgram->id(),
-                trainingProgram->name()
+                trainingProgram->name(),
+                trainingProgram->programDuration()
                 });
         }
         return entries;

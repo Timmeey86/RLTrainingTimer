@@ -16,6 +16,7 @@ namespace Core::Configuration::Domain
 	public:
 		uint64_t TrainingProgramId;
 		std::string TrainingProgramName;
+		uint32_t TrainingProgramDuration; // ms
 	};
 	/**
 	 * This is an <<Aggregate>> which allows manipulating the list of available Training Programs, but not a Training Program itself

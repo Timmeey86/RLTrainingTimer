@@ -94,6 +94,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="adapter\TrainingProgramListUiAdapter.cpp" />
     <ClCompile Include="core\configuration\domain\TrainingProgram.cpp" />
     <ClCompile Include="core\configuration\domain\TrainingProgramList.cpp" />
     <ClCompile Include="core\kernel\IndexOutOfBoundsException.cpp" />
@@ -118,6 +119,7 @@
     <ClCompile Include="RLTrainingTimer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="adapter\TrainingProgramListUiAdapter.h" />
     <ClInclude Include="core\configuration\domain\TrainingProgram.h" />
     <ClInclude Include="core\configuration\domain\TrainingProgramList.h" />
     <ClInclude Include="core\configuration\events\TrainingProgramEvents.h" />
