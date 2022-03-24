@@ -1,0 +1,198 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="RLTrainingTimer.cpp" />
+    <ClCompile Include="external\IMGUI\imgui.cpp">
+      <Filter>external\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="external\IMGUI\imgui_additions.cpp">
+      <Filter>external\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="external\IMGUI\imgui_demo.cpp">
+      <Filter>external\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="external\IMGUI\imgui_draw.cpp">
+      <Filter>external\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="external\IMGUI\imgui_impl_dx11.cpp">
+      <Filter>external\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="external\IMGUI\imgui_impl_win32.cpp">
+      <Filter>external\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="external\IMGUI\imgui_rangeslider.cpp">
+      <Filter>external\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="external\IMGUI\imgui_searchablecombo.cpp">
+      <Filter>external\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="external\IMGUI\imgui_timeline.cpp">
+      <Filter>external\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="external\IMGUI\imgui_widgets.cpp">
+      <Filter>external\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="external\IMGUI\imguivariouscontrols.cpp">
+      <Filter>external\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="external\fmt\src\os.cc">
+      <Filter>external\fmt</Filter>
+    </ClCompile>
+    <ClCompile Include="external\fmt\src\format.cc">
+      <Filter>external\fmt</Filter>
+    </ClCompile>
+    <ClCompile Include="core\configuration\domain\TrainingProgram.cpp">
+      <Filter>core\configuration\domain</Filter>
+    </ClCompile>
+    <ClCompile Include="core\kernel\IndexOutOfBoundsException.cpp">
+      <Filter>core\kernel</Filter>
+    </ClCompile>
+    <ClCompile Include="core\kernel\InvalidValueException.cpp">
+      <Filter>core\kernel</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="RLTrainingTImer.h" />
+    <ClInclude Include="version.h" />
+    <ClInclude Include="external\IMGUI\imstb_truetype.h">
+      <Filter>external\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="external\IMGUI\imgui.h">
+      <Filter>external\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="external\IMGUI\imgui_additions.h">
+      <Filter>external\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="external\IMGUI\imgui_impl_dx11.h">
+      <Filter>external\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="external\IMGUI\imgui_impl_win32.h">
+      <Filter>external\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="external\IMGUI\imgui_internal.h">
+      <Filter>external\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="external\IMGUI\imgui_rangeslider.h">
+      <Filter>external\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="external\IMGUI\imgui_searchablecombo.h">
+      <Filter>external\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="external\IMGUI\imgui_timeline.h">
+      <Filter>external\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="external\IMGUI\imguivariouscontrols.h">
+      <Filter>external\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="external\IMGUI\imstb_rectpack.h">
+      <Filter>external\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="external\IMGUI\imstb_textedit.h">
+      <Filter>external\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="external\IMGUI\imconfig.h">
+      <Filter>external\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="external\fmt\include\fmt\ranges.h">
+      <Filter>external\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="external\fmt\include\fmt\posix.h">
+      <Filter>external\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="external\fmt\include\fmt\printf.h">
+      <Filter>external\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="external\fmt\include\fmt\ostream.h">
+      <Filter>external\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="external\fmt\include\fmt\os.h">
+      <Filter>external\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="external\fmt\include\fmt\locale.h">
+      <Filter>external\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="external\fmt\include\fmt\format-inl.h">
+      <Filter>external\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="external\fmt\include\fmt\format.h">
+      <Filter>external\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="external\fmt\include\fmt\core.h">
+      <Filter>external\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="external\fmt\include\fmt\compile.h">
+      <Filter>external\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="external\fmt\include\fmt\color.h">
+      <Filter>external\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="external\fmt\include\fmt\chrono.h">
+      <Filter>external\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="core\configuration\domain\TrainingProgramEntry.h">
+      <Filter>core\configuration\domain</Filter>
+    </ClInclude>
+    <ClInclude Include="core\configuration\domain\TrainingProgram.h">
+      <Filter>core\configuration\domain</Filter>
+    </ClInclude>
+    <ClInclude Include="core\kernel\IndexOutOfBoundsException.h">
+      <Filter>core\kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="core\kernel\InvalidValueException.h">
+      <Filter>core\kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="core\configuration\events\TrainingProgramEvents.h">
+      <Filter>core\configuration\event</Filter>
+    </ClInclude>
+    <ClInclude Include="core\kernel\DomainEvent.h">
+      <Filter>core\kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="core\configuration\events\TrainingProgramEntryEvents.h">
+      <Filter>core\configuration\event</Filter>
+    </ClInclude>
+    <ClInclude Include="core\configuration\domain\TrainingProgramList.h">
+      <Filter>core\configuration\domain</Filter>
+    </ClInclude>
+    <ClInclude Include="qol\vectorext.h">
+      <Filter>qol</Filter>
+    </ClInclude>
+    <ClInclude Include="DLLImportExport.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="RLTrainingTimer.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="external">
+      <UniqueIdentifier>{61b3ba3c-74e8-4872-9088-a82a3820e37f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="external\fmt">
+      <UniqueIdentifier>{e0c6233c-82f7-496b-bc6f-cea9f4bb3745}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="external\IMGUI">
+      <UniqueIdentifier>{90e911e5-25d3-4ef1-a3bf-fba62cfe2e18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core">
+      <UniqueIdentifier>{4b40c2d7-d292-494a-8b05-a6196071e2f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\configuration">
+      <UniqueIdentifier>{03793328-caaa-4d28-a730-aec0800ee7e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\configuration\domain">
+      <UniqueIdentifier>{9f7682b9-257c-4588-8237-8660a5748fcd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\kernel">
+      <UniqueIdentifier>{69313b61-31b5-479d-9d19-bf6f5af03f97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\configuration\event">
+      <UniqueIdentifier>{1fc11483-da09-47fe-b445-8be7dec89355}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="qol">
+      <UniqueIdentifier>{3b6b5c39-9030-4993-beed-a25e25701413}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ports">
+      <UniqueIdentifier>{1b0dd963-7739-483a-ab93-9a2f13a93344}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

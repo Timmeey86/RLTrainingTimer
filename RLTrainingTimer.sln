@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32228.430
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RLTrainingTimer", "Plugin\RLTrainingTimer.vcxproj", "{B9CA6ED3-BBD4-42AF-A950-08B32B352A88}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RLTrainingTimerTest", "Test\RLTrainingTimerTest\RLTrainingTimerTest.vcxproj", "{FE24F6E2-3A67-4D45-9CCF-604DE06A3F4C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B9CA6ED3-BBD4-42AF-A950-08B32B352A88} = {B9CA6ED3-BBD4-42AF-A950-08B32B352A88}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B9CA6ED3-BBD4-42AF-A950-08B32B352A88}.Release|x64.ActiveCfg = Release|x64
+		{B9CA6ED3-BBD4-42AF-A950-08B32B352A88}.Release|x64.Build.0 = Release|x64
+		{FE24F6E2-3A67-4D45-9CCF-604DE06A3F4C}.Release|x64.ActiveCfg = Release|x64
+		{FE24F6E2-3A67-4D45-9CCF-604DE06A3F4C}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A7C0A642-AA41-4F66-81B9-6C7021D34623}
+	EndGlobalSection
+EndGlobal

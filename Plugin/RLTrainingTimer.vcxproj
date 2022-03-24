@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <ProjectGuid>{b9ca6ed3-bbd4-42af-a950-08b32b352a88}</ProjectGuid>
+    <RootNamespace>RLTrainingTimer</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>RLTrainingTimer</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="BakkesMod.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="BakkesMod.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)plugins\</OutDir>
+    <IntDir>$(SolutionDir)build\.intermediates\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)plugins\</OutDir>
+    <IntDir>$(SolutionDir)build\.intermediates\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;RLTT_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(ProjectDir)external\fmt\include;$(ProjectDir);$(ProjectDir)\external;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4251</DisableSpecificWarnings>
+      <Optimization>MaxSpeed</Optimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <PreBuildEvent>
+      <Command>powershell.exe -ExecutionPolicy Bypass -NoProfile -NonInteractive -File update_version.ps1 "./version.h"</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="core\configuration\domain\TrainingProgram.cpp" />
+    <ClCompile Include="core\kernel\IndexOutOfBoundsException.cpp" />
+    <ClCompile Include="external\fmt\src\format.cc" />
+    <ClCompile Include="external\fmt\src\os.cc" />
+    <ClCompile Include="external\IMGUI\imgui.cpp" />
+    <ClCompile Include="external\IMGUI\imguivariouscontrols.cpp" />
+    <ClCompile Include="external\IMGUI\imgui_additions.cpp" />
+    <ClCompile Include="external\IMGUI\imgui_demo.cpp" />
+    <ClCompile Include="external\IMGUI\imgui_draw.cpp" />
+    <ClCompile Include="external\IMGUI\imgui_impl_dx11.cpp" />
+    <ClCompile Include="external\IMGUI\imgui_impl_win32.cpp" />
+    <ClCompile Include="external\IMGUI\imgui_rangeslider.cpp" />
+    <ClCompile Include="external\IMGUI\imgui_searchablecombo.cpp" />
+    <ClCompile Include="external\IMGUI\imgui_timeline.cpp" />
+    <ClCompile Include="external\IMGUI\imgui_widgets.cpp" />
+    <ClCompile Include="core\kernel\InvalidValueException.cpp" />
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="RLTrainingTimer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="core\configuration\domain\TrainingProgram.h" />
+    <ClInclude Include="core\configuration\domain\TrainingProgramList.h" />
+    <ClInclude Include="core\configuration\events\TrainingProgramEvents.h" />
+    <ClInclude Include="core\configuration\events\TrainingProgramEntryEvents.h" />
+    <ClInclude Include="core\kernel\DomainEvent.h" />
+    <ClInclude Include="core\kernel\IndexOutOfBoundsException.h" />
+    <ClInclude Include="DLLImportExport.h" />
+    <ClInclude Include="external\fmt\include\fmt\chrono.h" />
+    <ClInclude Include="external\fmt\include\fmt\color.h" />
+    <ClInclude Include="external\fmt\include\fmt\compile.h" />
+    <ClInclude Include="external\fmt\include\fmt\core.h" />
+    <ClInclude Include="external\fmt\include\fmt\format-inl.h" />
+    <ClInclude Include="external\fmt\include\fmt\format.h" />
+    <ClInclude Include="external\fmt\include\fmt\locale.h" />
+    <ClInclude Include="external\fmt\include\fmt\os.h" />
+    <ClInclude Include="external\fmt\include\fmt\ostream.h" />
+    <ClInclude Include="external\fmt\include\fmt\posix.h" />
+    <ClInclude Include="external\fmt\include\fmt\printf.h" />
+    <ClInclude Include="external\fmt\include\fmt\ranges.h" />
+    <ClInclude Include="external\IMGUI\imconfig.h" />
+    <ClInclude Include="external\IMGUI\imgui.h" />
+    <ClInclude Include="external\IMGUI\imguivariouscontrols.h" />
+    <ClInclude Include="external\IMGUI\imgui_additions.h" />
+    <ClInclude Include="external\IMGUI\imgui_impl_dx11.h" />
+    <ClInclude Include="external\IMGUI\imgui_impl_win32.h" />
+    <ClInclude Include="external\IMGUI\imgui_internal.h" />
+    <ClInclude Include="external\IMGUI\imgui_rangeslider.h" />
+    <ClInclude Include="external\IMGUI\imgui_searchablecombo.h" />
+    <ClInclude Include="external\IMGUI\imgui_timeline.h" />
+    <ClInclude Include="external\IMGUI\imstb_rectpack.h" />
+    <ClInclude Include="external\IMGUI\imstb_textedit.h" />
+    <ClInclude Include="external\IMGUI\imstb_truetype.h" />
+    <ClInclude Include="core\kernel\InvalidValueException.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="qol\vectorext.h" />
+    <ClInclude Include="RLTrainingTimer.h" />
+    <ClInclude Include="core\configuration\domain\TrainingProgramEntry.h" />
+    <ClInclude Include="version.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="RLTrainingTimer.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
