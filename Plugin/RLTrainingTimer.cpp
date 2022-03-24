@@ -18,6 +18,15 @@ void RLTrainingTimer::onLoad()
 	DUMMY_trainingProgramList->renameTrainingProgram(1, "Second program");
 	DUMMY_trainingProgramList->renameTrainingProgram(2, "Third program");
 
+	auto DUMMY_firstProgram = DUMMY_trainingProgramList->getTrainingProgram(0);
+	DUMMY_firstProgram->addEntry({
+		"First Entry",
+		5000
+		});
+
+	auto DUMMY_secondProgram = DUMMY_trainingProgramList->getTrainingProgram(1);
+	DUMMY_secondProgram->addEntry({ "Dummy", 180000 });
+
 	subscribe(DUMMY_trainingProgramList);
 
 	cvarManager->log("Loaded RLTrainingTimer plugin");
