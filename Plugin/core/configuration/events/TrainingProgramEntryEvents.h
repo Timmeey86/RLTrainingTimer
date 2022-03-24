@@ -4,10 +4,12 @@
 
 #include <string>
 
+#include <DLLImportExport.h>
+
 namespace Core::Configuration::Events
 {
 	/** Signals a new entry which was added to a training program. */
-	class TrainingProgramEntryAddedEvent : Kernel::DomainEvent
+	class TrainingProgramEntryAddedEvent : public Kernel::DomainEvent
 	{
 	public:
 		uint64_t TrainingProgramId;
@@ -16,7 +18,7 @@ namespace Core::Configuration::Events
 	};
 
 	/** Signals the deletion of an entry of a training program. */
-	class TrainingProgramEntryRemovedEvent : Kernel::DomainEvent
+	class TrainingProgramEntryRemovedEvent : public Kernel::DomainEvent
 	{
 	public:
 		uint64_t TrainingProgramId;
@@ -24,7 +26,7 @@ namespace Core::Configuration::Events
 	};
 	
 	/** Signals an update of an entry of a training program. */
-	class TrainingProgramEntryUpdatedEvent : Kernel::DomainEvent
+	class TrainingProgramEntryUpdatedEvent : public Kernel::DomainEvent
 	{
 	public:
 		uint64_t TrainingProgramId;
@@ -34,7 +36,7 @@ namespace Core::Configuration::Events
 	};
 
 	/** Signals a swap of positions of entries of a training program. */
-	class TrainingProgramEntrySwappedEvent : Kernel::DomainEvent
+	class TrainingProgramEntrySwappedEvent : public Kernel::DomainEvent
 	{
 	public:
 		uint64_t TrainingProgramId;

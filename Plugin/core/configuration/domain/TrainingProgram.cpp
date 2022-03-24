@@ -9,23 +9,23 @@ namespace Core::Configuration::Domain
 {
     TrainingProgram::TrainingProgram(uint64_t id)
         : _id{ id }
-        , _name{ "New Training Program" }
+        , _name{}
     {
     }
 
-    Events::TrainingProgramEntryAddedEvent TrainingProgram::addEntry(const TrainingProgramEntry& entry)
+    std::shared_ptr<Events::TrainingProgramEntryAddedEvent> TrainingProgram::addEntry(const TrainingProgramEntry& entry)
     {
         _entries.push_back(entry);
         _duration += entry.duration();
 
-        Events::TrainingProgramEntryAddedEvent eventData;
-        eventData.TrainingProgramId = _id;
-        eventData.TrainingProgramEntryName = entry.name();
-        eventData.TrainingProgramEntryDuration = entry.duration();
+        auto eventData = std::make_shared<Events::TrainingProgramEntryAddedEvent>();
+        eventData->TrainingProgramId = _id;
+        eventData->TrainingProgramEntryName = entry.name();
+        eventData->TrainingProgramEntryDuration = entry.duration();
         return eventData;
     }
 
-    Events::TrainingProgramEntryRemovedEvent TrainingProgram::removeEntry(int position)
+    std::shared_ptr<Events::TrainingProgramEntryRemovedEvent> TrainingProgram::removeEntry(int position)
     {
         validatePosition(position, "position");
 
@@ -34,13 +34,13 @@ namespace Core::Configuration::Domain
 
         remove(_entries, position);
 
-        Events::TrainingProgramEntryRemovedEvent eventData;
-        eventData.TrainingProgramId = _id;
-        eventData.TrainingProgramEntryPosition = position;
+        auto eventData = std::make_shared<Events::TrainingProgramEntryRemovedEvent>();
+        eventData->TrainingProgramId = _id;
+        eventData->TrainingProgramEntryPosition = position;
         return eventData;
     }
 
-    Events::TrainingProgramEntryUpdatedEvent TrainingProgram::replaceEntry(int position, const TrainingProgramEntry& newEntry)
+    std::shared_ptr<Events::TrainingProgramEntryUpdatedEvent> TrainingProgram::replaceEntry(int position, const TrainingProgramEntry& newEntry)
     {
         validatePosition(position, "position");
 
@@ -50,14 +50,14 @@ namespace Core::Configuration::Domain
         replace(_entries, position, newEntry);
         _duration += newEntry.duration();
 
-        Events::TrainingProgramEntryUpdatedEvent eventData;
-        eventData.TrainingProgramId = _id;
-        eventData.TrainingProgramEntryName = newEntry.name();
-        eventData.TrainingProgramEntryDuration = newEntry.duration();
+        auto eventData = std::make_shared<Events::TrainingProgramEntryUpdatedEvent>();
+        eventData->TrainingProgramId = _id;
+        eventData->TrainingProgramEntryName = newEntry.name();
+        eventData->TrainingProgramEntryDuration = newEntry.duration();
         return eventData;
     }
 
-    Events::TrainingProgramEntrySwappedEvent TrainingProgram::swapEntries(int firstPosition, int secondPosition)
+    std::shared_ptr<Events::TrainingProgramEntrySwappedEvent> TrainingProgram::swapEntries(int firstPosition, int secondPosition)
     {
         validatePosition(firstPosition, "first position");
         validatePosition(secondPosition, "second position");
@@ -65,48 +65,48 @@ namespace Core::Configuration::Domain
         std::swap(_entries[firstPosition], _entries[secondPosition]);
         // Duration will stay identical, no need to update it
 
-        Events::TrainingProgramEntrySwappedEvent eventData;
-        eventData.TrainingProgramId = _id;
-        eventData.FirstTrainingProgramEntryPosition = firstPosition;
-        eventData.SecondTrainingProgramEntryPosition = secondPosition;
+        auto eventData = std::make_shared<Events::TrainingProgramEntrySwappedEvent>();
+        eventData->TrainingProgramId = _id;
+        eventData->FirstTrainingProgramEntryPosition = firstPosition;
+        eventData->SecondTrainingProgramEntryPosition = secondPosition;
         return eventData;
     }
 
-    Events::TrainingProgramRenamedEvent TrainingProgram::renameProgram(const std::string& newName)
+    std::shared_ptr<Events::TrainingProgramRenamedEvent> TrainingProgram::renameProgram(const std::string& newName)
     {
         _name = newName;
 
-        Events::TrainingProgramRenamedEvent renamedEvent;
-        renamedEvent.TrainingProgramId = _id;
-        renamedEvent.TrainingProgramName = _name;
-        return renamedEvent;
+        auto eventData = std::make_shared<Events::TrainingProgramRenamedEvent>();
+        eventData->TrainingProgramId = _id;
+        eventData->TrainingProgramName = _name;
+        return eventData;
     }
 
-    void TrainingProgram::loadFromEvents(const std::vector<Kernel::DomainEvent>& events)
+    void TrainingProgram::loadFromEvents(const std::vector<std::shared_ptr<Kernel::DomainEvent>>& events)
     {
         for (auto genericEvent : events)
         {
-            if (auto additionEvent = dynamic_cast<Events::TrainingProgramEntryAddedEvent*>(&genericEvent))
+            if (auto additionEvent = dynamic_cast<Events::TrainingProgramEntryAddedEvent*>(genericEvent.get()))
             {
                 if (additionEvent->TrainingProgramId != _id) { continue; }
                 addEntry({ additionEvent->TrainingProgramEntryName, additionEvent->TrainingProgramEntryDuration });
             }
-            else if (auto removalEvent = dynamic_cast<Events::TrainingProgramEntryRemovedEvent*>(&genericEvent))
+            else if (auto removalEvent = dynamic_cast<Events::TrainingProgramEntryRemovedEvent*>(genericEvent.get()))
             {
                 if (removalEvent->TrainingProgramId != _id) { continue; }
                 removeEntry(removalEvent->TrainingProgramEntryPosition);
             }
-            else if (auto updateEvent = dynamic_cast<Events::TrainingProgramEntryUpdatedEvent*>(&genericEvent))
+            else if (auto updateEvent = dynamic_cast<Events::TrainingProgramEntryUpdatedEvent*>(genericEvent.get()))
             {
                 if (updateEvent->TrainingProgramId != _id) { continue; }
                 replaceEntry(updateEvent->TrainingProgramEntryPosition, { updateEvent->TrainingProgramEntryName, updateEvent->TrainingProgramEntryDuration });
             }
-            else if (auto swapEvent = dynamic_cast<Events::TrainingProgramEntrySwappedEvent*>(&genericEvent))
+            else if (auto swapEvent = dynamic_cast<Events::TrainingProgramEntrySwappedEvent*>(genericEvent.get()))
             {
                 if (swapEvent->TrainingProgramId != _id) { continue; }
                 swapEntries(swapEvent->FirstTrainingProgramEntryPosition, swapEvent->SecondTrainingProgramEntryPosition);
             }
-            else if (auto renameEvent = dynamic_cast<Events::TrainingProgramRenamedEvent*>(&genericEvent))
+            else if (auto renameEvent = dynamic_cast<Events::TrainingProgramRenamedEvent*>(genericEvent.get()))
             {
                 if (renameEvent->TrainingProgramId != _id) { continue; }
                 renameProgram(renameEvent->TrainingProgramName);
@@ -115,7 +115,10 @@ namespace Core::Configuration::Domain
         }
     }
 
-
+    std::vector<TrainingProgramEntry> TrainingProgram::entries() const 
+    {
+        return std::vector<TrainingProgramEntry>(_entries);
+    }
 
     uint32_t TrainingProgram::programDuration() const
     {

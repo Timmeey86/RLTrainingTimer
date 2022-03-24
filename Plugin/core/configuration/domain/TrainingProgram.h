@@ -32,31 +32,34 @@ namespace Core::Configuration::Domain
 		TrainingProgram(uint64_t id);
 
 		/** Adds an entry to the training program. */
-		Events::TrainingProgramEntryAddedEvent addEntry(const TrainingProgramEntry& entry);
+		std::shared_ptr<Events::TrainingProgramEntryAddedEvent> addEntry(const TrainingProgramEntry& entry);
 
 		/** Removes the entry at the given position from the training program. */
-		Events::TrainingProgramEntryRemovedEvent removeEntry(int position);
+		std::shared_ptr<Events::TrainingProgramEntryRemovedEvent> removeEntry(int position);
 
 		/** Replaces the entry at the given position with the new entry. */
-		Events::TrainingProgramEntryUpdatedEvent replaceEntry(int position, const TrainingProgramEntry& newEntry);
+		std::shared_ptr<Events::TrainingProgramEntryUpdatedEvent> replaceEntry(int position, const TrainingProgramEntry& newEntry);
 
 		/** Swaps the positions of two entries. */
-		Events::TrainingProgramEntrySwappedEvent swapEntries(int firstPosition, int secondPosition);
+		std::shared_ptr<Events::TrainingProgramEntrySwappedEvent> swapEntries(int firstPosition, int secondPosition);
 
 		/** Changes the name of the training program. */
-		Events::TrainingProgramRenamedEvent renameProgram(const std::string& newName);
-		
+		std::shared_ptr<Events::TrainingProgramRenamedEvent> renameProgram(const std::string& newName);
+
 		/** Re-creates a training program based on events which had occurred on it in the past. */
-		void loadFromEvents(const std::vector<Kernel::DomainEvent>& events);
+		void loadFromEvents(const std::vector<std::shared_ptr<Kernel::DomainEvent>>& events);
 
 		/** Retrieves the total program duration. */
 		uint32_t programDuration() const;
 
 		/** Retrieves the unique ID of the training program. */
 		uint64_t id() const;
-		
+
 		/** Retrieves the name of the training program. */
 		std::string name() const;
+
+		/** Retrieves a deep copy of the entries in this training program. */
+		std::vector<TrainingProgramEntry> entries() const;
 
 	private:
 

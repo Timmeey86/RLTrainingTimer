@@ -43,8 +43,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Test\GoogleTest\googletest\include;$(SolutionDir)Test\GoogleTest\googlemock\include;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Test\GoogleTest\googletest\include;$(SolutionDir)Test\GoogleTest\googlemock\include;$(SolutionDir);$(SolutionDir)Plugin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -62,6 +63,7 @@ robocopy $(BakkesModPath)dll $(OutDir) pluginsdk.dll bakkesmod.dll &gt; NUL</Com
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="RLTrainingTimerTest.cpp" />
+    <ClCompile Include="core\configuration\TrainingProgramTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
