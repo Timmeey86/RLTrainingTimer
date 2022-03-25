@@ -6,8 +6,11 @@
 
 BAKKESMOD_PLUGIN(RLTrainingTimer, "RL Training Timer", plugin_version, PLUGINTYPE_FREEPLAY)
 
+std::shared_ptr<CVarManagerWrapper> _globalCvarManager;
+
 void RLTrainingTimer::onLoad()
 {
+	_globalCvarManager = cvarManager;
 	// DUMMY CODE
 	auto DUMMY_trainingProgramList = std::make_shared<Core::Configuration::Domain::TrainingProgramList>();
 	DUMMY_trainingProgramList->addTrainingProgram(0);

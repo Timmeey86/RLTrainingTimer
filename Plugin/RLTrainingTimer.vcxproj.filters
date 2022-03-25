@@ -57,6 +57,9 @@
     <ClCompile Include="adapter\TrainingProgramListUiAdapter.cpp">
       <Filter>adapter</Filter>
     </ClCompile>
+    <ClCompile Include="external\IMGUI\imgui_stdlib.cpp">
+      <Filter>external\IMGUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -167,6 +170,9 @@
     <ClInclude Include="DLLImportExport.h" />
     <ClInclude Include="adapter\TrainingProgramListUiAdapter.h">
       <Filter>adapter</Filter>
+    </ClInclude>
+    <ClInclude Include="external\IMGUI\imgui_stdlib.h">
+      <Filter>external\IMGUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

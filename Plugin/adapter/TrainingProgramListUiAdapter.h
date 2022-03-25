@@ -30,7 +30,14 @@ namespace Adapter
 		void unsubscribe();
 
 	private:
+		// Temporary method which updates itself from the current training program list.
+		// In future, this needs to be replaced by event processing
+		void updateFromList();
+
+
 		std::vector<Core::Configuration::Domain::TrainingProgramListEntry> _currentEntries;
+		std::unordered_map<uint64_t, std::string> _entryNameCache;
+
 		std::shared_ptr<Core::Configuration::Domain::TrainingProgramList> _trainingProgramList;
 	};
 }

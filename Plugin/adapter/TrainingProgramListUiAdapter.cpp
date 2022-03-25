@@ -1,5 +1,6 @@
-#include "pch.h"
+#include <pch.h>
 #include "TrainingProgramListUiAdapter.h"
+#include <IMGUI/imgui_stdlib.h>
 
 namespace Adapter
 {
@@ -12,7 +13,10 @@ namespace Adapter
         for(auto entryIter = entriesCopy.cbegin(); entryIter != entriesCopy.cend(); entryIter++)
         {
             auto entry = *entryIter;
-            ImGui::TextUnformatted(entry.TrainingProgramName.c_str());
+            if (ImGui::InputText(fmt::format("#{}", count).c_str(), &_entryNameCache[entry.TrainingProgramId]))
+            {
+                _trainingProgramList->renameTrainingProgram(entry.TrainingProgramId, _entryNameCache[entry.TrainingProgramId]);
+            }
             ImGui::SameLine();
             ImGui::TextUnformatted(std::to_string((float)entry.TrainingProgramDuration / 1000.0f).c_str());
             ImGui::SameLine();
@@ -25,8 +29,7 @@ namespace Adapter
                         entry.TrainingProgramId,
                         previousEntry.TrainingProgramId
                     );
-                    // TODO: Update through events rather than polling
-                    _currentEntries = _trainingProgramList->getListEntries();
+                    updateFromList();
                 }
             }
             ImGui::SameLine();
@@ -40,19 +43,20 @@ namespace Adapter
                         entry.TrainingProgramId,
                         nextEntry.TrainingProgramId
                     );
-                    _currentEntries = _trainingProgramList->getListEntries();
+                    updateFromList();
                 }
             }
             ImGui::SameLine();
             if (ImGui::Button(fmt::format("##edit_{}", count).c_str(), "Edit"))
             {
                 // TODO
+                updateFromList();
             }
             ImGui::SameLine();
             if (ImGui::Button(fmt::format("##delete_{}", count).c_str(), "Delete"))
             {
                 _trainingProgramList->removeTrainingProgram(entry.TrainingProgramId);
-                _currentEntries = _trainingProgramList->getListEntries();
+                updateFromList();
             }
 
             count++;
@@ -64,7 +68,7 @@ namespace Adapter
             static uint64_t newId = 1000;
             _trainingProgramList->addTrainingProgram(newId);
             _trainingProgramList->getTrainingProgram(newId)->renameProgram("New Program");
-            _currentEntries = _trainingProgramList->getListEntries();
+            updateFromList();
             newId++;
         }
     }
@@ -83,12 +87,22 @@ namespace Adapter
     {
         // TODO: Subscribe to events
         _trainingProgramList = trainingProgramList;
-        _currentEntries = _trainingProgramList->getListEntries();
+        updateFromList();
     }
 
     void TrainingProgramListUiAdapter::unsubscribe()
     {
         // TODO: Unsubscribe from events
         _currentEntries.clear();
+        _entryNameCache.clear();
+    }
+    void TrainingProgramListUiAdapter::updateFromList()
+    {
+        _entryNameCache.clear();
+        _currentEntries = _trainingProgramList->getListEntries();
+        for (const auto& entry : _currentEntries)
+        {
+            _entryNameCache.emplace(entry.TrainingProgramId, entry.TrainingProgramName);
+        }
     }
 }

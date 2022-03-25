@@ -109,6 +109,7 @@
     <ClCompile Include="external\IMGUI\imgui_impl_win32.cpp" />
     <ClCompile Include="external\IMGUI\imgui_rangeslider.cpp" />
     <ClCompile Include="external\IMGUI\imgui_searchablecombo.cpp" />
+    <ClCompile Include="external\IMGUI\imgui_stdlib.cpp" />
     <ClCompile Include="external\IMGUI\imgui_timeline.cpp" />
     <ClCompile Include="external\IMGUI\imgui_widgets.cpp" />
     <ClCompile Include="core\kernel\InvalidValueException.cpp" />
@@ -148,6 +149,7 @@
     <ClInclude Include="external\IMGUI\imgui_internal.h" />
     <ClInclude Include="external\IMGUI\imgui_rangeslider.h" />
     <ClInclude Include="external\IMGUI\imgui_searchablecombo.h" />
+    <ClInclude Include="external\IMGUI\imgui_stdlib.h" />
     <ClInclude Include="external\IMGUI\imgui_timeline.h" />
     <ClInclude Include="external\IMGUI\imstb_rectpack.h" />
     <ClInclude Include="external\IMGUI\imstb_textedit.h" />
