@@ -119,6 +119,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="RLTrainingTimer.cpp" />
+    <ClCompile Include="ui\TrainingProgramUi.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ui\TrainingProgramListUi.h" />
@@ -161,6 +162,7 @@
     <ClInclude Include="qol\vectorext.h" />
     <ClInclude Include="RLTrainingTimer.h" />
     <ClInclude Include="core\configuration\domain\TrainingProgramEntry.h" />
+    <ClInclude Include="ui\TrainingProgramUi.h" />
     <ClInclude Include="version.h" />
   </ItemGroup>
   <ItemGroup>

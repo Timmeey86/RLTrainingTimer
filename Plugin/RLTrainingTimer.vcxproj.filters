@@ -63,6 +63,9 @@
     <ClCompile Include="ui\TrainingProgramListUi.cpp">
       <Filter>ui</Filter>
     </ClCompile>
+    <ClCompile Include="ui\TrainingProgramUi.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -178,6 +181,9 @@
       <Filter>external\IMGUI</Filter>
     </ClInclude>
     <ClInclude Include="ui\TrainingProgramListUi.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\TrainingProgramUi.h">
       <Filter>ui</Filter>
     </ClInclude>
   </ItemGroup>

@@ -5,21 +5,29 @@ namespace Adapter
 {
     TrainingProgramListUiAdapter::TrainingProgramListUiAdapter()
         : BakkesMod::Plugin::PluginSettingsWindow()
-        , _trainingProgramListUi{ std::make_shared<Ui::TrainingProgramListUi>() }
     {
-        
+        auto startEditingTrainingProgram = [this](const std::shared_ptr<Core::Configuration::Domain::TrainingProgram>& trainingProgram)
+        {
+            _trainingProgramUi->setCurrentTrainingProgram(trainingProgram);
+            _isEditing = true;
+        };
+        auto finishEditingTrainingProgram = [this]() {
+            _isEditing = false;
+            _trainingProgramListUi->updateFromList();
+        };
+        _trainingProgramUi = std::make_shared<Ui::TrainingProgramUi>(finishEditingTrainingProgram);
+        _trainingProgramListUi = std::make_shared<Ui::TrainingProgramListUi>(startEditingTrainingProgram);
     }
 
     void TrainingProgramListUiAdapter::RenderSettings()
     {
-        auto notEditing = true; 
-        if (notEditing)
+        if (_isEditing)
         {
-            _trainingProgramListUi->renderTrainingProgramList();
+            _trainingProgramUi->renderTrainingProgram();
         }
         else
         {
-            // TODO: Render page for a single program
+            _trainingProgramListUi->renderTrainingProgramList();
         }
     }
 

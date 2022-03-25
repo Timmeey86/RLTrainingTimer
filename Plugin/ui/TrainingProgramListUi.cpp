@@ -4,6 +4,10 @@
 
 namespace Ui
 {
+    TrainingProgramListUi::TrainingProgramListUi(std::function<void(const std::shared_ptr<Core::Configuration::Domain::TrainingProgram>)> startEditingFunc)
+        : _startEditingFunc{ startEditingFunc }
+    {
+    }
     void TrainingProgramListUi::initialize(std::shared_ptr<Core::Configuration::Domain::TrainingProgramList> trainingProgramList)
     {
         _trainingProgramList = trainingProgramList;
@@ -42,6 +46,7 @@ namespace Ui
         // Note: ## hides the label
         if (ImGui::InputText(fmt::format("##name{}", lineNumber).c_str(), &_entryNameCache[entry.TrainingProgramId]))
         {
+            // TODO: Rename through timer so only one event is being sent
             _trainingProgramList->renameTrainingProgram(entry.TrainingProgramId, _entryNameCache[entry.TrainingProgramId]);
         }
     }
@@ -92,8 +97,7 @@ namespace Ui
     {
         if (ImGui::Button(fmt::format("##edit_{}", lineNumber).c_str(), "Edit"))
         {
-            // TODO - call some callback so the calling class knows it's supposed to switch to rendering a single program
-            
+            _startEditingFunc(_trainingProgramList->getTrainingProgram(entry.TrainingProgramId));            
         }
     }
 

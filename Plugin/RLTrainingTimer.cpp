@@ -24,7 +24,15 @@ void RLTrainingTimer::onLoad()
 	auto DUMMY_firstProgram = DUMMY_trainingProgramList->getTrainingProgram(0);
 	DUMMY_firstProgram->addEntry({
 		"First Entry",
-		123400
+		60000
+		});
+	DUMMY_firstProgram->addEntry({
+		"Second Entry",
+		180000
+		});
+	DUMMY_firstProgram->addEntry({
+		"Third Entry",
+		240000
 		});
 
 	auto DUMMY_secondProgram = DUMMY_trainingProgramList->getTrainingProgram(1);

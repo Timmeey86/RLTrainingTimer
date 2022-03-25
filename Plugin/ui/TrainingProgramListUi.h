@@ -1,15 +1,21 @@
 #pragma once
 
+// TODO: Completely decouple the Ui namespace from the core namespace.
+//       Instead, make the adapter namespace translate between the two.
+// Alternatively, ditch the hexagonal architecture.
 #include <core/configuration/domain/TrainingProgramList.h>
 
 namespace Ui
 {
-	/** This class is responsible for rendering the overview of available training programs. */
+	/** This class is responsible for rendering the overview of available training programs as well as editing this list. */
 	class TrainingProgramListUi
 	{
 	public:
 
-		/** Initializes the training program.
+		/** Constructor. Expectes a function to be called when switching to editing of a training program. */
+		TrainingProgramListUi(std::function<void(const std::shared_ptr<Core::Configuration::Domain::TrainingProgram>)> startEditingFunc);
+
+		/** Initializes the UI for the list of training programs.
 		 *
 		 * TODO: Use an application service as interface instead.
 		 */
@@ -18,11 +24,11 @@ namespace Ui
 		/** Renders the current settings */
 		void renderTrainingProgramList();
 
-	private:
-
 		// Temporary method which updates itself from the current training program list.
 		// In future, this needs to be replaced by event processing
 		void updateFromList();
+
+	private:
 
 		void addProgramNameTextBox(int lineNumber, const Core::Configuration::Domain::TrainingProgramListEntry& entry);
 		void addProgramDurationLabel(const Core::Configuration::Domain::TrainingProgramListEntry& entry);
@@ -41,5 +47,6 @@ namespace Ui
 		std::shared_ptr<Core::Configuration::Domain::TrainingProgramList> _trainingProgramList;
 		std::vector<Core::Configuration::Domain::TrainingProgramListEntry> _currentEntries;
 		std::unordered_map<uint64_t, std::string> _entryNameCache;
+		std::function<void(const std::shared_ptr<Core::Configuration::Domain::TrainingProgram>)> _startEditingFunc;
 	};
 }

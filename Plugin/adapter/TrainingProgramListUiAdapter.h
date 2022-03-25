@@ -2,6 +2,7 @@
 
 #include <core/configuration/domain/TrainingProgramList.h>
 #include <ui/TrainingProgramListUi.h>
+#include <ui/TrainingProgramUi.h>
 
 #include <bakkesmod/plugin/PluginSettingsWindow.h>
 
@@ -36,6 +37,8 @@ namespace Adapter
 	private: 
 
 		std::shared_ptr<Core::Configuration::Domain::TrainingProgramList> _trainingProgramList;
+		std::shared_ptr<Ui::TrainingProgramUi> _trainingProgramUi;
 		std::shared_ptr<Ui::TrainingProgramListUi> _trainingProgramListUi;
+		bool _isEditing = false;
 	};
 }
