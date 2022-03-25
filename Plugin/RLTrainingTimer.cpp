@@ -24,7 +24,7 @@ void RLTrainingTimer::onLoad()
 	auto DUMMY_firstProgram = DUMMY_trainingProgramList->getTrainingProgram(0);
 	DUMMY_firstProgram->addEntry({
 		"First Entry",
-		5000
+		123400
 		});
 
 	auto DUMMY_secondProgram = DUMMY_trainingProgramList->getTrainingProgram(1);

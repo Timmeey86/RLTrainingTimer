@@ -1,9 +1,11 @@
 #pragma once
 
-#include <IMGUI/imgui.h>
 #include <core/configuration/domain/TrainingProgramList.h>
+#include <ui/TrainingProgramListUi.h>
 
-#include "bakkesmod/plugin/PluginSettingsWindow.h"
+#include <bakkesmod/plugin/PluginSettingsWindow.h>
+
+#include <IMGUI/imgui.h>
 
 namespace Adapter
 {
@@ -21,6 +23,8 @@ namespace Adapter
 	class TrainingProgramListUiAdapter : public BakkesMod::Plugin::PluginSettingsWindow
 	{
 	public:
+		TrainingProgramListUiAdapter();
+
 		// Inherited via PluginSettingsWindow
 		virtual void RenderSettings() override;
 		virtual std::string GetPluginName() override;
@@ -29,15 +33,9 @@ namespace Adapter
 		void subscribe(std::shared_ptr<Core::Configuration::Domain::TrainingProgramList> trainingProgramList);
 		void unsubscribe();
 
-	private:
-		// Temporary method which updates itself from the current training program list.
-		// In future, this needs to be replaced by event processing
-		void updateFromList();
-
-
-		std::vector<Core::Configuration::Domain::TrainingProgramListEntry> _currentEntries;
-		std::unordered_map<uint64_t, std::string> _entryNameCache;
+	private: 
 
 		std::shared_ptr<Core::Configuration::Domain::TrainingProgramList> _trainingProgramList;
+		std::shared_ptr<Ui::TrainingProgramListUi> _trainingProgramListUi;
 	};
 }

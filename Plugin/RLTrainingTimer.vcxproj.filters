@@ -60,6 +60,9 @@
     <ClCompile Include="external\IMGUI\imgui_stdlib.cpp">
       <Filter>external\IMGUI</Filter>
     </ClCompile>
+    <ClCompile Include="ui\TrainingProgramListUi.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -174,6 +177,9 @@
     <ClInclude Include="external\IMGUI\imgui_stdlib.h">
       <Filter>external\IMGUI</Filter>
     </ClInclude>
+    <ClInclude Include="ui\TrainingProgramListUi.h">
+      <Filter>ui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="RLTrainingTimer.rc" />
@@ -211,6 +217,9 @@
     </Filter>
     <Filter Include="adapter">
       <UniqueIdentifier>{2ab53b75-c475-44c9-9bf5-8c54c3037b9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui">
+      <UniqueIdentifier>{0323d12f-3cdf-48a0-8977-b59cc3d64d80}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
