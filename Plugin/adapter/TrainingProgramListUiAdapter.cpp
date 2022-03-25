@@ -8,7 +8,8 @@ namespace Adapter
         ImGui::TextUnformatted("Plugin settings");
 
         int count = 0;
-        for(auto entryIter = _currentEntries.cbegin(); entryIter != _currentEntries.cend(); entryIter++)
+        auto entriesCopy = std::vector<Core::Configuration::Domain::TrainingProgramListEntry>(_currentEntries);
+        for(auto entryIter = entriesCopy.cbegin(); entryIter != entriesCopy.cend(); entryIter++)
         {
             auto entry = *entryIter;
             ImGui::TextUnformatted(entry.TrainingProgramName.c_str());
@@ -17,22 +18,41 @@ namespace Adapter
             ImGui::SameLine();
             if (ImGui::ArrowButton(fmt::format("##up_{}", count).c_str(), ImGuiDir_Up))
             {
-                // TODO
+                if (entryIter != entriesCopy.cbegin())
+                {
+                    auto previousEntry = *(entryIter - 1);
+                    _trainingProgramList->swapTrainingPrograms(
+                        entry.TrainingProgramId,
+                        previousEntry.TrainingProgramId
+                    );
+                    // TODO: Update through events rather than polling
+                    _currentEntries = _trainingProgramList->getListEntries();
+                }
             }
             ImGui::SameLine();
             if (ImGui::ArrowButton(fmt::format("##down_{}", count).c_str(), ImGuiDir_Down))
             {
-                // TODO
+                auto nextIter = entryIter + 1;
+                if (nextIter != entriesCopy.cend())
+                {
+                    auto nextEntry = *nextIter;
+                    _trainingProgramList->swapTrainingPrograms(
+                        entry.TrainingProgramId,
+                        nextEntry.TrainingProgramId
+                    );
+                    _currentEntries = _trainingProgramList->getListEntries();
+                }
             }
             ImGui::SameLine();
-            if (ImGui::Button("Edit"))
+            if (ImGui::Button(fmt::format("##edit_{}", count).c_str(), "Edit"))
             {
                 // TODO
             }
             ImGui::SameLine();
-            if (ImGui::Button("Delete"))
+            if (ImGui::Button(fmt::format("##delete_{}", count).c_str(), "Delete"))
             {
-                // TODO
+                _trainingProgramList->removeTrainingProgram(entry.TrainingProgramId);
+                _currentEntries = _trainingProgramList->getListEntries();
             }
 
             count++;
@@ -40,7 +60,12 @@ namespace Adapter
 
         if (ImGui::Button("Add")) 
         {
-            // TODO
+            // TEMP
+            static uint64_t newId = 1000;
+            _trainingProgramList->addTrainingProgram(newId);
+            _trainingProgramList->getTrainingProgram(newId)->renameProgram("New Program");
+            _currentEntries = _trainingProgramList->getListEntries();
+            newId++;
         }
     }
 
