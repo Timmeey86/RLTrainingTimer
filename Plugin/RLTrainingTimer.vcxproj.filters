@@ -66,6 +66,9 @@
     <ClCompile Include="ui\TrainingProgramUi.cpp">
       <Filter>ui</Filter>
     </ClCompile>
+    <ClCompile Include="core\training\domain\TrainingProgramInterface.cpp">
+      <Filter>core\training\domain</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -186,6 +189,12 @@
     <ClInclude Include="ui\TrainingProgramUi.h">
       <Filter>ui</Filter>
     </ClInclude>
+    <ClInclude Include="core\training\domain\TrainingProgramInterface.h">
+      <Filter>core\training\domain</Filter>
+    </ClInclude>
+    <ClInclude Include="core\training\events\TrainingProgramInterfaceEvents.h">
+      <Filter>core\training\event</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="RLTrainingTimer.rc" />
@@ -226,6 +235,15 @@
     </Filter>
     <Filter Include="ui">
       <UniqueIdentifier>{0323d12f-3cdf-48a0-8977-b59cc3d64d80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\training">
+      <UniqueIdentifier>{fd81fdaa-c054-46fc-9694-6fcc6223f9a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\training\domain">
+      <UniqueIdentifier>{ceb496f6-3589-4ba2-b844-e679b3e51a8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\training\event">
+      <UniqueIdentifier>{e615cc1a-c6b9-4e6c-9a3d-202e71af7030}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

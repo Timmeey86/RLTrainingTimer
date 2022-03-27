@@ -10,7 +10,7 @@ namespace Core::Configuration::Test
 	class TrainingProgramTestFixture : public testing::Test
 	{
 	public:
-		virtual void SetUp() override
+		void SetUp() override
 		{
 			sut = std::make_unique<Domain::TrainingProgram>(DefaultId);
 			sut->addEntry({ FirstEntryName, FirstEntryDuration });
@@ -35,6 +35,8 @@ namespace Core::Configuration::Test
 
 	TEST_F(TrainingProgramTestFixture, verify_fixture)
 	{
+		ASSERT_NE(sut, nullptr);
+
 		EXPECT_EQ(sut->id(), DefaultId);
 		EXPECT_EQ(sut->programDuration(), InitialDuration);
 		auto entries = sut->entries();
