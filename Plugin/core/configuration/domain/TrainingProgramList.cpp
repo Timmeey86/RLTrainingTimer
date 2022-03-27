@@ -1,5 +1,6 @@
 #include <pch.h>
 #include "TrainingProgramList.h"
+#include "../events/TrainingProgramEvents.h"
 
 #include <core/kernel/InvalidValueException.h>
 
@@ -7,41 +8,41 @@
 
 namespace Core::Configuration::Domain
 {
-    Events::TrainingProgramAddedEvent TrainingProgramList::addTrainingProgram(uint64_t trainingProgramId)
+    std::shared_ptr<Kernel::DomainEvent> TrainingProgramList::addTrainingProgram(uint64_t trainingProgramId)
     {
         ensureIdDoesntExist(trainingProgramId);
 
         _trainingProgramOrder.push_back(trainingProgramId);
         _trainingPrograms.emplace(trainingProgramId, std::make_shared<TrainingProgram>(trainingProgramId));
 
-        Events::TrainingProgramAddedEvent additionEvent;
-        additionEvent.TrainingProgramId = trainingProgramId;
-        return additionEvent;
+        auto eventData = std::make_shared<Events::TrainingProgramAddedEvent>();
+        eventData->TrainingProgramId = trainingProgramId;
+        return eventData;
     }
 
-    Events::TrainingProgramRemovedEvent TrainingProgramList::removeTrainingProgram(uint64_t trainingProgramId)
+    std::shared_ptr<Kernel::DomainEvent> TrainingProgramList::removeTrainingProgram(uint64_t trainingProgramId)
     {
         ensureIdIsKnown(trainingProgramId, "training program ID");
 
         removeOne(_trainingProgramOrder, trainingProgramId);
         _trainingPrograms.erase(trainingProgramId); // this will delete the program, unless anyone else references it.
 
-        Events::TrainingProgramRemovedEvent removalEvent;
-        removalEvent.TrainingProgramId = trainingProgramId;
-        return removalEvent;
+        auto eventData = std::make_shared<Events::TrainingProgramRemovedEvent>();
+        eventData->TrainingProgramId = trainingProgramId;
+        return eventData;
     }
-    Events::TrainingProgramRenamedEvent TrainingProgramList::renameTrainingProgram(uint64_t trainingProgramId, const std::string& newName)
+    std::shared_ptr<Kernel::DomainEvent> TrainingProgramList::renameTrainingProgram(uint64_t trainingProgramId, const std::string& newName)
     {
         ensureIdIsKnown(trainingProgramId, "training program ID");
 
         _trainingPrograms[trainingProgramId]->renameProgram(newName);
 
-        Events::TrainingProgramRenamedEvent renameEvent;
-        renameEvent.TrainingProgramId = trainingProgramId;
-        renameEvent.TrainingProgramName = newName;
-        return renameEvent;
+        auto eventData = std::make_shared<Events::TrainingProgramRenamedEvent>();
+        eventData->TrainingProgramId = trainingProgramId;
+        eventData->TrainingProgramName = newName;
+        return eventData;
     }
-    Events::TrainingProgramSwappedEvent TrainingProgramList::swapTrainingPrograms(uint64_t firstProgramId, uint64_t secondProgramId)
+    std::shared_ptr<Kernel::DomainEvent> TrainingProgramList::swapTrainingPrograms(uint64_t firstProgramId, uint64_t secondProgramId)
     {
         ensureIdIsKnown(firstProgramId, "first training program ID");
         ensureIdIsKnown(secondProgramId, "second training program ID");
@@ -58,10 +59,10 @@ namespace Core::Configuration::Domain
             throw std::runtime_error("Training Program List is inconsistent");
         }
 
-        Events::TrainingProgramSwappedEvent swapEvent;
-        swapEvent.FirstTrainingProgramId = firstProgramId;
-        swapEvent.SecondTrainingProgramId = secondProgramId;
-        return swapEvent;
+        auto eventData = std::make_shared<Events::TrainingProgramSwappedEvent>();
+        eventData->FirstTrainingProgramId = firstProgramId;
+        eventData->SecondTrainingProgramId = secondProgramId;
+        return eventData;
     }
     void TrainingProgramList::applyEvents(const std::vector<std::shared_ptr<Kernel::DomainEvent>>& events)
     {

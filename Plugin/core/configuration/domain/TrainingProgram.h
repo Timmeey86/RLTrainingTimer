@@ -1,8 +1,7 @@
 #pragma once
 
 #include "TrainingProgramEntry.h"
-#include "../events/TrainingProgramEntryEvents.h"
-#include "../events/TrainingProgramEvents.h"
+#include <core/kernel/DomainEvent.h>
 
 #include <vector>
 #include <queue>
@@ -12,7 +11,7 @@
 namespace Core::Configuration::Domain
 {
 	/**
-	 * This is a simplified <<Aggregate>> where the root <<Entity>> is the aggregate itself.
+	 * This is an <<Entity>> used as <<Aggregate Root>>.
 	 * It represents a single training program, consisting of several training program entries.
 	 *
 	 * Entities:
@@ -32,19 +31,19 @@ namespace Core::Configuration::Domain
 		TrainingProgram(uint64_t id);
 
 		/** Adds an entry to the training program. */
-		std::shared_ptr<Events::TrainingProgramEntryAddedEvent> addEntry(const TrainingProgramEntry& entry);
+		std::shared_ptr<Kernel::DomainEvent> addEntry(const TrainingProgramEntry& entry);
 
 		/** Removes the entry at the given position from the training program. */
-		std::shared_ptr<Events::TrainingProgramEntryRemovedEvent> removeEntry(int position);
+		std::shared_ptr<Kernel::DomainEvent> removeEntry(int position);
 
 		/** Replaces the entry at the given position with the new entry. */
-		std::shared_ptr<Events::TrainingProgramEntryUpdatedEvent> replaceEntry(int position, const TrainingProgramEntry& newEntry);
+		std::shared_ptr<Kernel::DomainEvent> replaceEntry(int position, const TrainingProgramEntry& newEntry);
 
 		/** Swaps the positions of two entries. */
-		std::shared_ptr<Events::TrainingProgramEntrySwappedEvent> swapEntries(int firstPosition, int secondPosition);
+		std::shared_ptr<Kernel::DomainEvent> swapEntries(int firstPosition, int secondPosition);
 
 		/** Changes the name of the training program. */
-		std::shared_ptr<Events::TrainingProgramRenamedEvent> renameProgram(const std::string& newName);
+		std::shared_ptr<Kernel::DomainEvent> renameProgram(const std::string& newName);
 
 		/** Applies the given list of events to this object. */
 		void applyEvents(const std::vector<std::shared_ptr<Kernel::DomainEvent>>& events);

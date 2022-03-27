@@ -19,7 +19,7 @@ namespace Core::Configuration::Domain
 		uint32_t TrainingProgramDuration; // ms
 	};
 	/**
-	 * This is an <<Aggregate>> which allows manipulating the list of available Training Programs, but not a Training Program itself
+	 * This is an <<Aggregate Root>> <<Entity>> which allows manipulating the list of available Training Programs, but not a Training Program itself
 	 * 
 	 * Entities:
 	 *  - Training Programs
@@ -38,16 +38,16 @@ namespace Core::Configuration::Domain
 		TrainingProgramList() = default;
 
 		/** Adds a new empty training program using the given ID. */
-		Events::TrainingProgramAddedEvent addTrainingProgram(uint64_t trainingProgramId);
+		std::shared_ptr<Kernel::DomainEvent> addTrainingProgram(uint64_t trainingProgramId);
 		
 		/** Removes the training program with the given ID. */
-		Events::TrainingProgramRemovedEvent removeTrainingProgram(uint64_t trainingProgramId);
+		std::shared_ptr<Kernel::DomainEvent> removeTrainingProgram(uint64_t trainingProgramId);
 
 		/** Renames the training program with the given ID. */
-		Events::TrainingProgramRenamedEvent renameTrainingProgram(uint64_t trainingProgramId, const std::string& newName);
+		std::shared_ptr<Kernel::DomainEvent> renameTrainingProgram(uint64_t trainingProgramId, const std::string& newName);
 
 		/** Swaps the positions of two training programs. */
-		Events::TrainingProgramSwappedEvent swapTrainingPrograms(uint64_t firsttrainingProgramId, uint64_t secondtrainingProgramId);
+		std::shared_ptr<Kernel::DomainEvent> swapTrainingPrograms(uint64_t firsttrainingProgramId, uint64_t secondtrainingProgramId);
 
 		/** Applies the given list of events to this object. */
 		void applyEvents(const std::vector<std::shared_ptr<Kernel::DomainEvent>>& events);

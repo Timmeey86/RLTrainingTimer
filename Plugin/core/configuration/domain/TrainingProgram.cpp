@@ -2,6 +2,8 @@
 #include "TrainingProgram.h"
 
 #include <core/kernel/IndexOutOfBoundsException.h>
+#include "../events/TrainingProgramEntryEvents.h"
+#include "../events/TrainingProgramEvents.h"
 
 #include <qol/vectorext.h>
 
@@ -13,7 +15,7 @@ namespace Core::Configuration::Domain
     {
     }
 
-    std::shared_ptr<Events::TrainingProgramEntryAddedEvent> TrainingProgram::addEntry(const TrainingProgramEntry& entry)
+    std::shared_ptr<Kernel::DomainEvent> TrainingProgram::addEntry(const TrainingProgramEntry& entry)
     {
         _entries.push_back(entry);
         _duration += entry.duration();
@@ -25,7 +27,7 @@ namespace Core::Configuration::Domain
         return eventData;
     }
 
-    std::shared_ptr<Events::TrainingProgramEntryRemovedEvent> TrainingProgram::removeEntry(int position)
+    std::shared_ptr<Kernel::DomainEvent> TrainingProgram::removeEntry(int position)
     {
         validatePosition(position, "position");
 
@@ -40,7 +42,7 @@ namespace Core::Configuration::Domain
         return eventData;
     }
 
-    std::shared_ptr<Events::TrainingProgramEntryUpdatedEvent> TrainingProgram::replaceEntry(int position, const TrainingProgramEntry& newEntry)
+    std::shared_ptr<Kernel::DomainEvent> TrainingProgram::replaceEntry(int position, const TrainingProgramEntry& newEntry)
     {
         validatePosition(position, "position");
 
@@ -57,7 +59,7 @@ namespace Core::Configuration::Domain
         return eventData;
     }
 
-    std::shared_ptr<Events::TrainingProgramEntrySwappedEvent> TrainingProgram::swapEntries(int firstPosition, int secondPosition)
+    std::shared_ptr<Kernel::DomainEvent> TrainingProgram::swapEntries(int firstPosition, int secondPosition)
     {
         validatePosition(firstPosition, "first position");
         validatePosition(secondPosition, "second position");
@@ -72,7 +74,7 @@ namespace Core::Configuration::Domain
         return eventData;
     }
 
-    std::shared_ptr<Events::TrainingProgramRenamedEvent> TrainingProgram::renameProgram(const std::string& newName)
+    std::shared_ptr<Kernel::DomainEvent> TrainingProgram::renameProgram(const std::string& newName)
     {
         _name = newName;
 
