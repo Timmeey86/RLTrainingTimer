@@ -21,10 +21,13 @@ namespace Core::Training::Domain
 	 *  - Selected Training Program Id (if any)
 	 *  - "Running" state of the training program
 	 *  - "Paused" state of the training program
+	 *  - Current Training Step value (if set)
 	 * Invariants:
 	 *  - Only one training program can be selected at any given time
 	 *  - Only the selected training program can have a state of "Running".
 	 *  - Only a running training program can have a state of "Paused".
+	 *  - Only a running training program can have a valid training step value.
+	 *  - Only a running, unpaused training program can have the next state activated or be finished.
 	 */
 	class RLTT_IMPORT_EXPORT TrainingProgramInterface
 	{
@@ -33,13 +36,16 @@ namespace Core::Training::Domain
 		TrainingProgramInterface() = default;
 
 		/** Marks a new training program as selected. This will stop any running training program. */
-		std::shared_ptr<Kernel::DomainEvent> selectTrainingProgram(uint64_t trainingProgramId);
+		std::vector<std::shared_ptr<Kernel::DomainEvent>> selectTrainingProgram(uint64_t trainingProgramId, uint16_t numberOfTrainingProgramSteps);
 
 		/** Resets to the initial state where no training program is selected. */
 		std::vector<std::shared_ptr<Kernel::DomainEvent>> unselectTrainingProgram();
 
 		/** Starts the selected training program. Does nothing if no training program is selected.*/
 		std::shared_ptr<Kernel::DomainEvent> startSelectedTrainingProgram();
+
+		/** Activates the next (or first) step of the training program. */
+		std::shared_ptr<Kernel::DomainEvent> activateNextTrainingProgramStep();
 
 		/** Pauses or resumes the running training program. */
 		std::shared_ptr<Kernel::DomainEvent> pauseOrResumeTrainingProgram();
@@ -59,9 +65,17 @@ namespace Core::Training::Domain
 		/** Checks whether or not the running training program is currently paused. */
 		inline bool runningTrainingProgramIsPaused() const { return _runningTrainingProgramIsPaused; }
 
+		/** Retrieves the number of the current training step. */
+		inline std::optional<uint16_t> currentTrainingStepNumber() const { return _currentTrainingStepNumber; }
+
 	private:
+
+		std::shared_ptr<Core::Kernel::DomainEvent> abortCurrentTrainingProgram();
+
 		std::optional<uint64_t> _selectedTrainingProgramId;
 		bool _selectedTrainingProgramIsRunning = false;
 		bool _runningTrainingProgramIsPaused = false;
+		std::optional<uint16_t> _currentTrainingStepNumber;
+		uint16_t _maxTrainingStepNumber = 0;
 	};
 }

@@ -55,4 +55,12 @@ namespace Core::Training::Events
 	public:
 		uint64_t TrainingProgramId;
 	};
+
+	/** Signals the start of a training program step. */
+	class TrainingProgramStepActivatedEvent : public Kernel::DomainEvent
+	{
+	public:
+		uint64_t TrainingProgramId;
+		uint16_t TrainingProgramStepNumber;
+	};
 }
