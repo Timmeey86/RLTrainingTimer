@@ -69,6 +69,7 @@
     <ClCompile Include="core\training\domain\TrainingProgramInterface.cpp">
       <Filter>core\training\domain</Filter>
     </ClCompile>
+    <ClCompile Include="adapter\RocketLeagueEventAdapter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -195,6 +196,7 @@
     <ClInclude Include="core\training\events\TrainingProgramInterfaceEvents.h">
       <Filter>core\training\event</Filter>
     </ClInclude>
+    <ClInclude Include="adapter\RocketLeagueEventAdapter.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="RLTrainingTimer.rc" />

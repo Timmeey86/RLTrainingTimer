@@ -94,6 +94,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="adapter\RocketLeagueEventAdapter.cpp" />
     <ClCompile Include="core\training\domain\TrainingProgramInterface.cpp" />
     <ClCompile Include="ui\TrainingProgramListUi.cpp" />
     <ClCompile Include="adapter\TrainingProgramListUiAdapter.cpp" />
@@ -123,6 +124,7 @@
     <ClCompile Include="ui\TrainingProgramUi.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="adapter\RocketLeagueEventAdapter.h" />
     <ClInclude Include="core\training\domain\TrainingProgramInterface.h" />
     <ClInclude Include="core\training\events\TrainingProgramInterfaceEvents.h" />
     <ClInclude Include="ui\TrainingProgramListUi.h" />
