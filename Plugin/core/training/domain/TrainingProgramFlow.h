@@ -29,11 +29,11 @@ namespace Core::Training::Domain
 	 *  - Only a running training program can have a valid training step value.
 	 *  - Only a running, unpaused training program can have the next state activated or be finished.
 	 */
-	class RLTT_IMPORT_EXPORT TrainingProgramInterface
+	class RLTT_IMPORT_EXPORT TrainingProgramFlow
 	{
 
 	public:
-		TrainingProgramInterface() = default;
+		TrainingProgramFlow() = default;
 
 		/** Marks a new training program as selected. This will stop any running training program. */
 		std::vector<std::shared_ptr<Kernel::DomainEvent>> selectTrainingProgram(uint64_t trainingProgramId, uint16_t numberOfTrainingProgramSteps);

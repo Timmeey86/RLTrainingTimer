@@ -1,10 +1,10 @@
 #include <pch.h>
-#include "TrainingProgramInterface.h"
-#include "../events/TrainingProgramInterfaceEvents.h"
+#include "TrainingProgramFlow.h"
+#include "../events/TrainingProgramFlowEvents.h"
 
 namespace Core::Training::Domain
 {
-    std::vector<std::shared_ptr<Kernel::DomainEvent>> TrainingProgramInterface::selectTrainingProgram(uint64_t trainingProgramId, uint16_t numberOfTrainingProgramSteps)
+    std::vector<std::shared_ptr<Kernel::DomainEvent>> TrainingProgramFlow::selectTrainingProgram(uint64_t trainingProgramId, uint16_t numberOfTrainingProgramSteps)
     {
         std::vector<std::shared_ptr<Kernel::DomainEvent>> resultEvents;
         if (_selectedTrainingProgramId.has_value() && _selectedTrainingProgramIsRunning)
@@ -27,7 +27,7 @@ namespace Core::Training::Domain
         return resultEvents;
     }
 
-    std::vector<std::shared_ptr<Kernel::DomainEvent>> TrainingProgramInterface::unselectTrainingProgram()
+    std::vector<std::shared_ptr<Kernel::DomainEvent>> TrainingProgramFlow::unselectTrainingProgram()
     {
         std::vector<std::shared_ptr<Kernel::DomainEvent>> resultEvents;
         if (_selectedTrainingProgramId.has_value())
@@ -48,7 +48,7 @@ namespace Core::Training::Domain
         return resultEvents;
     }
 
-    std::shared_ptr<Kernel::DomainEvent> TrainingProgramInterface::startSelectedTrainingProgram()
+    std::shared_ptr<Kernel::DomainEvent> TrainingProgramFlow::startSelectedTrainingProgram()
     {
         std::shared_ptr<Kernel::DomainEvent> resultEvent = nullptr;
         if (_selectedTrainingProgramId.has_value() && !_selectedTrainingProgramIsRunning)
@@ -64,7 +64,7 @@ namespace Core::Training::Domain
         return resultEvent;
     }
 
-    std::shared_ptr<Kernel::DomainEvent> TrainingProgramInterface::activateNextTrainingProgramStep()
+    std::shared_ptr<Kernel::DomainEvent> TrainingProgramFlow::activateNextTrainingProgramStep()
     {
         std::shared_ptr<Kernel::DomainEvent> resultEvent = nullptr;
 
@@ -92,7 +92,7 @@ namespace Core::Training::Domain
         return resultEvent;
     }
 
-    std::shared_ptr<Kernel::DomainEvent> TrainingProgramInterface::pauseOrResumeTrainingProgram()
+    std::shared_ptr<Kernel::DomainEvent> TrainingProgramFlow::pauseOrResumeTrainingProgram()
     {
         std::shared_ptr<Kernel::DomainEvent> resultEvent = nullptr;
         if (_selectedTrainingProgramId.has_value() && _selectedTrainingProgramIsRunning)
@@ -118,7 +118,7 @@ namespace Core::Training::Domain
         return resultEvent;
     }
 
-    std::shared_ptr<Kernel::DomainEvent> TrainingProgramInterface::finishRunningTrainingProgram()
+    std::shared_ptr<Kernel::DomainEvent> TrainingProgramFlow::finishRunningTrainingProgram()
     {
         std::shared_ptr<Kernel::DomainEvent> resultEvent = nullptr;
         if (_selectedTrainingProgramId.has_value() && _selectedTrainingProgramIsRunning && !_runningTrainingProgramIsPaused)
@@ -137,7 +137,7 @@ namespace Core::Training::Domain
         return resultEvent;
     }
 
-    std::shared_ptr<Kernel::DomainEvent> TrainingProgramInterface::abortRunningTrainingProgram()
+    std::shared_ptr<Kernel::DomainEvent> TrainingProgramFlow::abortRunningTrainingProgram()
     {
         std::shared_ptr<Kernel::DomainEvent> resultEvent = nullptr;
         if (_selectedTrainingProgramId.has_value() && _selectedTrainingProgramIsRunning)
@@ -148,7 +148,7 @@ namespace Core::Training::Domain
         return resultEvent;
     }
 
-    std::shared_ptr<Core::Kernel::DomainEvent> TrainingProgramInterface::abortCurrentTrainingProgram()
+    std::shared_ptr<Core::Kernel::DomainEvent> TrainingProgramFlow::abortCurrentTrainingProgram()
     {
         auto abortEvent = std::make_shared<Events::TrainingProgramAbortedEvent>();
         abortEvent->TrainingProgramId = _selectedTrainingProgramId.value();

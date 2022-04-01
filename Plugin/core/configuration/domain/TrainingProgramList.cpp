@@ -89,6 +89,17 @@ namespace Core::Configuration::Domain
     }
     std::shared_ptr<TrainingProgram> TrainingProgramList::getTrainingProgram(uint64_t trainingProgramId) const
     {
+        if (_trainingPrograms.count(trainingProgramId) == 0)
+        {
+            throw Kernel::InvalidValueException(
+                "Configuration",
+                "Aggregate",
+                "TrainingProgramList",
+                "trainingProgramId",
+                "The given training program is not known.",
+                std::to_string(trainingProgramId)
+            );
+        }
         return _trainingPrograms.at(trainingProgramId);
     }
     std::vector<TrainingProgramListEntry> TrainingProgramList::getListEntries() const

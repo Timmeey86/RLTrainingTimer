@@ -1,30 +1,30 @@
 #include <gmock/gmock.h>
 
-#include <Plugin/core/training/domain/TrainingProgramInterface.h>
-#include <Plugin/core/training/events/TrainingProgramInterfaceEvents.h>
+#include <Plugin/core/training/domain/TrainingProgramFlow.h>
+#include <Plugin/core/training/events/TrainingProgramFlowEvents.h>
 
 namespace Core::Training::Test
 {
-	class TrainingProgramInterfaceTestFixture : public testing::Test
+	class TrainingProgramFlowTestFixture : public testing::Test
 	{
 	public:
 		void SetUp() override
 		{
-			sut = std::make_unique<Domain::TrainingProgramInterface>();
+			sut = std::make_unique<Domain::TrainingProgramFlow>();
 		}
 	protected:
 		static const uint64_t DefaultId = 0ULL;
 		static const uint16_t DefaultSteps = 5U;
 
-		std::unique_ptr<Domain::TrainingProgramInterface> sut;
+		std::unique_ptr<Domain::TrainingProgramFlow> sut;
 	};
 
-	TEST_F(TrainingProgramInterfaceTestFixture, verify_fixture)
+	TEST_F(TrainingProgramFlowTestFixture, verify_fixture)
 	{
 		ASSERT_NE(sut, nullptr);
 	}
 
-	TEST_F(TrainingProgramInterfaceTestFixture, selectTrainingProgram_when_calledTheFirstTime_will_supplyValidIdAndInvalidPreviousId)
+	TEST_F(TrainingProgramFlowTestFixture, selectTrainingProgram_when_calledTheFirstTime_will_supplyValidIdAndInvalidPreviousId)
 	{
 		auto genericEvents = sut->selectTrainingProgram(DefaultId, DefaultSteps);
 
@@ -43,7 +43,7 @@ namespace Core::Training::Test
 		EXPECT_FALSE(sut->currentTrainingStepNumber().has_value());
 	}
 
-	TEST_F(TrainingProgramInterfaceTestFixture, selectTrainingProgram_when_calledTheSecondTime_will_supplyValidIdAndPreviousId)
+	TEST_F(TrainingProgramFlowTestFixture, selectTrainingProgram_when_calledTheSecondTime_will_supplyValidIdAndPreviousId)
 	{
 		sut->selectTrainingProgram(DefaultId, DefaultSteps);
 		auto genericEvents = sut->selectTrainingProgram(DefaultId + 1ULL, DefaultSteps);
@@ -64,7 +64,7 @@ namespace Core::Training::Test
 		EXPECT_FALSE(sut->currentTrainingStepNumber().has_value());
 	}
 
-	TEST_F(TrainingProgramInterfaceTestFixture, selectTrainingProgram_when_calledWhileProgramIsRunning_will_stopPreviousProgram)
+	TEST_F(TrainingProgramFlowTestFixture, selectTrainingProgram_when_calledWhileProgramIsRunning_will_stopPreviousProgram)
 	{
 		sut->selectTrainingProgram(DefaultId, DefaultSteps);
 		sut->startSelectedTrainingProgram();
@@ -90,7 +90,7 @@ namespace Core::Training::Test
 		EXPECT_FALSE(sut->currentTrainingStepNumber().has_value());
 	}
 
-	TEST_F(TrainingProgramInterfaceTestFixture, unselectTrainingProgram_when_calledWithNoSelectedProgram_will_returnEmptyList)
+	TEST_F(TrainingProgramFlowTestFixture, unselectTrainingProgram_when_calledWithNoSelectedProgram_will_returnEmptyList)
 	{
 		auto genericEvents = sut->unselectTrainingProgram();
 
@@ -102,7 +102,7 @@ namespace Core::Training::Test
 		EXPECT_FALSE(sut->currentTrainingStepNumber().has_value());
 	}
 
-	TEST_F(TrainingProgramInterfaceTestFixture, unselectTrainingProgram_when_calledWithSelectedProgram_will_returnResetEvent)
+	TEST_F(TrainingProgramFlowTestFixture, unselectTrainingProgram_when_calledWithSelectedProgram_will_returnResetEvent)
 	{
 		sut->selectTrainingProgram(DefaultId, DefaultSteps);
 
@@ -121,7 +121,7 @@ namespace Core::Training::Test
 		EXPECT_FALSE(sut->runningTrainingProgramIsPaused());
 		EXPECT_FALSE(sut->currentTrainingStepNumber().has_value());
 	}
-	TEST_F(TrainingProgramInterfaceTestFixture, unselectTrainingProgram_when_programIsRunning_will_returnAbortedAndUnselectedEvents)
+	TEST_F(TrainingProgramFlowTestFixture, unselectTrainingProgram_when_programIsRunning_will_returnAbortedAndUnselectedEvents)
 	{
 		sut->selectTrainingProgram(DefaultId, DefaultSteps);
 		sut->startSelectedTrainingProgram();
@@ -145,7 +145,7 @@ namespace Core::Training::Test
 		EXPECT_FALSE(sut->currentTrainingStepNumber().has_value());
 	}
 
-	TEST_F(TrainingProgramInterfaceTestFixture, startSelectedTrainingProgram_when_noProgramIsSelected_will_returnNullptr)
+	TEST_F(TrainingProgramFlowTestFixture, startSelectedTrainingProgram_when_noProgramIsSelected_will_returnNullptr)
 	{
 		auto genericEvent = sut->startSelectedTrainingProgram();
 
@@ -155,7 +155,7 @@ namespace Core::Training::Test
 		EXPECT_FALSE(sut->currentTrainingStepNumber().has_value());
 	}
 
-	TEST_F(TrainingProgramInterfaceTestFixture, startSelectedTrainingProgram_when_programIsSelected_will_returnValidEvent)
+	TEST_F(TrainingProgramFlowTestFixture, startSelectedTrainingProgram_when_programIsSelected_will_returnValidEvent)
 	{
 		sut->selectTrainingProgram(DefaultId, DefaultSteps);
 		auto genericEvent = sut->startSelectedTrainingProgram();
@@ -170,7 +170,7 @@ namespace Core::Training::Test
 		EXPECT_FALSE(sut->currentTrainingStepNumber().has_value());
 	}
 
-	TEST_F(TrainingProgramInterfaceTestFixture, pauseOrResumeTrainingProgram_when_noProgramIsSelected_will_returnNullptr)
+	TEST_F(TrainingProgramFlowTestFixture, pauseOrResumeTrainingProgram_when_noProgramIsSelected_will_returnNullptr)
 	{
 		auto genericEvent = sut->pauseOrResumeTrainingProgram();
 		
@@ -179,7 +179,7 @@ namespace Core::Training::Test
 		EXPECT_FALSE(sut->runningTrainingProgramIsPaused());
 		EXPECT_FALSE(sut->currentTrainingStepNumber().has_value());
 	}
-	TEST_F(TrainingProgramInterfaceTestFixture, pauseOrResumeTrainingProgram_when_programIsNotRunning_will_returnNullptr)
+	TEST_F(TrainingProgramFlowTestFixture, pauseOrResumeTrainingProgram_when_programIsNotRunning_will_returnNullptr)
 	{
 		sut->selectTrainingProgram(DefaultId, DefaultSteps);
 		auto genericEvent = sut->pauseOrResumeTrainingProgram();
@@ -190,7 +190,7 @@ namespace Core::Training::Test
 		EXPECT_FALSE(sut->currentTrainingStepNumber().has_value());
 		
 	}
-	TEST_F(TrainingProgramInterfaceTestFixture, pauseOrResumteTrainingProgram_when_programIsRunning_will_returnValidEvent)
+	TEST_F(TrainingProgramFlowTestFixture, pauseOrResumteTrainingProgram_when_programIsRunning_will_returnValidEvent)
 	{
 		sut->selectTrainingProgram(DefaultId, DefaultSteps);
 		sut->startSelectedTrainingProgram();
@@ -204,7 +204,7 @@ namespace Core::Training::Test
 		EXPECT_TRUE(sut->runningTrainingProgramIsPaused());
 		EXPECT_FALSE(sut->currentTrainingStepNumber().has_value());
 	}
-	TEST_F(TrainingProgramInterfaceTestFixture, pauseOrResumeTrainingProgram_when_programIsPaused_will_returnValidEvent)
+	TEST_F(TrainingProgramFlowTestFixture, pauseOrResumeTrainingProgram_when_programIsPaused_will_returnValidEvent)
 	{
 		sut->selectTrainingProgram(DefaultId, DefaultSteps);
 		sut->startSelectedTrainingProgram();
@@ -219,14 +219,14 @@ namespace Core::Training::Test
 		EXPECT_FALSE(sut->runningTrainingProgramIsPaused());
 		EXPECT_FALSE(sut->currentTrainingStepNumber().has_value());
 	}
-	TEST_F(TrainingProgramInterfaceTestFixture, finishRunningTrainingProgram_when_noProgramIsSelected_will_returnNullptr)
+	TEST_F(TrainingProgramFlowTestFixture, finishRunningTrainingProgram_when_noProgramIsSelected_will_returnNullptr)
 	{
 		auto genericEvent = sut->finishRunningTrainingProgram();
 
 		EXPECT_EQ(genericEvent, nullptr);
 		EXPECT_FALSE(sut->currentTrainingStepNumber().has_value());
 	}
-	TEST_F(TrainingProgramInterfaceTestFixture, finishRunningTrainingProgram_when_programIsNotRunning_will_returnNullptr)
+	TEST_F(TrainingProgramFlowTestFixture, finishRunningTrainingProgram_when_programIsNotRunning_will_returnNullptr)
 	{
 		sut->selectTrainingProgram(DefaultId, DefaultSteps);
 		auto genericEvent = sut->finishRunningTrainingProgram();
@@ -235,7 +235,7 @@ namespace Core::Training::Test
 		EXPECT_FALSE(sut->selectedTrainingProgramIsRunning()); // not because it stopped but because it wasn't running in the first place
 		EXPECT_FALSE(sut->currentTrainingStepNumber().has_value());
 	}
-	TEST_F(TrainingProgramInterfaceTestFixture, finishRunningTrainingProgram_when_programIsRunning_will_returnValidEvent)
+	TEST_F(TrainingProgramFlowTestFixture, finishRunningTrainingProgram_when_programIsRunning_will_returnValidEvent)
 	{
 		sut->selectTrainingProgram(DefaultId, DefaultSteps);
 		sut->startSelectedTrainingProgram();
@@ -250,7 +250,7 @@ namespace Core::Training::Test
 	}
 	// finishRunningTrainingProgram shall only be called when the program reaches the end of its lifetime, which induces that it cannot be paused.
 	// If the user interface contains a "Stop" button which allows stopping the program at any given point in time, abortRunningTrainingProgram() shall be called instead.
-	TEST_F(TrainingProgramInterfaceTestFixture, finishRunningTrainingProgram_when_programIsPaused_will_returnNullptr)
+	TEST_F(TrainingProgramFlowTestFixture, finishRunningTrainingProgram_when_programIsPaused_will_returnNullptr)
 	{
 		sut->selectTrainingProgram(DefaultId, DefaultSteps);
 		sut->startSelectedTrainingProgram();
@@ -263,14 +263,14 @@ namespace Core::Training::Test
 		EXPECT_TRUE(sut->runningTrainingProgramIsPaused()); // The training program is still paused
 		EXPECT_FALSE(sut->currentTrainingStepNumber().has_value());
 	}
-	TEST_F(TrainingProgramInterfaceTestFixture, abortRunningTrainingProgram_when_noProgramIsSelected_will_returnNullptr)
+	TEST_F(TrainingProgramFlowTestFixture, abortRunningTrainingProgram_when_noProgramIsSelected_will_returnNullptr)
 	{
 		auto genericEvent = sut->abortRunningTrainingProgram();
 
 		EXPECT_EQ(genericEvent, nullptr);
 		EXPECT_FALSE(sut->currentTrainingStepNumber().has_value());
 	}
-	TEST_F(TrainingProgramInterfaceTestFixture, abortRunningTrainingProgram_when_programIsNotRunning_will_returnNullptr)
+	TEST_F(TrainingProgramFlowTestFixture, abortRunningTrainingProgram_when_programIsNotRunning_will_returnNullptr)
 	{
 		sut->selectTrainingProgram(DefaultId, DefaultSteps);
 
@@ -279,7 +279,7 @@ namespace Core::Training::Test
 		EXPECT_EQ(genericEvent, nullptr);
 		EXPECT_FALSE(sut->currentTrainingStepNumber().has_value());
 	}
-	TEST_F(TrainingProgramInterfaceTestFixture, abortRunningTrainingProgram_when_programIsRunning_will_abort)
+	TEST_F(TrainingProgramFlowTestFixture, abortRunningTrainingProgram_when_programIsRunning_will_abort)
 	{
 		sut->selectTrainingProgram(DefaultId, DefaultSteps);
 		sut->startSelectedTrainingProgram();
@@ -294,7 +294,7 @@ namespace Core::Training::Test
 		EXPECT_FALSE(sut->runningTrainingProgramIsPaused());
 		EXPECT_FALSE(sut->currentTrainingStepNumber().has_value());
 	}
-	TEST_F(TrainingProgramInterfaceTestFixture, abortRunningTrainingProgram_when_programIsPaused_will_unpauseAndAbort)
+	TEST_F(TrainingProgramFlowTestFixture, abortRunningTrainingProgram_when_programIsPaused_will_unpauseAndAbort)
 	{
 		sut->selectTrainingProgram(DefaultId, DefaultSteps);
 		sut->startSelectedTrainingProgram();
