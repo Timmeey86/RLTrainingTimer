@@ -8,45 +8,25 @@ using namespace std::chrono;
 
 namespace Adapter
 {
+	RocketLeagueEventAdapter::RocketLeagueEventAdapter(std::shared_ptr<Core::Training::Application::TrainingApplicationService> appService)
+		: _appService{ appService }
+	{
+	}
 	void RocketLeagueEventAdapter::hookToEvents(const std::shared_ptr<GameWrapper>& gameWrapper)
 	{
-		static bool timerIsRunning = false;
-		static std::chrono::steady_clock::time_point referenceTime;
-		static std::chrono::steady_clock::time_point pauseStartTime;
-
-		gameWrapper->HookEvent("Function Engine.WorldInfo.EventPauseChanged", [gameWrapper](const std::string&) {
+		gameWrapper->HookEventPost("Function Engine.WorldInfo.EventPauseChanged", [gameWrapper, this](const std::string&) {
 			if (gameWrapper->IsPaused())
 			{
-				// Store the start of the pause time
-				pauseStartTime = steady_clock::now();
+				_appService->setGameState(Core::Training::Application::GameState::Paused);
 			}
 			else
 			{
-				// Create a new fake start time so we can act like the pause never existed, but the player started later instead
-				auto pauseDifference = (pauseStartTime - referenceTime);
-
-				LOG("Shifting start point by {} ms", duration_cast<milliseconds>(pauseDifference).count());
-				referenceTime = steady_clock::now() - pauseDifference;
+				_appService->setGameState(Core::Training::Application::GameState::NotPaused);
 			}
 		});
-		_globalCvarManager->registerNotifier("tmp_start", [this](std::vector<std::string> args) {
-			referenceTime = steady_clock::now();
-			timerIsRunning = true;
-		}, "", PERMISSION_ALL);
-		_globalCvarManager->registerNotifier("tmp_stop", [this](std::vector<std::string> args) {
-			timerIsRunning = false;
-			LOG("Total duration: {} ms", duration_cast<milliseconds>(steady_clock::now() - referenceTime).count());
-		}, "", PERMISSION_ALL);
-		
 
-
-
-
-		gameWrapper->HookEvent("Function TAGame.Replay_TA.Tick", [](const std::string&) {
-			if (timerIsRunning)
-			{
-				//LOG("Tick");
-			}
+		gameWrapper->HookEvent("Function TAGame.Replay_TA.Tick", [this](const std::string&) {
+			_appService->processTimerTick();
 		});
 	}
 }
