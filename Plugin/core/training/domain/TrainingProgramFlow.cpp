@@ -92,7 +92,7 @@ namespace Core::Training::Domain
         return resultEvent;
     }
 
-    std::shared_ptr<Kernel::DomainEvent> TrainingProgramFlow::pauseOrResumeTrainingProgram()
+    std::shared_ptr<Kernel::DomainEvent> TrainingProgramFlow::pauseOrResumeTrainingProgram(bool gameIsPaused, bool trainingProgramIsPaused)
     {
         std::shared_ptr<Kernel::DomainEvent> resultEvent = nullptr;
         if (_selectedTrainingProgramId.has_value() && _selectedTrainingProgramIsRunning)
@@ -101,6 +101,8 @@ namespace Core::Training::Domain
             {
                 auto eventData = std::make_shared<Events::TrainingProgramResumedEvent>();
                 eventData->TrainingProgramId = _selectedTrainingProgramId.value();
+                eventData->GameIsPaused = gameIsPaused;
+                eventData->TrainingProgramIsPaused = trainingProgramIsPaused;
 
                 resultEvent = eventData;
             }
@@ -108,6 +110,8 @@ namespace Core::Training::Domain
             {
                 auto eventData = std::make_shared<Events::TrainingProgramPausedEvent>();
                 eventData->TrainingProgramId = _selectedTrainingProgramId.value();
+                eventData->GameIsPaused = gameIsPaused;
+                eventData->TrainingProgramIsPaused = trainingProgramIsPaused;
 
                 resultEvent = eventData;
             }

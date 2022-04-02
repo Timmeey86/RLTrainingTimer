@@ -125,7 +125,7 @@ namespace Core::Training::Test
 	{
 		sut->selectTrainingProgram(DefaultId, DefaultSteps);
 		sut->startSelectedTrainingProgram();
-		sut->pauseOrResumeTrainingProgram();
+		sut->pauseOrResumeTrainingProgram(false, true);
 
 		auto genericEvents = sut->unselectTrainingProgram();
 
@@ -172,7 +172,7 @@ namespace Core::Training::Test
 
 	TEST_F(TrainingProgramFlowTestFixture, pauseOrResumeTrainingProgram_when_noProgramIsSelected_will_returnNullptr)
 	{
-		auto genericEvent = sut->pauseOrResumeTrainingProgram();
+		auto genericEvent = sut->pauseOrResumeTrainingProgram(false, true);
 		
 		EXPECT_EQ(genericEvent, nullptr);
 
@@ -182,7 +182,7 @@ namespace Core::Training::Test
 	TEST_F(TrainingProgramFlowTestFixture, pauseOrResumeTrainingProgram_when_programIsNotRunning_will_returnNullptr)
 	{
 		sut->selectTrainingProgram(DefaultId, DefaultSteps);
-		auto genericEvent = sut->pauseOrResumeTrainingProgram();
+		auto genericEvent = sut->pauseOrResumeTrainingProgram(false, true);
 
 		EXPECT_EQ(genericEvent, nullptr);
 
@@ -194,7 +194,7 @@ namespace Core::Training::Test
 	{
 		sut->selectTrainingProgram(DefaultId, DefaultSteps);
 		sut->startSelectedTrainingProgram();
-		auto genericEvent = sut->pauseOrResumeTrainingProgram();
+		auto genericEvent = sut->pauseOrResumeTrainingProgram(false, true);
 		auto pauseEvent = dynamic_cast<Events::TrainingProgramPausedEvent*>(genericEvent.get());
 
 		ASSERT_NE(pauseEvent, nullptr);
@@ -208,8 +208,8 @@ namespace Core::Training::Test
 	{
 		sut->selectTrainingProgram(DefaultId, DefaultSteps);
 		sut->startSelectedTrainingProgram();
-		sut->pauseOrResumeTrainingProgram();
-		auto genericEvent = sut->pauseOrResumeTrainingProgram();
+		sut->pauseOrResumeTrainingProgram(false, true);
+		auto genericEvent = sut->pauseOrResumeTrainingProgram(false, false);
 		auto resumeEvent = dynamic_cast<Events::TrainingProgramResumedEvent*>(genericEvent.get());
 
 		ASSERT_NE(resumeEvent, nullptr);
@@ -254,7 +254,7 @@ namespace Core::Training::Test
 	{
 		sut->selectTrainingProgram(DefaultId, DefaultSteps);
 		sut->startSelectedTrainingProgram();
-		sut->pauseOrResumeTrainingProgram();
+		sut->pauseOrResumeTrainingProgram(false, true);
 		auto genericEvent = sut->finishRunningTrainingProgram();
 
 		ASSERT_EQ(genericEvent, nullptr);
@@ -298,7 +298,7 @@ namespace Core::Training::Test
 	{
 		sut->selectTrainingProgram(DefaultId, DefaultSteps);
 		sut->startSelectedTrainingProgram();
-		sut->pauseOrResumeTrainingProgram();
+		sut->pauseOrResumeTrainingProgram(false, true);
 
 		auto genericEvent = sut->abortRunningTrainingProgram();
 		auto abortEvent = dynamic_cast<Events::TrainingProgramAbortedEvent*>(genericEvent.get());

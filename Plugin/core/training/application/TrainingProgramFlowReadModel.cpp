@@ -20,6 +20,7 @@ namespace Core::Training::Application
 		PausingIsPossible = false;
 		ResumingIsPossible = false;
 		StoppingIsPossible = false;
+		SwitchingProgramIsPossible = true;
 		CurrentTrainingStepName.clear();
 		CurrentTrainingStepDuration = 0;
 		CurrentTrainingStepNumber = 0;
@@ -50,16 +51,17 @@ namespace Core::Training::Application
 		StartingIsPossible = false;
 		PausingIsPossible = true;
 		StoppingIsPossible = true;
+		SwitchingProgramIsPossible = false;
 	}
-	void TrainingProgramFlowReadModel::on(const std::shared_ptr<Events::TrainingProgramPausedEvent>&)
+	void TrainingProgramFlowReadModel::on(const std::shared_ptr<Events::TrainingProgramPausedEvent>& pausedEvent)
 	{
-		PausingIsPossible = false;
-		ResumingIsPossible = true;
+		PausingIsPossible = !pausedEvent->TrainingProgramIsPaused;
+		ResumingIsPossible = pausedEvent->TrainingProgramIsPaused;
 	}
-	void TrainingProgramFlowReadModel::on(const std::shared_ptr<Events::TrainingProgramResumedEvent>&)
+	void TrainingProgramFlowReadModel::on(const std::shared_ptr<Events::TrainingProgramResumedEvent>& resumeEvent)
 	{
-		ResumingIsPossible = false;
 		PausingIsPossible = true;
+		ResumingIsPossible = false;
 	}
 	void TrainingProgramFlowReadModel::on(const std::shared_ptr<Events::TrainingProgramFinishedEvent>&)
 	{
@@ -67,6 +69,7 @@ namespace Core::Training::Application
 		PausingIsPossible = false;
 		ResumingIsPossible = false;
 		StoppingIsPossible = false;
+		SwitchingProgramIsPossible = true;
 	}
 	void TrainingProgramFlowReadModel::on(const std::shared_ptr<Events::TrainingProgramAbortedEvent>&)
 	{
@@ -74,6 +77,7 @@ namespace Core::Training::Application
 		PausingIsPossible = false;
 		ResumingIsPossible = false;
 		StoppingIsPossible = false;
+		SwitchingProgramIsPossible = true;
 	}
 	void TrainingProgramFlowReadModel::on(const std::shared_ptr<Events::TrainingProgramStepActivatedEvent>& stepEvent)
 	{

@@ -48,7 +48,7 @@ namespace Core::Training::Domain
 		std::shared_ptr<Kernel::DomainEvent> activateNextTrainingProgramStep();
 
 		/** Pauses or resumes the running training program. */
-		std::shared_ptr<Kernel::DomainEvent> pauseOrResumeTrainingProgram();
+		std::shared_ptr<Kernel::DomainEvent> pauseOrResumeTrainingProgram(bool gameIsPaused, bool trainingProgramIsPaused);
 
 		/** Finishes the selected training program (usually only at the end of the training time). */
 		std::shared_ptr<Kernel::DomainEvent> finishRunningTrainingProgram();

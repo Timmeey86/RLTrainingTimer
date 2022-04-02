@@ -152,7 +152,9 @@ namespace Core::Training::Application
 	{
 		auto isPaused = _trainingProgramFlow->runningTrainingProgramIsPaused();
 
-		auto shouldBePaused = _gameState == GameState::Paused || _trainingProgramState == TrainingProgramState::Paused;
+		auto gameIsPaused = _gameState == GameState::Paused;
+		auto trainingProgramIsPaused = _trainingProgramState == TrainingProgramState::Paused;
+		auto shouldBePaused = gameIsPaused || trainingProgramIsPaused;
 
 		bool stateHasBeenAdapted = false;
 		if (!isPaused && shouldBePaused)
@@ -169,11 +171,32 @@ namespace Core::Training::Application
 			stateHasBeenAdapted = true;
 		}
 
+		std::shared_ptr<Kernel::DomainEvent> pauseOrResumeEvent;
 		if (stateHasBeenAdapted)
 		{
-			auto pauseOrResumeEvent = _trainingProgramFlow->pauseOrResumeTrainingProgram();
-			updateReadModel({ pauseOrResumeEvent });
+			pauseOrResumeEvent = _trainingProgramFlow->pauseOrResumeTrainingProgram(gameIsPaused, trainingProgramIsPaused);
 		}
+		else
+		{
+			// Send an event anyway so the UI can update if required, but don't change the state of the training program flow
+			if (shouldBePaused)
+			{
+				auto fakePauseEvent = std::make_shared<Events::TrainingProgramPausedEvent>();
+				fakePauseEvent->TrainingProgramId = _currentTrainingProgram->id();
+				fakePauseEvent->GameIsPaused = gameIsPaused;
+				fakePauseEvent->TrainingProgramIsPaused = trainingProgramIsPaused;
+				pauseOrResumeEvent = fakePauseEvent;
+			}
+			else
+			{
+				auto fakeResumeEvent = std::make_shared<Events::TrainingProgramResumedEvent>();
+				fakeResumeEvent->TrainingProgramId = _currentTrainingProgram->id();
+				fakeResumeEvent->GameIsPaused = gameIsPaused;
+				fakeResumeEvent->TrainingProgramIsPaused = trainingProgramIsPaused;
+				pauseOrResumeEvent = fakeResumeEvent;
+			}
+		}
+		updateReadModel({ pauseOrResumeEvent });
 	}
 	void TrainingApplicationService::updateReadModel(std::vector<std::shared_ptr<Kernel::DomainEvent>> genericEvents)
 	{

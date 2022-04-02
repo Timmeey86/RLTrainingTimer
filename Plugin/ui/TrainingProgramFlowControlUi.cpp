@@ -89,13 +89,21 @@ namespace Ui
 		}
 		if (ImGui::BeginCombo("Training Program", selectedTrainingProgramName))
 		{
+			ImGui::Disable disable_selection_if_necessary(!_currentReadModel.SwitchingProgramIsPossible);
 			for (int index = 0; index < _currentReadModel.TrainingProgramEntries.size(); index++)
 			{
 				const auto isSelected = _currentReadModel.SelectedTrainingProgramIndex == index;
 				auto trainingProgramEntry = _currentReadModel.TrainingProgramEntries[index];
 				if (ImGui::Selectable(trainingProgramEntry.TrainingProgramName.c_str(), isSelected))
 				{
-					_appService->selectTrainingProgram({ trainingProgramEntry.TrainingProgramId });
+					try
+					{
+						_appService->selectTrainingProgram({ trainingProgramEntry.TrainingProgramId });
+					}
+					catch (const std::runtime_error& ex)
+					{
+						_exceptionMessages.push_back(ex.what());
+					}
 				}
 			}
 			ImGui::EndCombo();
@@ -104,7 +112,15 @@ namespace Ui
 			ImGui::Disable disable_start_if_necessary(!_currentReadModel.StartingIsPossible);
 			if (ImGui::Button("Start") && _currentReadModel.StartingIsPossible)
 			{
-				_appService->startTrainingProgram({});
+				_exceptionMessages.clear();
+				try
+				{
+					_appService->startTrainingProgram({});
+				}
+				catch (const std::runtime_error& ex)
+				{
+					_exceptionMessages.push_back(ex.what());
+				}
 			}
 		}
 		ImGui::SameLine();
@@ -112,7 +128,14 @@ namespace Ui
 			ImGui::Disable disable_pause_if_necessary(!_currentReadModel.PausingIsPossible);
 			if (ImGui::Button("Pause") && _currentReadModel.PausingIsPossible)
 			{
-				_appService->pauseTrainingProgram({});
+				try
+				{
+					_appService->pauseTrainingProgram({});
+				}
+				catch (const std::runtime_error& ex)
+				{
+					_exceptionMessages.push_back(ex.what());
+				}
 			}
 		}
 		ImGui::SameLine();
@@ -120,7 +143,14 @@ namespace Ui
 			ImGui::Disable disable_resume_if_necessary(!_currentReadModel.ResumingIsPossible);
 			if (ImGui::Button("Resume") && _currentReadModel.ResumingIsPossible)
 			{
-				_appService->resumeTrainingProgram({});
+				try
+				{
+					_appService->resumeTrainingProgram({});
+				}
+				catch (const std::runtime_error& ex)
+				{
+					_exceptionMessages.push_back(ex.what());
+				}
 			}
 		}
 		ImGui::SameLine();
@@ -128,7 +158,14 @@ namespace Ui
 			ImGui::Disable disable_stop_if_necessary(!_currentReadModel.StoppingIsPossible);
 			if (ImGui::Button("Stop") && _currentReadModel.StoppingIsPossible)
 			{
-				_appService->abortTrainingProgram({});
+				try
+				{
+					_appService->abortTrainingProgram({});
+				}
+				catch (const std::runtime_error& ex)
+				{
+					_exceptionMessages.push_back(ex.what());
+				}
 			}
 		}
 
@@ -156,6 +193,13 @@ namespace Ui
 		else
 		{
 			ImGui::TextUnformatted("No training program selected");
+		}
+
+		ImGui::Separator();
+
+		for (const auto& exceptionMessage : _exceptionMessages)
+		{
+			ImGui::TextColored(ImVec4{ 1.0f, .0f, .0f, 1.0f }, exceptionMessage.c_str());
 		}
 
 	}

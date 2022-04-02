@@ -40,6 +40,8 @@ namespace Core::Training::Events
 	{
 	public:
 		uint64_t TrainingProgramId;
+		bool GameIsPaused;
+		bool TrainingProgramIsPaused;
 	};
 
 	/** Signals the end of a pause of a training event. */
@@ -47,6 +49,8 @@ namespace Core::Training::Events
 	{
 	public:
 		uint64_t TrainingProgramId;
+		bool GameIsPaused;
+		bool TrainingProgramIsPaused;
 	};
 
 	/** Signals an unscheduled end of a training program, e.g. because the user stopped it in the middle, or closed the user interface. */

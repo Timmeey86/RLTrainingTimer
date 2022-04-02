@@ -53,6 +53,7 @@ namespace Core::Training::Application
 		bool PausingIsPossible = false;
 		bool ResumingIsPossible = false;
 		bool StoppingIsPossible = false;
+		bool SwitchingProgramIsPossible = false;
 		std::string CurrentTrainingStepName = {};
 		uint32_t CurrentTrainingStepDuration = 0;
 		uint16_t CurrentTrainingStepNumber = 0;

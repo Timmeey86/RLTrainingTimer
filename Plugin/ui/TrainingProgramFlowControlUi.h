@@ -36,5 +36,7 @@ namespace Ui
 		Core::Training::Application::TrainingProgramFlowReadModel _currentReadModel;
 		bool _shouldBlockInput = false;
 		bool _isWindowOpen = false;
+
+		std::vector<std::string> _exceptionMessages;
 	};
 }
