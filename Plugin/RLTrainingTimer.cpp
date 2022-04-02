@@ -17,23 +17,18 @@ void RLTrainingTimer::onLoad()
 	DUMMY_trainingProgramList->addTrainingProgram(1);
 	DUMMY_trainingProgramList->addTrainingProgram(2);
 
-	DUMMY_trainingProgramList->renameTrainingProgram(0, "My absolutely fancy training program");
+	DUMMY_trainingProgramList->renameTrainingProgram(0, "Coaching Training Schedule");
 	DUMMY_trainingProgramList->renameTrainingProgram(1, "Second program");
 	DUMMY_trainingProgramList->renameTrainingProgram(2, "Third program");
 
 	auto DUMMY_firstProgram = DUMMY_trainingProgramList->getTrainingProgram(0);
-	DUMMY_firstProgram->addEntry({
-		"Complicated trick with a very long name",
-		60000
-		});
-	DUMMY_firstProgram->addEntry({
-		"Half Flips",
-		180000
-		});
-	DUMMY_firstProgram->addEntry({
-		"Catches",
-		1560000
-		});
+	DUMMY_firstProgram->addEntry({ "Forward Wave Dashes (No Boost)" , 2 * 60 * 1000 });
+	DUMMY_firstProgram->addEntry({ "Forward Wave Dashes (With Boost)" , 3 * 60 * 1000 });
+	DUMMY_firstProgram->addEntry({ "Forward Wave Dashes (Ball Cam On)" , 3 * 60 * 1000 });
+	DUMMY_firstProgram->addEntry({ "Any Direction Wave Dashes" , 2 * 60 * 1000 });
+	DUMMY_firstProgram->addEntry({ "Half Flips (ball cam off)" , 5 * 60 * 1000 });
+	DUMMY_firstProgram->addEntry({ "Saves from the Wall (use BM)" , 5 * 60 * 1000 });
+
 
 	auto DUMMY_secondProgram = DUMMY_trainingProgramList->getTrainingProgram(1);
 	DUMMY_secondProgram->addEntry({ "Dummy", 180000 });
