@@ -1,6 +1,7 @@
 #pragma once
 
 #include <DLLImportExport.h>
+#include "TrainingProgramFlowReadModel.h"
 #include "../commands/TrainingCommands.h"
 #include "../domain/TrainingProgramFlow.h"
 #include <core/configuration/domain/TrainingProgram.h>
@@ -62,10 +63,16 @@ namespace Core::Training::Application
 		/** Processes a timer tick synchronously. */
 		void processTimerTick();
 
+		/** Retrieves a copy of the current read model for the training program flow. This could be an own service class, but it would only return this object and do nothing else. */
+		TrainingProgramFlowReadModel getCurrentReadModel() const;
+
 	private:
 
 		/** Updates the "paused" state dependent on if the user has manually paused the program and if the ingame pause menu is open. */
 		void handlePauseChange();
+
+		/** Updates the read model with a list of events  */
+		void updateReadModel(std::vector<std::shared_ptr<Kernel::DomainEvent>> genericEvents);
 
 		TrainingProgramState _trainingProgramState = TrainingProgramState::Uninitialized;
 		GameState _gameState = GameState::NotPaused;
@@ -73,7 +80,8 @@ namespace Core::Training::Application
 		std::chrono::steady_clock::time_point _pauseStartTime; // The point in time where a pause was started
 		
 		std::shared_ptr<Configuration::Domain::TrainingProgramList> _trainingProgramList = nullptr; // Provides access to the known training programs.
-		std::shared_ptr<Domain::TrainingProgramFlow> _trainingProgramFlow = nullptr; 
+		std::shared_ptr<Domain::TrainingProgramFlow> _trainingProgramFlow = nullptr;
+		TrainingProgramFlowReadModel _readModel;
 
 		std::shared_ptr<Configuration::Domain::TrainingProgram> _currentTrainingProgram = nullptr;
 		std::vector<std::chrono::milliseconds> _trainingProgramEntryEndTimes;

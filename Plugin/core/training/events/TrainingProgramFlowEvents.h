@@ -62,5 +62,7 @@ namespace Core::Training::Events
 	public:
 		uint64_t TrainingProgramId;
 		uint16_t TrainingProgramStepNumber;
+		std::string TrainingProgramStepName;
+		uint32_t TrainingProgramStepDuration;
 	};
 }

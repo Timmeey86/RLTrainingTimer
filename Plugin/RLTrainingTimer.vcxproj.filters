@@ -72,6 +72,7 @@
     <ClCompile Include="adapter\RocketLeagueEventAdapter.cpp" />
     <ClCompile Include="core\training\application\TrainingApplicationService.cpp" />
     <ClCompile Include="core\kernel\InvalidStateException.cpp" />
+    <ClCompile Include="core\training\application\TrainingProgramFlowReadModel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -202,6 +203,7 @@
     <ClInclude Include="core\training\application\TrainingApplicationService.h" />
     <ClInclude Include="core\training\commands\TrainingCommands.h" />
     <ClInclude Include="core\kernel\InvalidStateException.h" />
+    <ClInclude Include="core\training\application\TrainingProgramFlowReadModel.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="RLTrainingTimer.rc" />

@@ -1,6 +1,7 @@
 #include <pch.h>
 
 #include "TrainingApplicationService.h"
+#include "../events/TrainingProgramFlowEvents.h"
 #include <core/kernel/InvalidStateException.h>
 
 namespace Core::Training::Application
@@ -28,14 +29,15 @@ namespace Core::Training::Application
 			_currentTrainingProgram = _trainingProgramList->getTrainingProgram(command.TrainingProgramId.value());
 			events = _trainingProgramFlow->selectTrainingProgram(_currentTrainingProgram->id(), (uint16_t)_currentTrainingProgram->entries().size());
 			_trainingProgramState = TrainingProgramState::WaitingForStart;
+			_readModel.updateTrainingProgramListEntries(_trainingProgramList->getListEntries());
 		}
 		else
 		{
 			_trainingProgramState = TrainingProgramState::Uninitialized;
 			events = _trainingProgramFlow->unselectTrainingProgram();
+			_readModel.updateTrainingProgramListEntries({});
 		}
-
-		// TODO: Forward events to read models
+		updateReadModel(events);
 	}
 	void TrainingApplicationService::startTrainingProgram(const Commands::StartTrainingProgramCommand& command)
 	{
@@ -55,8 +57,18 @@ namespace Core::Training::Application
 		}
 
 		auto selectionEvent = _trainingProgramFlow->startSelectedTrainingProgram();
+		auto firstStepActivationEvent = _trainingProgramFlow->activateNextTrainingProgramStep();
+		// Since training program flow currently does not know about the actual training program except for its ID, we need to add durations here
+		// TODO: It is probably better to just have TrainingProgramFlow know the program and then send event details itself.		
+		if (auto castedActivationEvent = dynamic_cast<Events::TrainingProgramStepActivatedEvent*>(firstStepActivationEvent.get()); 
+			castedActivationEvent != nullptr)
+		{
+			auto trainingProgramStep = _currentTrainingProgram->entries().at(castedActivationEvent->TrainingProgramStepNumber);
+			castedActivationEvent->TrainingProgramStepName = trainingProgramStep.name();
+			castedActivationEvent->TrainingProgramStepDuration = trainingProgramStep.duration();
+		}
 		_trainingProgramState = TrainingProgramState::Running;
-		// TODO: Forward events to read models
+		updateReadModel({ selectionEvent, firstStepActivationEvent });
 
 		// Handle a pause change just in case the ingame pause menu is open while the user starts the training program (not unlikely)
 		handlePauseChange();
@@ -97,10 +109,7 @@ namespace Core::Training::Application
 		{
 			_trainingProgramState = TrainingProgramState::Uninitialized;
 		}
-		if (abortEvent)
-		{
-			// TODO: Forward event to read models
-		}
+		updateReadModel({ abortEvent });
 
 	}
 	void TrainingApplicationService::setGameState(GameState gameState)
@@ -132,7 +141,7 @@ namespace Core::Training::Application
 			{
 				eventToBeForwarded = _trainingProgramFlow->activateNextTrainingProgramStep();
 			}
-			// TODO: Forward event to read models
+			updateReadModel({ eventToBeForwarded });
 		}
 	}
 
@@ -160,7 +169,21 @@ namespace Core::Training::Application
 		if (stateHasBeenAdapted)
 		{
 			auto pauseOrResumeEvent = _trainingProgramFlow->pauseOrResumeTrainingProgram();
-			// TODO: Forward event to read models
+			updateReadModel({ pauseOrResumeEvent });
 		}
+	}
+	void TrainingApplicationService::updateReadModel(std::vector<std::shared_ptr<Kernel::DomainEvent>> genericEvents)
+	{
+		for (const auto& genericEvent : genericEvents)
+		{
+			if (genericEvent == nullptr) { continue; }
+
+			_readModel.dispatchEvent(genericEvent);
+		}
+	}
+
+	TrainingProgramFlowReadModel TrainingApplicationService::getCurrentReadModel() const
+	{
+		return _readModel;
 	}
 }
