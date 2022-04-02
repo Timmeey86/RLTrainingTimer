@@ -48,6 +48,8 @@ namespace Core::Training::Application
 		/** Starts the most recently selected training program. */
 		void startTrainingProgram(const Commands::StartTrainingProgramCommand& command);
 
+		void extendStepActivationEvent(std::shared_ptr<Core::Kernel::DomainEvent>& firstStepActivationEvent);
+
 		/** Pauses a currently running training program. */
 		void pauseTrainingProgram(const Commands::PauseTrainingProgramCommand& command);
 

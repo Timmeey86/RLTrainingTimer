@@ -8,6 +8,7 @@
 #include <adapter/RocketLeagueEventAdapter.h>
 
 #include "ui/TrainingProgramFlowControlUi.h"
+#include "ui/TrainingProgramDisplay.h"
 
 #include <core/training/application/TrainingApplicationService.h>
 

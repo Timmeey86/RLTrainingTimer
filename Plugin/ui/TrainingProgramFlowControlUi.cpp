@@ -6,9 +6,15 @@
 
 namespace Ui
 {
-	void TrainingProgramFlowControlUi::initTrainingProgramFlowControlUi(std::shared_ptr<Core::Training::Application::TrainingApplicationService> appService)
+	void TrainingProgramFlowControlUi::initTrainingProgramFlowControlUi(
+		std::shared_ptr<GameWrapper> gameWrapper,
+		std::shared_ptr<Core::Training::Application::TrainingApplicationService> appService)
 	{
 		_appService = appService;
+		gameWrapper->RegisterDrawable([this, gameWrapper](const CanvasWrapper& canvasWrapper) {
+			_trainingProgramDisplay->updateReadModel(_appService->getCurrentReadModel());
+			_trainingProgramDisplay->renderOneFrame(gameWrapper, canvasWrapper);
+		});
 	}
 	void TrainingProgramFlowControlUi::Render()
 	{
@@ -167,32 +173,6 @@ namespace Ui
 					_exceptionMessages.push_back(ex.what());
 				}
 			}
-		}
-
-
-
-		// For now, we'll display in the same window. We might separate this into window and canvas maybe.
-		ImGui::Separator();
-
-		if (_currentReadModel.SelectedTrainingProgramIndex.has_value())
-		{
-			const auto& currentTrainingProgram = _currentReadModel.TrainingProgramEntries.at(_currentReadModel.SelectedTrainingProgramIndex.value());
-
-			auto programDuration = std::chrono::milliseconds(currentTrainingProgram.TrainingProgramDuration);
-			auto minutes = std::chrono::duration_cast<std::chrono::minutes>(programDuration);
-			auto seconds = std::chrono::duration_cast<std::chrono::seconds>(programDuration - minutes);
-			ImGui::TextUnformatted(fmt::format("Total training program duration: {}m {}s", minutes.count(), seconds.count()).c_str()),
-
-			minutes = std::chrono::duration_cast<std::chrono::minutes>(_currentReadModel.CurrentTrainingDuration);
-			seconds = std::chrono::duration_cast<std::chrono::seconds>(_currentReadModel.CurrentTrainingDuration - minutes);
-			ImGui::TextUnformatted(fmt::format("Current duration: {}m {}s", minutes.count(), seconds.count()).c_str());
-
-			ImGui::TextUnformatted(fmt::format("Current training step: {}", _currentReadModel.CurrentTrainingStepName).c_str());
-			ImGui::TextUnformatted(fmt::format("Current training step#: {}", _currentReadModel.CurrentTrainingStepNumber).c_str());
-		}
-		else
-		{
-			ImGui::TextUnformatted("No training program selected");
 		}
 
 		ImGui::Separator();

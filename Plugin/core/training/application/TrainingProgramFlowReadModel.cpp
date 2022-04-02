@@ -16,6 +16,7 @@ namespace Core::Training::Application
 	{
 		SelectedTrainingProgramId.reset();
 		SelectedTrainingProgramIndex.reset();
+		SelectedTrainingProgramName.clear();
 		StartingIsPossible = false;
 		PausingIsPossible = false;
 		ResumingIsPossible = false;
@@ -34,12 +35,14 @@ namespace Core::Training::Application
 		if (trainingProgramIterator != TrainingProgramEntries.end())
 		{
 			SelectedTrainingProgramIndex = (uint16_t)std::distance(TrainingProgramEntries.cbegin(), trainingProgramIterator);
+			SelectedTrainingProgramName = TrainingProgramEntries[SelectedTrainingProgramIndex.value()].TrainingProgramName;
 			StartingIsPossible = true;
 		}
 		else
 		{
 			LOG("WARNING: Could not locate a trainnig program with ID {} in the list of training programs.", SelectedTrainingProgramId.value());
 			SelectedTrainingProgramIndex = 0;
+			SelectedTrainingProgramName = {};
 			StartingIsPossible = false;
 		}
 		PausingIsPossible = false;
@@ -70,6 +73,9 @@ namespace Core::Training::Application
 		ResumingIsPossible = false;
 		StoppingIsPossible = false;
 		SwitchingProgramIsPossible = true;
+		CurrentTrainingStepName.clear();
+		CurrentTrainingStepDuration = 0;
+		CurrentTrainingStepNumber = 0;
 	}
 	void TrainingProgramFlowReadModel::on(const std::shared_ptr<Events::TrainingProgramAbortedEvent>&)
 	{
@@ -78,6 +84,9 @@ namespace Core::Training::Application
 		ResumingIsPossible = false;
 		StoppingIsPossible = false;
 		SwitchingProgramIsPossible = true;
+		CurrentTrainingStepName.clear();
+		CurrentTrainingStepDuration = 0;
+		CurrentTrainingStepNumber = 0;
 	}
 	void TrainingProgramFlowReadModel::on(const std::shared_ptr<Events::TrainingProgramStepActivatedEvent>& stepEvent)
 	{

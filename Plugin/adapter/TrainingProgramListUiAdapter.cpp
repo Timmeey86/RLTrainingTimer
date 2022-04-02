@@ -46,10 +46,12 @@ namespace Adapter
     {
         _trainingProgramList = trainingProgramList;
         _trainingProgramListUi->initialize(trainingProgramList);
+
+        // TODO: Subscribe to events in order to store them on the disk. Use the nlohmann json library for this (in an own class).
+        // TODO: Restore events after initializing and apply the to the training program list.
     }
 
     void TrainingProgramListUiAdapter::unsubscribe()
     {
-        // TODO: We might not have to subscribe or unsubscribe since we are currently not using application service and read models for the configuration part
     }
 }

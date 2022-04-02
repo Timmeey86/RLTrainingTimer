@@ -59,20 +59,24 @@ namespace Core::Training::Application
 		auto selectionEvent = _trainingProgramFlow->startSelectedTrainingProgram();
 		auto firstStepActivationEvent = _trainingProgramFlow->activateNextTrainingProgramStep();
 		// Since training program flow currently does not know about the actual training program except for its ID, we need to add durations here
-		// TODO: It is probably better to just have TrainingProgramFlow know the program and then send event details itself.		
-		if (auto castedActivationEvent = dynamic_cast<Events::TrainingProgramStepActivatedEvent*>(firstStepActivationEvent.get()); 
-			castedActivationEvent != nullptr)
-		{
-			auto trainingProgramStep = _currentTrainingProgram->entries().at(castedActivationEvent->TrainingProgramStepNumber);
-			castedActivationEvent->TrainingProgramStepName = trainingProgramStep.name();
-			castedActivationEvent->TrainingProgramStepDuration = trainingProgramStep.duration();
-		}
+		extendStepActivationEvent(firstStepActivationEvent);
 		_referenceTime = std::chrono::steady_clock::now();
 		_trainingProgramState = TrainingProgramState::Running;
 		updateReadModel({ selectionEvent, firstStepActivationEvent });
 
 		// Handle a pause change just in case the ingame pause menu is open while the user starts the training program (not unlikely)
 		handlePauseChange();
+	}
+	void TrainingApplicationService::extendStepActivationEvent(std::shared_ptr<Core::Kernel::DomainEvent>& firstStepActivationEvent)
+	{
+		// TODO: It is probably better to just have TrainingProgramFlow know the program and then send event details itself.		
+		if (auto castedActivationEvent = dynamic_cast<Events::TrainingProgramStepActivatedEvent*>(firstStepActivationEvent.get());
+			castedActivationEvent != nullptr)
+		{
+			auto trainingProgramStep = _currentTrainingProgram->entries().at(castedActivationEvent->TrainingProgramStepNumber);
+			castedActivationEvent->TrainingProgramStepName = trainingProgramStep.name();
+			castedActivationEvent->TrainingProgramStepDuration = trainingProgramStep.duration();
+		}
 	}
 	void TrainingApplicationService::pauseTrainingProgram(const Commands::PauseTrainingProgramCommand& command)
 	{
@@ -138,14 +142,24 @@ namespace Core::Training::Application
 			{
 				eventToBeForwarded = _trainingProgramFlow->finishRunningTrainingProgram();
 				_trainingProgramState = TrainingProgramState::WaitingForStart;
+				auto zeroMs = std::chrono::milliseconds(0);
+				_readModel.updateTrainingTime(zeroMs, zeroMs, zeroMs);
 			}
 			else
 			{
 				eventToBeForwarded = _trainingProgramFlow->activateNextTrainingProgramStep();
+				extendStepActivationEvent(eventToBeForwarded);
+
+				// We don't update times here, there will be another timer tick almost instantly after this method is finished.
 			}
 			updateReadModel({ eventToBeForwarded });
 		}
-		_readModel.updateTrainingTime(passedTime);
+		else
+		{
+			auto timeLeftInCurrentStep = std::chrono::duration_cast<std::chrono::milliseconds>(nextThreshold - passedTime);
+			auto timeLeftInProgram = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::milliseconds(_currentTrainingProgram->programDuration()) - passedTime);
+			_readModel.updateTrainingTime(passedTime, timeLeftInCurrentStep, timeLeftInProgram);
+		}
 	}
 
 	void TrainingApplicationService::handlePauseChange()

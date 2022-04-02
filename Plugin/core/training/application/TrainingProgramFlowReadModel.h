@@ -42,13 +42,21 @@ namespace Core::Training::Application
 		void dispatchEvent(const std::shared_ptr<Kernel::DomainEvent>& genericEvent);
 
 		/** Since this happens quite often, we don't create an event for it every time. */
-		inline void updateTrainingTime(const std::chrono::milliseconds& trainingDuration) {
+		inline void updateTrainingTime(
+			const std::chrono::milliseconds& trainingDuration,
+			const std::chrono::milliseconds& timeLeftInCurrentStep,
+			const std::chrono::milliseconds& timeLeftInProgram
+		) 
+		{
 			CurrentTrainingDuration = trainingDuration;
+			TimeLeftInCurrentStep = timeLeftInCurrentStep;
+			TimeLeftInProgram = timeLeftInProgram;
 		}
 
 		std::vector<Configuration::Domain::TrainingProgramListEntry> TrainingProgramEntries;
 		std::optional<uint64_t> SelectedTrainingProgramId = {};
 		std::optional<uint16_t> SelectedTrainingProgramIndex = {};
+		std::string SelectedTrainingProgramName = {};
 		bool StartingIsPossible = false;
 		bool PausingIsPossible = false;
 		bool ResumingIsPossible = false;
@@ -58,6 +66,8 @@ namespace Core::Training::Application
 		uint32_t CurrentTrainingStepDuration = 0;
 		uint16_t CurrentTrainingStepNumber = 0;
 		std::chrono::milliseconds CurrentTrainingDuration = std::chrono::milliseconds(0);
+		std::chrono::milliseconds TimeLeftInCurrentStep = std::chrono::milliseconds(0);
+		std::chrono::milliseconds TimeLeftInProgram = std::chrono::milliseconds(0);
 
 	private:
 		void reset();

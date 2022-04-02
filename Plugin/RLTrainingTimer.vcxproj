@@ -100,6 +100,7 @@
     <ClCompile Include="core\training\application\TrainingProgramFlowReadModel.cpp" />
     <ClCompile Include="core\training\domain\TrainingProgramFlow.cpp" />
     <ClCompile Include="external\IMGUI\imgui_disable.cpp" />
+    <ClCompile Include="ui\TrainingProgramDisplay.cpp" />
     <ClCompile Include="ui\TrainingProgramFlowControlUi.cpp" />
     <ClCompile Include="ui\TrainingProgramListUi.cpp" />
     <ClCompile Include="adapter\TrainingProgramListUiAdapter.cpp" />
@@ -133,6 +134,7 @@
     <ClInclude Include="core\kernel\InvalidStateException.h" />
     <ClInclude Include="core\training\application\TrainingApplicationService.h" />
     <ClInclude Include="external\IMGUI\imgui_disable.h" />
+    <ClInclude Include="ui\TrainingProgramDisplay.h" />
     <ClInclude Include="ui\TrainingProgramFlowControlUi.h" />
     <ClInclude Include="core\training\application\TrainingProgramFlowReadModel.h" />
     <ClInclude Include="core\training\commands\TrainingCommands.h" />

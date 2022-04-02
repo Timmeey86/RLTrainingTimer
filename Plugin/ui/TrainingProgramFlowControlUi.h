@@ -1,5 +1,7 @@
 #pragma once
 
+#include "TrainingProgramDisplay.h"
+
 #include <core/training/application/TrainingApplicationService.h>
 
 #include <bakkesmod/plugin/pluginwindow.h>
@@ -16,7 +18,10 @@ namespace Ui
 	class TrainingProgramFlowControlUi : public BakkesMod::Plugin::PluginWindow
 	{
 	public:
-		void initTrainingProgramFlowControlUi(std::shared_ptr<Core::Training::Application::TrainingApplicationService> appService);
+		void initTrainingProgramFlowControlUi(
+			std::shared_ptr<GameWrapper> gameWrapper, 
+			std::shared_ptr<Core::Training::Application::TrainingApplicationService> appService
+		);
 
 		// Inherited via PluginWindow
 		virtual void Render() override;
@@ -38,5 +43,6 @@ namespace Ui
 		bool _isWindowOpen = false;
 
 		std::vector<std::string> _exceptionMessages;
+		std::shared_ptr<TrainingProgramDisplay> _trainingProgramDisplay = std::make_shared<TrainingProgramDisplay>();
 	};
 }

@@ -17,22 +17,22 @@ void RLTrainingTimer::onLoad()
 	DUMMY_trainingProgramList->addTrainingProgram(1);
 	DUMMY_trainingProgramList->addTrainingProgram(2);
 
-	DUMMY_trainingProgramList->renameTrainingProgram(0, "First program");
+	DUMMY_trainingProgramList->renameTrainingProgram(0, "My absolutely fancy training program");
 	DUMMY_trainingProgramList->renameTrainingProgram(1, "Second program");
 	DUMMY_trainingProgramList->renameTrainingProgram(2, "Third program");
 
 	auto DUMMY_firstProgram = DUMMY_trainingProgramList->getTrainingProgram(0);
 	DUMMY_firstProgram->addEntry({
-		"First Entry",
+		"Complicated trick with a very long name",
 		60000
 		});
 	DUMMY_firstProgram->addEntry({
-		"Second Entry",
+		"Half Flips",
 		180000
 		});
 	DUMMY_firstProgram->addEntry({
-		"Third Entry",
-		240000
+		"Catches",
+		1560000
 		});
 
 	auto DUMMY_secondProgram = DUMMY_trainingProgramList->getTrainingProgram(1);
@@ -47,7 +47,8 @@ void RLTrainingTimer::onLoad()
 	_eventAdapter = std::make_shared<Adapter::RocketLeagueEventAdapter>(_trainingAppService);
 	_eventAdapter->hookToEvents(gameWrapper);
 
-	initTrainingProgramFlowControlUi(_trainingAppService);
+	initTrainingProgramFlowControlUi(gameWrapper, _trainingAppService);
+
 
 	cvarManager->log("Loaded RLTrainingTimer plugin");
 }

@@ -83,6 +83,7 @@
     </ClCompile>
     <ClCompile Include="ui\TrainingProgramFlowControlUi.cpp" />
     <ClCompile Include="external\IMGUI\imgui_disable.cpp" />
+    <ClCompile Include="ui\TrainingProgramDisplay.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -228,6 +229,7 @@
       <Filter>ui</Filter>
     </ClInclude>
     <ClInclude Include="external\IMGUI\imgui_disable.h" />
+    <ClInclude Include="ui\TrainingProgramDisplay.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="RLTrainingTimer.rc" />
