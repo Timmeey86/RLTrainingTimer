@@ -12,6 +12,8 @@ namespace Core::Training::Application
 {
 	/** This is a <<Read Model>> for the state of the Training Program Flow. 
 	 * It is meant to be used for determining what to display in the user interface.
+	 * 
+	 * Since we pass copies of this model around, we make the variables public - there's nothing we need to protect the members from.
 	 */
 	class TrainingProgramFlowReadModel
 	{
@@ -39,18 +41,25 @@ namespace Core::Training::Application
 		/** Dispatches generic events into the discrete event handlers. */
 		void dispatchEvent(const std::shared_ptr<Kernel::DomainEvent>& genericEvent);
 
+		/** Since this happens quite often, we don't create an event for it every time. */
+		inline void updateTrainingTime(const std::chrono::milliseconds& trainingDuration) {
+			CurrentTrainingDuration = trainingDuration;
+		}
+
+		std::vector<Configuration::Domain::TrainingProgramListEntry> TrainingProgramEntries;
+		std::optional<uint64_t> SelectedTrainingProgramId = {};
+		std::optional<uint16_t> SelectedTrainingProgramIndex = {};
+		bool StartingIsPossible = false;
+		bool PausingIsPossible = false;
+		bool ResumingIsPossible = false;
+		bool StoppingIsPossible = false;
+		std::string CurrentTrainingStepName = {};
+		uint32_t CurrentTrainingStepDuration = 0;
+		uint16_t CurrentTrainingStepNumber = 0;
+		std::chrono::milliseconds CurrentTrainingDuration = std::chrono::milliseconds(0);
+
 	private:
 		void reset();
 
-		std::vector<Configuration::Domain::TrainingProgramListEntry> _trainingProgramEntries;
-		std::optional<uint64_t> _selectedTrainingProgramId;
-		std::optional<uint16_t> _selectedTrainingProgramIndex;
-		bool _startingIsPossible;
-		bool _pausingIsPossible;
-		bool _resumingIsPossible;
-		bool _stoppingIsPossible;
-		std::string _currentTrainingStepName;
-		uint32_t _currentTrainingStepDuration;
-		uint16_t _currentTrainingStepNumber;
 	};
 }

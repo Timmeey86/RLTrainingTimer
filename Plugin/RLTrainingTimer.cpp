@@ -1,6 +1,5 @@
 #include <pch.h>
 #include "RLTrainingTimer.h"
-#include <adapter/RocketLeagueEventAdapter.h>
 
 // DUMMY
 #include <core/configuration/domain/TrainingProgramList.h>
@@ -41,8 +40,14 @@ void RLTrainingTimer::onLoad()
 
 	subscribe(DUMMY_trainingProgramList);
 
-	auto tmpAdapter = new Adapter::RocketLeagueEventAdapter();
-	tmpAdapter->hookToEvents(gameWrapper);
+	_trainingAppService = std::make_shared<Core::Training::Application::TrainingApplicationService>(
+		DUMMY_trainingProgramList, std::make_shared<Core::Training::Domain::TrainingProgramFlow>()
+		);
+
+	_eventAdapter = std::make_shared<Adapter::RocketLeagueEventAdapter>(_trainingAppService);
+	_eventAdapter->hookToEvents(gameWrapper);
+
+	initTrainingProgramFlowControlUi(_trainingAppService);
 
 	cvarManager->log("Loaded RLTrainingTimer plugin");
 }

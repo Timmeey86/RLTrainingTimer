@@ -5,7 +5,7 @@ namespace Core::Training::Application
 {
 	void TrainingProgramFlowReadModel::updateTrainingProgramListEntries(std::vector<Configuration::Domain::TrainingProgramListEntry> trainingProgramEntries)
 	{
-		_trainingProgramEntries = trainingProgramEntries;
+		TrainingProgramEntries = trainingProgramEntries;
 		reset();
 	}
 	void TrainingProgramFlowReadModel::on(const std::shared_ptr<Events::TrainingProgramSelectionResetEvent>&)
@@ -14,70 +14,72 @@ namespace Core::Training::Application
 	}
 	void TrainingProgramFlowReadModel::reset()
 	{
-		_selectedTrainingProgramId.reset();
-		_selectedTrainingProgramIndex.reset();
-		_startingIsPossible = false;
-		_pausingIsPossible = false;
-		_resumingIsPossible = false;
-		_stoppingIsPossible = false;
-		_currentTrainingStepName.clear();
-		_currentTrainingStepDuration = 0;
+		SelectedTrainingProgramId.reset();
+		SelectedTrainingProgramIndex.reset();
+		StartingIsPossible = false;
+		PausingIsPossible = false;
+		ResumingIsPossible = false;
+		StoppingIsPossible = false;
+		CurrentTrainingStepName.clear();
+		CurrentTrainingStepDuration = 0;
+		CurrentTrainingStepNumber = 0;
 	}
 	void TrainingProgramFlowReadModel::on(const std::shared_ptr<Events::TrainingProgramSelectedEvent>& selectionEvent)
 	{
-		_selectedTrainingProgramId = selectionEvent->SelectedTrainingProgramId;
-		auto trainingProgramIterator = std::find_if(_trainingProgramEntries.cbegin(), _trainingProgramEntries.cend(), [this](const Configuration::Domain::TrainingProgramListEntry& entry) {
-			return entry.TrainingProgramId == _selectedTrainingProgramId.value();
+		SelectedTrainingProgramId = selectionEvent->SelectedTrainingProgramId;
+		auto trainingProgramIterator = std::find_if(TrainingProgramEntries.cbegin(), TrainingProgramEntries.cend(), [this](const Configuration::Domain::TrainingProgramListEntry& entry) {
+			return entry.TrainingProgramId == SelectedTrainingProgramId.value();
 		});
-		if (trainingProgramIterator != _trainingProgramEntries.end())
+		if (trainingProgramIterator != TrainingProgramEntries.end())
 		{
-			_selectedTrainingProgramIndex = (uint16_t)std::distance(_trainingProgramEntries.cbegin(), trainingProgramIterator);
-			_startingIsPossible = true;
+			SelectedTrainingProgramIndex = (uint16_t)std::distance(TrainingProgramEntries.cbegin(), trainingProgramIterator);
+			StartingIsPossible = true;
 		}
 		else
 		{
-			LOG("WARNING: Could not locate a trainnig program with ID {} in the list of training programs.", _selectedTrainingProgramId.value());
-			_selectedTrainingProgramIndex = 0;
-			_startingIsPossible = false;
+			LOG("WARNING: Could not locate a trainnig program with ID {} in the list of training programs.", SelectedTrainingProgramId.value());
+			SelectedTrainingProgramIndex = 0;
+			StartingIsPossible = false;
 		}
-		_pausingIsPossible = false;
-		_resumingIsPossible = false;
-		_stoppingIsPossible = false;
+		PausingIsPossible = false;
+		ResumingIsPossible = false;
+		StoppingIsPossible = false;
 	}
 	void TrainingProgramFlowReadModel::on(const std::shared_ptr<Events::TrainingProgramStartedEvent>&)
 	{
-		_startingIsPossible = false;
-		_pausingIsPossible = true;
+		StartingIsPossible = false;
+		PausingIsPossible = true;
+		StoppingIsPossible = true;
 	}
 	void TrainingProgramFlowReadModel::on(const std::shared_ptr<Events::TrainingProgramPausedEvent>&)
 	{
-		_pausingIsPossible = false;
-		_resumingIsPossible = true;
+		PausingIsPossible = false;
+		ResumingIsPossible = true;
 	}
 	void TrainingProgramFlowReadModel::on(const std::shared_ptr<Events::TrainingProgramResumedEvent>&)
 	{
-		_resumingIsPossible = false;
-		_pausingIsPossible = true;
+		ResumingIsPossible = false;
+		PausingIsPossible = true;
 	}
 	void TrainingProgramFlowReadModel::on(const std::shared_ptr<Events::TrainingProgramFinishedEvent>&)
 	{
-		_startingIsPossible = true;
-		_pausingIsPossible = false;
-		_resumingIsPossible = false;
-		_stoppingIsPossible = false;
+		StartingIsPossible = true;
+		PausingIsPossible = false;
+		ResumingIsPossible = false;
+		StoppingIsPossible = false;
 	}
 	void TrainingProgramFlowReadModel::on(const std::shared_ptr<Events::TrainingProgramAbortedEvent>&)
 	{
-		_startingIsPossible = true;
-		_pausingIsPossible = false;
-		_resumingIsPossible = false;
-		_stoppingIsPossible = false;
+		StartingIsPossible = true;
+		PausingIsPossible = false;
+		ResumingIsPossible = false;
+		StoppingIsPossible = false;
 	}
 	void TrainingProgramFlowReadModel::on(const std::shared_ptr<Events::TrainingProgramStepActivatedEvent>& stepEvent)
 	{
-		_currentTrainingStepName = stepEvent->TrainingProgramStepName;
-		_currentTrainingStepDuration = stepEvent->TrainingProgramStepDuration;
-		_currentTrainingStepNumber = stepEvent->TrainingProgramStepNumber;
+		CurrentTrainingStepName = stepEvent->TrainingProgramStepName;
+		CurrentTrainingStepDuration = stepEvent->TrainingProgramStepDuration;
+		CurrentTrainingStepNumber = stepEvent->TrainingProgramStepNumber;
 	}
 
 	void TrainingProgramFlowReadModel::dispatchEvent(const std::shared_ptr<Kernel::DomainEvent>& genericEvent)

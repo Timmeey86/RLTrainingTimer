@@ -12,6 +12,8 @@ namespace Core::Training::Application
 		: _trainingProgramList{ trainingProgramList }
 		, _trainingProgramFlow{ trainingProgramFlow }
 	{
+		// TODO: Update this whenever the list changes
+		_readModel.updateTrainingProgramListEntries(_trainingProgramList->getListEntries());
 	}
 	void TrainingApplicationService::selectTrainingProgram(const Commands::SelectTrainingProgramCommand& command)
 	{
@@ -29,13 +31,11 @@ namespace Core::Training::Application
 			_currentTrainingProgram = _trainingProgramList->getTrainingProgram(command.TrainingProgramId.value());
 			events = _trainingProgramFlow->selectTrainingProgram(_currentTrainingProgram->id(), (uint16_t)_currentTrainingProgram->entries().size());
 			_trainingProgramState = TrainingProgramState::WaitingForStart;
-			_readModel.updateTrainingProgramListEntries(_trainingProgramList->getListEntries());
 		}
 		else
 		{
 			_trainingProgramState = TrainingProgramState::Uninitialized;
 			events = _trainingProgramFlow->unselectTrainingProgram();
-			_readModel.updateTrainingProgramListEntries({});
 		}
 		updateReadModel(events);
 	}
@@ -67,6 +67,7 @@ namespace Core::Training::Application
 			castedActivationEvent->TrainingProgramStepName = trainingProgramStep.name();
 			castedActivationEvent->TrainingProgramStepDuration = trainingProgramStep.duration();
 		}
+		_referenceTime = std::chrono::steady_clock::now();
 		_trainingProgramState = TrainingProgramState::Running;
 		updateReadModel({ selectionEvent, firstStepActivationEvent });
 
@@ -136,6 +137,7 @@ namespace Core::Training::Application
 			if (currentTrainingProgramEntryIndex == _trainingProgramEntryEndTimes.size() - 1)
 			{
 				eventToBeForwarded = _trainingProgramFlow->finishRunningTrainingProgram();
+				_trainingProgramState = TrainingProgramState::WaitingForStart;
 			}
 			else
 			{
@@ -143,6 +145,7 @@ namespace Core::Training::Application
 			}
 			updateReadModel({ eventToBeForwarded });
 		}
+		_readModel.updateTrainingTime(passedTime);
 	}
 
 	void TrainingApplicationService::handlePauseChange()

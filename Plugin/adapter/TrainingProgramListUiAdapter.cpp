@@ -44,13 +44,12 @@ namespace Adapter
 
     void TrainingProgramListUiAdapter::subscribe(std::shared_ptr<Core::Configuration::Domain::TrainingProgramList> trainingProgramList)
     {
-        // TODO: Subscribe to events
         _trainingProgramList = trainingProgramList;
         _trainingProgramListUi->initialize(trainingProgramList);
     }
 
     void TrainingProgramListUiAdapter::unsubscribe()
     {
-        // TODO: Unsubscribe from events
+        // TODO: We might not have to subscribe or unsubscribe since we are currently not using application service and read models for the configuration part
     }
 }

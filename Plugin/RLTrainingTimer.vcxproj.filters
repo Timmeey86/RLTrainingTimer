@@ -81,6 +81,8 @@
     <ClCompile Include="core\training\application\TrainingProgramFlowReadModel.cpp">
       <Filter>core\training\application</Filter>
     </ClCompile>
+    <ClCompile Include="ui\TrainingProgramFlowControlUi.cpp" />
+    <ClCompile Include="external\IMGUI\imgui_disable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -222,6 +224,10 @@
     <ClInclude Include="core\training\commands\TrainingCommands.h">
       <Filter>core\training\commands</Filter>
     </ClInclude>
+    <ClInclude Include="ui\TrainingProgramFlowControlUi.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="external\IMGUI\imgui_disable.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="RLTrainingTimer.rc" />
