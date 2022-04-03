@@ -95,6 +95,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="adapter\RocketLeagueEventAdapter.cpp" />
+    <ClCompile Include="core\configuration\application\TrainingProgramConfigurationService.cpp" />
     <ClCompile Include="core\kernel\InvalidStateException.cpp" />
     <ClCompile Include="core\training\application\TrainingApplicationService.cpp" />
     <ClCompile Include="core\training\application\TrainingProgramFlowReadModel.cpp" />
@@ -131,8 +132,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="adapter\RocketLeagueEventAdapter.h" />
+    <ClInclude Include="core\configuration\application\TrainingProgramConfigurationService.h" />
+    <ClInclude Include="core\configuration\commands\TrainingProgramConfigurationCommands.h" />
     <ClInclude Include="core\kernel\InvalidStateException.h" />
     <ClInclude Include="core\training\application\TrainingApplicationService.h" />
+    <ClInclude Include="core\training\application\TrainingProgramDisplayReadModel.h" />
+    <ClInclude Include="core\training\application\TrainingProgramFlowControlReadModel.h" />
     <ClInclude Include="external\IMGUI\imgui_disable.h" />
     <ClInclude Include="ui\TrainingProgramDisplay.h" />
     <ClInclude Include="ui\TrainingProgramFlowControlUi.h" />

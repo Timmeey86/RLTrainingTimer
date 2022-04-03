@@ -22,16 +22,19 @@ namespace Core::Configuration::Test
 		static const std::string FirstEntryName;
 		static const std::string SecondEntryName;
 
-		static const uint32_t FirstEntryDuration = 4000;
-		static const uint32_t SecondEntryDuration = 6000;
+		static const std::chrono::milliseconds FirstEntryDuration;
+		static const std::chrono::milliseconds SecondEntryDuration;
 
-		static const uint32_t InitialDuration = FirstEntryDuration + SecondEntryDuration;
+		static const std::chrono::milliseconds InitialDuration;
 		static const size_t InitialSize = 2;
 
 		std::unique_ptr<Domain::TrainingProgram> sut;
 	};
 	const std::string TrainingProgramTestFixture::FirstEntryName = "First Entry";
 	const std::string TrainingProgramTestFixture::SecondEntryName = "Second Entry";
+	const std::chrono::milliseconds TrainingProgramTestFixture::FirstEntryDuration = std::chrono::minutes(4);
+	const std::chrono::milliseconds TrainingProgramTestFixture::SecondEntryDuration = std::chrono::minutes(6);
+	const std::chrono::milliseconds TrainingProgramTestFixture::InitialDuration = FirstEntryDuration + SecondEntryDuration;
 
 	TEST_F(TrainingProgramTestFixture, verify_fixture)
 	{
@@ -41,36 +44,40 @@ namespace Core::Configuration::Test
 		EXPECT_EQ(sut->programDuration(), InitialDuration);
 		auto entries = sut->entries();
 		ASSERT_EQ(entries.size(), InitialSize);
-		EXPECT_EQ(entries[0].name(), FirstEntryName);
-		EXPECT_EQ(entries[0].duration(), FirstEntryDuration);
-		EXPECT_EQ(entries[1].name(), SecondEntryName);
-		EXPECT_EQ(entries[1].duration(), SecondEntryDuration);
+		EXPECT_EQ(entries[0].Name, FirstEntryName);
+		EXPECT_EQ(entries[0].Duration, FirstEntryDuration);
+		EXPECT_EQ(entries[1].Name, SecondEntryName);
+		EXPECT_EQ(entries[1].Duration, SecondEntryDuration);
 	}
 
 	// Tests that an entry will be added properly, and that a proper event is being created
 	TEST_F(TrainingProgramTestFixture, addEntry_when_calledOnce_then_producesOneEntry)
 	{
 		auto entryName = "New Entry";
-		auto entryDuration = 2000U;
-		auto genericResult = sut->addEntry({ entryName, entryDuration });
+		auto entryDuration = std::chrono::seconds(2);
+		auto genericEvents = sut->addEntry({ entryName, entryDuration });
 		
-		auto specificEvent = dynamic_cast<Events::TrainingProgramEntryAddedEvent*>(genericResult.get());
-		ASSERT_NE(specificEvent, nullptr);
+		ASSERT_EQ(genericEvents.size(), 2);
+
+		auto addEvent = dynamic_cast<Events::TrainingProgramEntryAddedEvent*>(genericEvents.at(0).get());
+		auto changeEvent = dynamic_cast<Events::TrainingProgramChangedEvent*>(genericEvents.at(1).get());
+		ASSERT_NE(addEvent, nullptr);
+		ASSERT_NE(changeEvent, nullptr);
 
 		EXPECT_EQ(sut->programDuration(), InitialDuration + entryDuration);
-		EXPECT_EQ(specificEvent->TrainingProgramId, DefaultId);
-		EXPECT_EQ(specificEvent->TrainingProgramEntryDuration, entryDuration);
-		EXPECT_EQ(specificEvent->TrainingProgramEntryName, entryName);
+		EXPECT_EQ(addEvent->TrainingProgramId, DefaultId);
+		EXPECT_EQ(addEvent->TrainingProgramEntryDuration, entryDuration);
+		EXPECT_EQ(addEvent->TrainingProgramEntryName, entryName);
 		ASSERT_EQ(sut->entries().size(), InitialSize + 1);
-		EXPECT_EQ(sut->entries().back().duration(), specificEvent->TrainingProgramEntryDuration);
-		EXPECT_EQ(sut->entries().back().name(), specificEvent->TrainingProgramEntryName);
+		EXPECT_EQ(sut->entries().back().Duration, addEvent->TrainingProgramEntryDuration);
+		EXPECT_EQ(sut->entries().back().Name, addEvent->TrainingProgramEntryName);
 	}
 
 	// Tests that the same entry can be added twice (the user might want to do entry 1, then 2, then 1 again, then 3, for example).
 	TEST_F(TrainingProgramTestFixture, addEntry_when_calledTwice_then_producesTwoEntries)
 	{
 		auto entryName = "New Entry";
-		auto entryDuration = 2000U;
+		auto entryDuration = std::chrono::seconds(2);
 		sut->addEntry({ entryName, entryDuration });
 		sut->addEntry({ entryName, entryDuration });
 
@@ -81,8 +88,8 @@ namespace Core::Configuration::Test
 
 		const auto& firstEntry = entries[entries.size() - 2];
 		const auto& secondEntry = entries[entries.size() - 1];
-		EXPECT_EQ(firstEntry.name(), secondEntry.name());
-		EXPECT_EQ(firstEntry.duration(), secondEntry.duration());
+		EXPECT_EQ(firstEntry.Name, secondEntry.Name);
+		EXPECT_EQ(firstEntry.Duration, secondEntry.Duration);
 	}
 
 	// Tests that replaying an addition event will produce the same object as the initial addition
@@ -91,12 +98,12 @@ namespace Core::Configuration::Test
 		// Add an entry to an empty training program and remember the event
 		Domain::TrainingProgram manuallyCreatedProgram(DefaultId);
 		auto entryName = "New Entry";
-		auto entryDuration = 2000U;
-		auto additionEvent = manuallyCreatedProgram.addEntry({ entryName, entryDuration });
+		auto entryDuration = std::chrono::seconds(2);
+		auto genericEvents = manuallyCreatedProgram.addEntry({ entryName, entryDuration });
 
 		// Create another empty training program, but this time restore it through events
 		Domain::TrainingProgram restoredProgram(DefaultId);
-		restoredProgram.applyEvents({ additionEvent });
+		restoredProgram.applyEvents(genericEvents);
 
 		auto manualEntries = manuallyCreatedProgram.entries();
 		auto restoredEntries = restoredProgram.entries();
@@ -104,8 +111,8 @@ namespace Core::Configuration::Test
 		EXPECT_EQ(manualEntries.size(), restoredEntries.size());
 		ASSERT_EQ(restoredEntries.size(), 1);
 		EXPECT_EQ(manuallyCreatedProgram.programDuration(), restoredProgram.programDuration());
-		EXPECT_EQ(manualEntries.back().name(), restoredEntries.back().name());
-		EXPECT_EQ(manualEntries.back().duration(), restoredEntries.back().duration());
+		EXPECT_EQ(manualEntries.back().Name, restoredEntries.back().Name);
+		EXPECT_EQ(manualEntries.back().Duration, restoredEntries.back().Duration);
 	}
 
 	TEST_F(TrainingProgramTestFixture, removeEntry_when_calledWithInvalidPosition_will_throw)
@@ -160,9 +167,14 @@ namespace Core::Configuration::Test
 	{
 		ASSERT_GE(sut->entries().size(), 2);
 
-		auto genericEvent = sut->removeEntry(0);
-		auto removalEvent = dynamic_cast<Events::TrainingProgramEntryRemovedEvent*>(genericEvent.get());
+		auto genericEvents = sut->removeEntry(0);
+
+		ASSERT_EQ(genericEvents.size(), 2);
+
+		auto removalEvent = dynamic_cast<Events::TrainingProgramEntryRemovedEvent*>(genericEvents.at(0).get());
+		auto changeEvent = dynamic_cast<Events::TrainingProgramChangedEvent*>(genericEvents.at(1).get());
 		ASSERT_NE(removalEvent, nullptr);
+		ASSERT_NE(changeEvent, nullptr);
 
 		EXPECT_EQ(removalEvent->TrainingProgramId, DefaultId);
 		EXPECT_EQ(removalEvent->TrainingProgramEntryPosition, 0);
@@ -174,9 +186,14 @@ namespace Core::Configuration::Test
 	{
 		ASSERT_GE(sut->entries().size(), 2);
 
-		auto genericEvent = sut->removeEntry(InitialSize - 1);
-		auto removalEvent = dynamic_cast<Events::TrainingProgramEntryRemovedEvent*>(genericEvent.get());
+		auto genericEvents = sut->removeEntry(InitialSize - 1);
+
+		ASSERT_EQ(genericEvents.size(), 2);
+
+		auto removalEvent = dynamic_cast<Events::TrainingProgramEntryRemovedEvent*>(genericEvents.at(0).get());
+		auto changeEvent = dynamic_cast<Events::TrainingProgramChangedEvent*>(genericEvents.at(1).get());
 		ASSERT_NE(removalEvent, nullptr);
+		ASSERT_NE(changeEvent, nullptr);
 
 		EXPECT_EQ(removalEvent->TrainingProgramId, DefaultId);
 		EXPECT_EQ(removalEvent->TrainingProgramEntryPosition, InitialSize - 1);
@@ -190,9 +207,9 @@ namespace Core::Configuration::Test
 
 		auto restoredTrainingProgram = Domain::TrainingProgram(*sut);
 
-		auto removalEvent = sut->removeEntry(0);
+		auto genericEvents = sut->removeEntry(0);
 
-		restoredTrainingProgram.applyEvents({ removalEvent });
+		restoredTrainingProgram.applyEvents(genericEvents);
 
 		auto sutEntries = sut->entries();
 		auto restoredEntries = restoredTrainingProgram.entries();
@@ -204,7 +221,7 @@ namespace Core::Configuration::Test
 		EXPECT_EQ(sut->programDuration(), restoredTrainingProgram.programDuration());
 	}
 
-	TEST_F(TrainingProgramTestFixture, replaceEntry_when_calledWithInvalidPosition_will_throw)
+	TEST_F(TrainingProgramTestFixture, renameEntry_when_calledWithInvalidPosition_will_throw)
 	{
 		auto firstExpectedException = Kernel::IndexOutOfBoundsException(
 			"Configuration",	// name of the bounded context
@@ -227,7 +244,7 @@ namespace Core::Configuration::Test
 			{
 				try
 				{
-					sut->replaceEntry(-1, { "", 0 });
+					sut->renameEntry(-1, "");
 				}
 				catch (Kernel::IndexOutOfBoundsException& ex)
 				{
@@ -240,7 +257,7 @@ namespace Core::Configuration::Test
 			{
 				try
 				{
-					sut->replaceEntry(InitialSize, { "", 0 });
+					sut->renameEntry(InitialSize, "");
 				}
 				catch (Kernel::IndexOutOfBoundsException& ex)
 				{
@@ -252,28 +269,30 @@ namespace Core::Configuration::Test
 
 	}
 
-	TEST_F(TrainingProgramTestFixture, replaceEntry_when_calledWithFirstPos_then_replacesFirstEntry)
+	TEST_F(TrainingProgramTestFixture, renameEntry_when_calledWithFirstPos_then_replacesFirstEntry)
 	{
 		ASSERT_GE(sut->entries().size(), 1);
 
 		auto newName = "New entry name";
-		auto newDuration = 15000U;
 
-		auto genericEvent = sut->replaceEntry(0, { newName, newDuration });
-		auto replacementEvent = dynamic_cast<Events::TrainingProgramEntryUpdatedEvent*>(genericEvent.get());
-		ASSERT_NE(replacementEvent, nullptr);
+		auto genericEvents = sut->renameEntry(0, newName);
+
+		ASSERT_EQ(genericEvents.size(), 2);
+
+		auto renameEvent = dynamic_cast<Events::TrainingProgramEntryRenamedEvent*>(genericEvents.at(0).get());
+		auto changeEvent = dynamic_cast<Events::TrainingProgramChangedEvent*>(genericEvents.at(1).get());
+		ASSERT_NE(renameEvent, nullptr);
+		ASSERT_NE(changeEvent, nullptr);
 
 		auto sutEntries = sut->entries();
 		EXPECT_EQ(sutEntries.size(), InitialSize);
-		EXPECT_EQ(sut->programDuration(), InitialDuration - FirstEntryDuration + newDuration);
 		
-		EXPECT_EQ(replacementEvent->TrainingProgramId, DefaultId);
-		EXPECT_EQ(replacementEvent->TrainingProgramEntryDuration, newDuration);
-		EXPECT_EQ(replacementEvent->TrainingProgramEntryName, newName);
-		EXPECT_EQ(replacementEvent->TrainingProgramEntryPosition, 0);
+		EXPECT_EQ(renameEvent->TrainingProgramId, DefaultId);
+		EXPECT_EQ(renameEvent->TrainingProgramEntryName, newName);
+		EXPECT_EQ(renameEvent->TrainingProgramEntryPosition, 0);
 	}
 
-	TEST_F(TrainingProgramTestFixture, replaceEntry_when_restored_then_producesSameResult)
+	TEST_F(TrainingProgramTestFixture, renameEntry_when_restored_then_producesSameResult)
 	{
 		ASSERT_GE(sut->entries().size(), 1);
 
@@ -282,9 +301,9 @@ namespace Core::Configuration::Test
 
 		auto restoredTrainingProgram = Domain::TrainingProgram(*sut);
 
-		auto replacementEvent = sut->replaceEntry(0, { newName, newDuration });
+		auto renameEvent = sut->renameEntry(0, { newName, newDuration });
 
-		restoredTrainingProgram.applyEvents({ replacementEvent });
+		restoredTrainingProgram.applyEvents({ renameEvent });
 
 		auto sutEntries = sut->entries();
 		auto restoredEntries = restoredTrainingProgram.entries();
@@ -347,17 +366,22 @@ namespace Core::Configuration::Test
 	{
 		ASSERT_GE(sut->entries().size(), 2);
 
-		auto genericEvent = sut->swapEntries(0, 1);
-		auto swapEvent = dynamic_cast<Events::TrainingProgramEntrySwappedEvent*>(genericEvent.get());
+		auto genericEvents = sut->swapEntries(0, 1);
+
+		ASSERT_EQ(genericEvents.size(), 2);
+
+		auto swapEvent = dynamic_cast<Events::TrainingProgramEntrySwappedEvent*>(genericEvents.at(0).get());
+		auto changeEvent = dynamic_cast<Events::TrainingProgramChangedEvent*>(genericEvents.at(1).get());
 		ASSERT_NE(swapEvent, nullptr);
+		ASSERT_NE(changeEvent, nullptr);
 
 		auto sutEntries = sut->entries();
 		EXPECT_EQ(sut->programDuration(), InitialDuration);
 		ASSERT_EQ(sutEntries.size(), InitialSize);
-		EXPECT_EQ(sutEntries[0].name(), SecondEntryName);
-		EXPECT_EQ(sutEntries[0].duration(), SecondEntryDuration);
-		EXPECT_EQ(sutEntries[1].name(), FirstEntryName);
-		EXPECT_EQ(sutEntries[1].duration(), FirstEntryDuration);
+		EXPECT_EQ(sutEntries[0].Name, SecondEntryName);
+		EXPECT_EQ(sutEntries[0].Duration, SecondEntryDuration);
+		EXPECT_EQ(sutEntries[1].Name, FirstEntryName);
+		EXPECT_EQ(sutEntries[1].Duration, FirstEntryDuration);
 
 		EXPECT_EQ(swapEvent->TrainingProgramId, DefaultId);
 		EXPECT_EQ(swapEvent->FirstTrainingProgramEntryPosition, 0);
@@ -380,8 +404,8 @@ namespace Core::Configuration::Test
 		ASSERT_EQ(sutEntries.size(), restoredEntries.size());
 		for (int index = 0; index < sutEntries.size(); index++)
 		{
-			EXPECT_EQ(sutEntries[index].name(), restoredEntries[index].name());
-			EXPECT_EQ(sutEntries[index].duration(), restoredEntries[index].duration());
+			EXPECT_EQ(sutEntries[index].Name, restoredEntries[index].Name);
+			EXPECT_EQ(sutEntries[index].Duration, restoredEntries[index].Duration);
 		}
 		EXPECT_EQ(sut->programDuration(), restoredProgram.programDuration());
 	}

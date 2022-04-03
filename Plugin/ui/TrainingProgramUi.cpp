@@ -1,18 +1,47 @@
 #include <pch.h>
 #include "TrainingProgramUi.h"
 #include <IMGUI/imgui_stdlib.h>
+#include <IMGUI/imgui_disable.h>
 
 namespace Ui
 {
-	TrainingProgramUi::TrainingProgramUi(std::function<void()> finishEditingFunc)
-		: _finishEditingFunc{ finishEditingFunc }
+	TrainingProgramUi::TrainingProgramUi(
+		std::function<void()> finishEditingFunc,
+		std::function<void(uint64_t, const std::string&)> renameProgramFunc,
+		std::function<void(uint64_t)> addEntryFunc,
+		std::function<void(uint64_t, uint16_t)> removeEntryFunc,
+		std::function<void(uint64_t, uint16_t, const std::string&)> renameEntryFunc,
+		std::function<void(uint64_t, uint16_t, const std::chrono::milliseconds&)> changeDurationFunc,
+		std::function<void(uint64_t, uint16_t, uint16_t)> swapEntriesFunc)
+		// Note: Why do we ask for a copy and then std::move it, rather than just asking for a reference?
+		// The reason is that this way the caller of this constructor knows that we are going to store the object.
+		// If the caller provides an RValue to the constructor, the compiler might even elide the copy made in the constructor.
+		// Therefore we have an expressive interface ("Express what you intend"), while not making unnecessary copies.
+		: _finishEditingFunc{ std::move(finishEditingFunc) }
+		, _renameProgramFunc{ std::move(renameProgramFunc) }
+		, _addEntryFunc{ std::move(addEntryFunc) }
+		, _removeEntryFunc{ std::move(removeEntryFunc) }
+		, _renameEntryFunc{ std::move(renameEntryFunc) }
+		, _changeDurationFunc{ std::move(changeDurationFunc) }
+		, _swapEntriesFunc{ std::move(swapEntriesFunc) }
 	{
 
 	}
-	void TrainingProgramUi::setCurrentTrainingProgram(std::shared_ptr<Core::Configuration::Domain::TrainingProgram> trainingProgram)
+	void TrainingProgramUi::setCurrentTrainingProgramId(uint64_t trainingProgramId)
 	{
-		_trainingProgram = trainingProgram;
+		_trainingProgramId = trainingProgramId;
 		updateCaches();
+	}
+
+	void TrainingProgramUi::adaptToEvent(const std::shared_ptr<Core::Configuration::Events::TrainingProgramChangedEvent>& changeEvent)
+	{
+		// Note: std::unordered_map::operator[] creates an entry if there is none, yet (which is exactly what we want here)
+		_changeEventCache[changeEvent->TrainingProgramId] = changeEvent;
+		if (changeEvent->TrainingProgramId == _trainingProgramId)
+		{
+			updateCaches();
+		}
+		// else: another program was updated. Its details were stored in the cache, but we don't need to update the UI now
 	}
 
 	void TrainingProgramUi::updateCaches()
@@ -20,20 +49,26 @@ namespace Ui
 		_entryNameCache.clear();
 		_durationCache.clear();
 
-		if (_trainingProgram != nullptr)
+		auto changeEventCacheIter = _changeEventCache.find(_trainingProgramId);
+		if(changeEventCacheIter != _changeEventCache.end())
 		{
-			_programNameCache = _trainingProgram->name();
-			const auto entries = _trainingProgram->entries();
-			for (const auto& entry : entries)
+			auto mostRecentEvent = (*changeEventCacheIter).second;
+
+			_programNameCache = mostRecentEvent->TrainingProgramName;
+			for (const auto& entry : mostRecentEvent->TrainingProgramEntries)
 			{
-				_entryNameCache.push_back(entry.name());
-				_durationCache.push_back(entry.duration() / 60000); // minutes
+				_entryNameCache.push_back(entry.Name);
+				_durationCache.push_back(std::chrono::duration_cast<std::chrono::minutes>(entry.Duration).count());
 			}
 		}
 	}
 	void TrainingProgramUi::renderTrainingProgram()
-	{
-		if (_trainingProgram == nullptr) { return; }
+	{		
+		if (auto changeEventCacheIter = _changeEventCache.find(_trainingProgramId); 
+			changeEventCacheIter == _changeEventCache.end())
+		{
+			return;
+		}
 
 		addBackButton();
 		ImGui::Separator();
@@ -44,22 +79,18 @@ namespace Ui
 		ImGui::Separator();
 		ImGui::TextUnformatted("Training steps");
 		
-		auto entriesCopy = std::vector<Core::Configuration::Domain::TrainingProgramEntry>(_trainingProgram->entries());
-		int count = 0;
-		for (auto entryIter = entriesCopy.cbegin(); entryIter != entriesCopy.cend(); entryIter++)
+		const auto entryNameCacheSize = _entryNameCache.size();
+		for (auto index = (uint16_t)0; index < (uint16_t)entryNameCacheSize; index++)
 		{
-			const auto& entry = *entryIter;
-			addProgramEntryNameTextBox(count, entry);
+			addProgramEntryNameTextBox(index);
 			ImGui::SameLine();
-			addProgramEntryDurationTextBox(count, entry);
+			addProgramEntryDurationTextBox(index);
 			ImGui::SameLine();
-			addUpButton(count, count > 0);
+			addUpButton(index, index > 0);
 			ImGui::SameLine();
-			addDownButton(count, count < entriesCopy.size());
+			addDownButton(index, index < entryNameCacheSize - 1);
 			ImGui::SameLine();
-			addDeleteButton(count);
-
-			count++;
+			addDeleteButton(index);
 		}
 		addAddButton();
 	}
@@ -77,76 +108,67 @@ namespace Ui
 		// Note: ## hides the label
 		if (ImGui::InputText("##name", &_programNameCache))
 		{
-			_trainingProgram->renameProgram(_programNameCache);
+			_renameProgramFunc(_trainingProgramId, _programNameCache);
 		}
 	}
 	void TrainingProgramUi::addProgramDurationLabel()
 	{
-		auto durationInMinutes = _trainingProgram->programDuration() / 60000U; // intended integer division!
-		auto durationString = fmt::format("{:>3} min", durationInMinutes); // minutes max 3 digits, right aligned
+		std::chrono::minutes durationSum;
+		for (const auto& duration : _durationCache)
+		{
+			durationSum += std::chrono::minutes(duration);
+		}
+		auto durationString = fmt::format("{:>3} min", durationSum.count()); // minutes max 3 digits, right aligned
 		ImGui::TextUnformatted(durationString.c_str());
 	}
-	void TrainingProgramUi::addProgramEntryNameTextBox(int lineNumber, const Core::Configuration::Domain::TrainingProgramEntry& entry)
+	void TrainingProgramUi::addProgramEntryNameTextBox(uint16_t index)
 	{
-		if (ImGui::InputText(fmt::format("##entryname_{}", lineNumber).c_str(), &_entryNameCache[lineNumber]))
+		if (ImGui::InputText(fmt::format("##entryname_{}", index).c_str(), &_entryNameCache[index]))
 		{
-			_trainingProgram->replaceEntry(lineNumber, { _entryNameCache[lineNumber], entry.duration() });
+			_renameEntryFunc(_trainingProgramId, index, _entryNameCache[index]);
 		}
 	}
-	void TrainingProgramUi::addProgramEntryDurationTextBox(int lineNumber, const Core::Configuration::Domain::TrainingProgramEntry& entry)
+	void TrainingProgramUi::addProgramEntryDurationTextBox(uint16_t index)
 	{
 		ImGui::PushItemWidth(100.0f);
-		if (ImGui::InputInt(fmt::format("##entryduration_{}", lineNumber).c_str(), &_durationCache[lineNumber]))
+		if (ImGui::InputInt(fmt::format("##entryduration_{}", index).c_str(), &_durationCache[index]))
 		{
-			if (_durationCache[lineNumber] < 0)
-			{
-				_durationCache[lineNumber] = 0;
-			}
-			else
-			{
-				_trainingProgram->replaceEntry(lineNumber, { entry.name(), _durationCache[lineNumber] * 60000U });
-			}
+			const auto durationInMinutes = std::chrono::minutes(_durationCache[index]);
+			const auto durationInMilliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(durationInMinutes);
+			_changeDurationFunc(_trainingProgramId, index, durationInMilliseconds);
 		}
 		ImGui::PopItemWidth();
 		ImGui::SameLine();
 		ImGui::TextUnformatted("min");
 	}
-	void TrainingProgramUi::addUpButton(int lineNumber, bool hasPreviousEntry)
+	void TrainingProgramUi::addUpButton(uint16_t index, bool hasPreviousEntry)
 	{
-		if (ImGui::ArrowButton(fmt::format("##entryup_{}", lineNumber).c_str(), ImGuiDir_Up))
+		ImGui::Disable(!hasPreviousEntry);
+		if (ImGui::ArrowButton(fmt::format("##entryup_{}", index).c_str(), ImGuiDir_Up) && hasPreviousEntry)
 		{
-			if (hasPreviousEntry)
-			{
-				_trainingProgram->swapEntries(lineNumber, lineNumber - 1);
-				updateCaches();
-			}
+			_swapEntriesFunc(_trainingProgramId, index, index - 1);
 		}
 	}
-	void TrainingProgramUi::addDownButton(int lineNumber, bool hasNextEntry)
+	void TrainingProgramUi::addDownButton(uint16_t index, bool hasNextEntry)
 	{
-		if (ImGui::ArrowButton(fmt::format("##entrydown_{}", lineNumber).c_str(), ImGuiDir_Down))
+		ImGui::Disable(!hasNextEntry);
+		if (ImGui::ArrowButton(fmt::format("##entrydown_{}", index).c_str(), ImGuiDir_Down) && hasNextEntry)
 		{
-			if (hasNextEntry)
-			{
-				_trainingProgram->swapEntries(lineNumber, lineNumber + 1);
-				updateCaches();
-			}
+			_swapEntriesFunc(_trainingProgramId, index, index + 1);
 		}
 	}
-	void TrainingProgramUi::addDeleteButton(int lineNumber)
+	void TrainingProgramUi::addDeleteButton(uint16_t index)
 	{
-		if (ImGui::Button(fmt::format("##entrydelete_{}", lineNumber).c_str(), "Delete"))
+		if (ImGui::Button(fmt::format("##entrydelete_{}", index).c_str(), "Delete"))
 		{
-			_trainingProgram->removeEntry(lineNumber);
-			updateCaches();
+			_removeEntryFunc(_trainingProgramId, index);
 		}
 	}
 	void TrainingProgramUi::addAddButton()
 	{
 		if (ImGui::Button("##entryadd", "Add"))
 		{
-			_trainingProgram->addEntry({ "New", 0 });
-			updateCaches();
+			_addEntryFunc(_trainingProgramId);
 		}
 	}
 }

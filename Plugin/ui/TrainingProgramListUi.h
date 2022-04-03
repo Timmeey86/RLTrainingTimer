@@ -1,9 +1,9 @@
 #pragma once
 
-// TODO: Completely decouple the Ui namespace from the core namespace.
-//       Instead, make the adapter namespace translate between the two.
-// Alternatively, ditch the hexagonal architecture.
-#include <core/configuration/domain/TrainingProgramList.h>
+#include <core/configuration/events/TrainingProgramEvents.h>
+
+#include <memory>
+#include <functional>
 
 namespace Ui
 {
@@ -13,40 +13,47 @@ namespace Ui
 	public:
 
 		/** Constructor. Expectes a function to be called when switching to editing of a training program. */
-		TrainingProgramListUi(std::function<void(const std::shared_ptr<Core::Configuration::Domain::TrainingProgram>)> startEditingFunc);
-
-		/** Initializes the UI for the list of training programs.
-		 *
-		 * TODO: Use an application service as interface instead.
-		 */
-		void initialize(std::shared_ptr<Core::Configuration::Domain::TrainingProgramList> trainingProgramList);
+		TrainingProgramListUi(
+			std::function<void(uint64_t)> startEditingFunc,
+			std::function<void()> addTrainingProgramFunc,
+			std::function<void(uint64_t)> removeTrainingProgramFunc,
+			std::function<void(uint64_t, const std::string&)> renameTrainingProgramFunc,
+			std::function<void(uint64_t, uint64_t)> swapTrainingProgramsFunc
+		);
 
 		/** Renders the current settings */
 		void renderTrainingProgramList();
 
-		// Temporary method which updates itself from the current training program list.
-		// In future, this needs to be replaced by event processing
-		void updateFromList();
+		/** Updates the internal cache using the parameters of the given event. */
+		void adaptToEvent(const std::shared_ptr<Core::Configuration::Events::TrainingProgramListChangedEvent>& changeEvent);
 
 	private:
 
-		void addProgramNameTextBox(int lineNumber, const Core::Configuration::Domain::TrainingProgramListEntry& entry);
-		void addProgramDurationLabel(const Core::Configuration::Domain::TrainingProgramListEntry& entry);
+		void addProgramNameTextBox(uint16_t index, const Core::Configuration::Events::TrainingProgramInfo& info);
+		void addProgramDurationLabel(const Core::Configuration::Events::TrainingProgramInfo& info);
 		void addUpButton(
-			int lineNumber,
-			const Core::Configuration::Domain::TrainingProgramListEntry& entry,
-			const Core::Configuration::Domain::TrainingProgramListEntry* const previousEntry);
+			uint16_t index,
+			const Core::Configuration::Events::TrainingProgramInfo& info,
+			const Core::Configuration::Events::TrainingProgramInfo* const previousInfo);
 		void addDownButton(
-			int lineNumber,
-			const Core::Configuration::Domain::TrainingProgramListEntry& entry,
-			const Core::Configuration::Domain::TrainingProgramListEntry* const nextEntry);
-		void addEditButton(int lineNumber, const Core::Configuration::Domain::TrainingProgramListEntry& entry);
-		void addDeleteButton(int lineNumber, const Core::Configuration::Domain::TrainingProgramListEntry& entry);
+			uint16_t index,
+			const Core::Configuration::Events::TrainingProgramInfo& info,
+			const Core::Configuration::Events::TrainingProgramInfo* const nextInfo);
+		void addEditButton(uint16_t index, const Core::Configuration::Events::TrainingProgramInfo& info);
+		void addDeleteButton(uint16_t index, const Core::Configuration::Events::TrainingProgramInfo& info);
 		void addAddButton();
 
-		std::shared_ptr<Core::Configuration::Domain::TrainingProgramList> _trainingProgramList;
-		std::vector<Core::Configuration::Domain::TrainingProgramListEntry> _currentEntries;
+		// Caches requried for editing in the UI
 		std::unordered_map<uint64_t, std::string> _entryNameCache;
-		std::function<void(const std::shared_ptr<Core::Configuration::Domain::TrainingProgram>)> _startEditingFunc;
+
+		// Caches for the current values to be rendered
+		std::shared_ptr<Core::Configuration::Events::TrainingProgramListChangedEvent> _mostRecentChangeEvent = nullptr;
+
+		// Functions for forwarding events
+		std::function<void(uint64_t)> _startEditingFunc;
+		std::function<void()> _addTrainingProgramFunc;
+		std::function<void(uint64_t)> _removeTrainingProgramFunc;
+		std::function<void(uint64_t, const std::string&)> _renameTrainingProgramFunc;
+		std::function<void(uint64_t, uint64_t)> _swapTrainingProgramsFunc;
 	};
 }

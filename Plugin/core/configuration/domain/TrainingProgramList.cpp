@@ -8,41 +8,33 @@
 
 namespace Core::Configuration::Domain
 {
-    std::shared_ptr<Kernel::DomainEvent> TrainingProgramList::addTrainingProgram(uint64_t trainingProgramId)
+    std::vector<std::shared_ptr<Kernel::DomainEvent>> TrainingProgramList::addTrainingProgram(uint64_t trainingProgramId)
     {
         ensureIdDoesntExist(trainingProgramId);
 
         _trainingProgramOrder.push_back(trainingProgramId);
         _trainingPrograms.emplace(trainingProgramId, std::make_shared<TrainingProgram>(trainingProgramId));
 
-        auto eventData = std::make_shared<Events::TrainingProgramAddedEvent>();
-        eventData->TrainingProgramId = trainingProgramId;
-        return eventData;
+        auto addEvent = std::make_shared<Events::TrainingProgramAddedEvent>();
+        addEvent->AffectedTrainingProgramIds.push_back(trainingProgramId);
+
+        return addListChangedEvent({ addEvent });
     }
 
-    std::shared_ptr<Kernel::DomainEvent> TrainingProgramList::removeTrainingProgram(uint64_t trainingProgramId)
+
+    std::vector<std::shared_ptr<Kernel::DomainEvent>> TrainingProgramList::removeTrainingProgram(uint64_t trainingProgramId)
     {
         ensureIdIsKnown(trainingProgramId, "training program ID");
 
         removeOne(_trainingProgramOrder, trainingProgramId);
         _trainingPrograms.erase(trainingProgramId); // this will delete the program, unless anyone else references it.
 
-        auto eventData = std::make_shared<Events::TrainingProgramRemovedEvent>();
-        eventData->TrainingProgramId = trainingProgramId;
-        return eventData;
-    }
-    std::shared_ptr<Kernel::DomainEvent> TrainingProgramList::renameTrainingProgram(uint64_t trainingProgramId, const std::string& newName)
-    {
-        ensureIdIsKnown(trainingProgramId, "training program ID");
+        auto removeEvent = std::make_shared<Events::TrainingProgramRemovedEvent>();
+        removeEvent->AffectedTrainingProgramIds.push_back(trainingProgramId);
 
-        _trainingPrograms[trainingProgramId]->renameProgram(newName);
-
-        auto eventData = std::make_shared<Events::TrainingProgramRenamedEvent>();
-        eventData->TrainingProgramId = trainingProgramId;
-        eventData->TrainingProgramName = newName;
-        return eventData;
+        return addListChangedEvent({ removeEvent });
     }
-    std::shared_ptr<Kernel::DomainEvent> TrainingProgramList::swapTrainingPrograms(uint64_t firstProgramId, uint64_t secondProgramId)
+    std::vector<std::shared_ptr<Kernel::DomainEvent>> TrainingProgramList::swapTrainingPrograms(uint64_t firstProgramId, uint64_t secondProgramId)
     {
         ensureIdIsKnown(firstProgramId, "first training program ID");
         ensureIdIsKnown(secondProgramId, "second training program ID");
@@ -59,10 +51,11 @@ namespace Core::Configuration::Domain
             throw std::runtime_error("Training Program List is inconsistent");
         }
 
-        auto eventData = std::make_shared<Events::TrainingProgramSwappedEvent>();
-        eventData->FirstTrainingProgramId = firstProgramId;
-        eventData->SecondTrainingProgramId = secondProgramId;
-        return eventData;
+        auto swapEvent = std::make_shared<Events::TrainingProgramSwappedEvent>();
+        swapEvent->AffectedTrainingProgramIds.push_back(firstProgramId);
+        swapEvent->AffectedTrainingProgramIds.push_back(secondProgramId);
+
+        return addListChangedEvent({ swapEvent });
     }
     void TrainingProgramList::applyEvents(const std::vector<std::shared_ptr<Kernel::DomainEvent>>& events)
     {
@@ -70,53 +63,55 @@ namespace Core::Configuration::Domain
         {
             if (auto additionEvent = dynamic_cast<Events::TrainingProgramAddedEvent*>(genericEvent.get()))
             {
-                addTrainingProgram(additionEvent->TrainingProgramId);
+                addTrainingProgram(additionEvent->AffectedTrainingProgramIds.front());
             }
             else if (auto removalEvent = dynamic_cast<Events::TrainingProgramRemovedEvent*>(genericEvent.get()))
             {
-                removeTrainingProgram(removalEvent->TrainingProgramId);
+                removeTrainingProgram(removalEvent->AffectedTrainingProgramIds.front());
             }
             else if (auto swapEvent = dynamic_cast<Events::TrainingProgramSwappedEvent*>(genericEvent.get()))
             {
-                swapTrainingPrograms(swapEvent->FirstTrainingProgramId, swapEvent->SecondTrainingProgramId);
+                swapTrainingPrograms(swapEvent->AffectedTrainingProgramIds.front(), swapEvent->AffectedTrainingProgramIds.back());
             }
-            else if (auto renameEvent = dynamic_cast<Events::TrainingProgramRenamedEvent*>(genericEvent.get()))
-            {
-                renameTrainingProgram(renameEvent->TrainingProgramId, renameEvent->TrainingProgramName);
-            }
-            // else: ignore
+            // else: ignore, this might be an event targeting user interfaces instead
         }
     }
     std::shared_ptr<TrainingProgram> TrainingProgramList::getTrainingProgram(uint64_t trainingProgramId) const
     {
-        if (_trainingPrograms.count(trainingProgramId) == 0)
-        {
-            throw Kernel::InvalidValueException(
-                "Configuration",
-                "Aggregate",
-                "TrainingProgramList",
-                "trainingProgramId",
-                "The given training program is not known.",
-                std::to_string(trainingProgramId)
-            );
-        }
+        ensureIdIsKnown(trainingProgramId, "trainingProgramId");
         return _trainingPrograms.at(trainingProgramId);
     }
-    std::vector<TrainingProgramListEntry> TrainingProgramList::getListEntries() const
+    std::shared_ptr<Kernel::DomainEvent> TrainingProgramList::createListChangedEvent()
     {
-        std::vector<TrainingProgramListEntry> entries;
-        for (auto trainingProgramId : _trainingProgramOrder)
+        auto changedEvent  = std::make_shared<Events::TrainingProgramListChangedEvent>();
+        for (auto index = (uint16_t)0; index < (uint16_t)_trainingProgramOrder.size(); index++)
         {
-            const auto& trainingProgram = _trainingPrograms.at(trainingProgramId);
-            entries.push_back({
-                trainingProgram->id(),
-                trainingProgram->name(),
-                trainingProgram->programDuration()
+            const auto& trainingProgramIdAtIndex = _trainingProgramOrder.at(index);
+            const auto& trainingProgramAtIndex = _trainingPrograms.at(trainingProgramIdAtIndex);
+            changedEvent->TrainingProgramListInfo.push_back(Events::TrainingProgramInfo{
+                trainingProgramIdAtIndex,
+                index,
+                trainingProgramAtIndex->name(),
+                std::chrono::milliseconds(trainingProgramAtIndex->programDuration()),
+                trainingProgramAtIndex->entryCount()
                 });
         }
-        return entries;
+        return changedEvent;
     }
-    void TrainingProgramList::ensureIdDoesntExist(uint64_t trainingProgramId)
+    uint64_t TrainingProgramList::getMaximumId() const
+    {
+        auto maxId = 0ULL;
+        for (auto id : _trainingProgramOrder)
+        {
+            if (id > maxId)
+            {
+                maxId = id;
+            }
+        }
+        return maxId;
+    }
+
+    void TrainingProgramList::ensureIdDoesntExist(uint64_t trainingProgramId) const
     {
         if (_trainingPrograms.count(trainingProgramId) > 0)
         {
@@ -130,7 +125,7 @@ namespace Core::Configuration::Domain
             );
         }
     }
-    void TrainingProgramList::ensureIdIsKnown(uint64_t trainingProgramId, const std::string& parameterName)
+    void TrainingProgramList::ensureIdIsKnown(uint64_t trainingProgramId, const std::string& parameterName) const
     {
         if (_trainingPrograms.count(trainingProgramId) == 0)
         {
@@ -143,5 +138,10 @@ namespace Core::Configuration::Domain
                 std::to_string(trainingProgramId)
             );
         }
+    }
+    std::vector<std::shared_ptr<Kernel::DomainEvent>> TrainingProgramList::addListChangedEvent(std::vector<std::shared_ptr<Kernel::DomainEvent>> otherEvents)
+    {
+        otherEvents.push_back(createListChangedEvent());
+        return otherEvents;
     }
 }

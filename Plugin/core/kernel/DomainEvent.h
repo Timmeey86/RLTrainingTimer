@@ -7,7 +7,15 @@ namespace Core::Kernel
 	{
 	public:
 		virtual ~DomainEvent() = default;
+		/** Returns true if it makes sense to store this event persistently, which also means an object can be restored with it (and other events). */
+		inline bool shallBeStoredPersistently() const { return _shallBeStoredPersistently; }
+
 	protected:
-		DomainEvent() = default;
+		explicit DomainEvent(bool shallBeStoredPersistently) 
+			: _shallBeStoredPersistently{ shallBeStoredPersistently }
+		{}
+
+	private:
+		bool _shallBeStoredPersistently;
 	};
 }
