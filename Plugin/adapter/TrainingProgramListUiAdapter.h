@@ -18,8 +18,6 @@ namespace Adapter
 	  * We are currently using a lazy approach where this is a bidirectional adapter, i.e. it forwards commands to the application service,
 	  * and it acts as an event receiver, too.
 	  * 
-	  * Note that the event part of Application Service and this adapter need to be connected outside of this class so we can use shared pointers
-	  * 
 	  * An important concept to understand for bakkesmod settings pages is that RenderSettings() will be called
 	  * on each frame. Since we only want to update the UI in case of domain events (rather than polling each frame),
 	  * this class makes use of a local cache which lives as long as the settings page is open.

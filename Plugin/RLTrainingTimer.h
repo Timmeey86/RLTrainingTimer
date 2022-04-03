@@ -10,6 +10,7 @@
 #include "ui/TrainingProgramFlowControlUi.h"
 #include "ui/TrainingProgramDisplay.h"
 
+#include <core/configuration/application/TrainingProgramConfigurationService.h>
 #include <core/training/application/TrainingApplicationService.h>
 
 #include "version.h"
@@ -27,6 +28,8 @@ public:
 
 private:
 
+	std::shared_ptr<Core::Configuration::Application::TrainingProgramConfigurationService> _configurationAppService
+		= std::make_shared< Core::Configuration::Application::TrainingProgramConfigurationService>();
 	//std::shared_ptr<Core::Training::Application::TrainingApplicationService> _trainingAppService;
 	//std::shared_ptr<Adapter::RocketLeagueEventAdapter> _eventAdapter;
 };

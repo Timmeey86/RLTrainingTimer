@@ -113,7 +113,7 @@ namespace Ui
 	}
 	void TrainingProgramUi::addProgramDurationLabel()
 	{
-		std::chrono::minutes durationSum;
+		std::chrono::minutes durationSum = {};
 		for (const auto& duration : _durationCache)
 		{
 			durationSum += std::chrono::minutes(duration);
@@ -133,9 +133,16 @@ namespace Ui
 		ImGui::PushItemWidth(100.0f);
 		if (ImGui::InputInt(fmt::format("##entryduration_{}", index).c_str(), &_durationCache[index]))
 		{
-			const auto durationInMinutes = std::chrono::minutes(_durationCache[index]);
-			const auto durationInMilliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(durationInMinutes);
-			_changeDurationFunc(_trainingProgramId, index, durationInMilliseconds);
+			if (_durationCache[index] < 0)
+			{
+				_durationCache[index] = 0;
+			}
+			else
+			{
+				const auto durationInMinutes = std::chrono::minutes(_durationCache[index]);
+				const auto durationInMilliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(durationInMinutes);
+				_changeDurationFunc(_trainingProgramId, index, durationInMilliseconds);
+			}
 		}
 		ImGui::PopItemWidth();
 		ImGui::SameLine();
@@ -143,7 +150,7 @@ namespace Ui
 	}
 	void TrainingProgramUi::addUpButton(uint16_t index, bool hasPreviousEntry)
 	{
-		ImGui::Disable(!hasPreviousEntry);
+		ImGui::Disable disable(!hasPreviousEntry);
 		if (ImGui::ArrowButton(fmt::format("##entryup_{}", index).c_str(), ImGuiDir_Up) && hasPreviousEntry)
 		{
 			_swapEntriesFunc(_trainingProgramId, index, index - 1);
@@ -151,7 +158,7 @@ namespace Ui
 	}
 	void TrainingProgramUi::addDownButton(uint16_t index, bool hasNextEntry)
 	{
-		ImGui::Disable(!hasNextEntry);
+		ImGui::Disable disable(!hasNextEntry);
 		if (ImGui::ArrowButton(fmt::format("##entrydown_{}", index).c_str(), ImGuiDir_Down) && hasNextEntry)
 		{
 			_swapEntriesFunc(_trainingProgramId, index, index + 1);

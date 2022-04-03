@@ -1,8 +1,6 @@
 #include <pch.h>
 #include "RLTrainingTimer.h"
 
-// DUMMY
-#include <core/configuration/domain/TrainingProgramList.h>
 
 BAKKESMOD_PLUGIN(RLTrainingTimer, "RL Training Timer", plugin_version, PLUGINTYPE_FREEPLAY)
 
@@ -11,27 +9,42 @@ std::shared_ptr<CVarManagerWrapper> _globalCvarManager;
 void RLTrainingTimer::onLoad()
 {
 	_globalCvarManager = cvarManager;
+
+	connectToAppService(_configurationAppService);
+
+
 	// DUMMY CODE
-	auto DUMMY_trainingProgramList = std::make_shared<Core::Configuration::Domain::TrainingProgramList>();
-	DUMMY_trainingProgramList->addTrainingProgram(0);
-	DUMMY_trainingProgramList->addTrainingProgram(1);
-	DUMMY_trainingProgramList->addTrainingProgram(2);
+	_configurationAppService->addTrainingProgram({});
+	_configurationAppService->addTrainingProgram({});
+	_configurationAppService->addTrainingProgram({});
 
-	DUMMY_trainingProgramList->getTrainingProgram(0)->renameProgram("Coaching Training Schedule");
-	DUMMY_trainingProgramList->getTrainingProgram(1)->renameProgram("Second program");
-	DUMMY_trainingProgramList->getTrainingProgram(2)->renameProgram("Third program");
+	_configurationAppService->renameTrainingProgram({ 1, "Coaching Training Schedule" });
+	_configurationAppService->renameTrainingProgram({ 2, "Second Program" });
+	_configurationAppService->renameTrainingProgram({ 3, "Third Program" });
 
-	auto DUMMY_firstProgram = DUMMY_trainingProgramList->getTrainingProgram(0);
-	DUMMY_firstProgram->addEntry({ "Forward Wave Dashes (No Boost)", std::chrono::minutes(2) });
-	DUMMY_firstProgram->addEntry({ "Forward Wave Dashes (With Boost)", std::chrono::minutes(3) });
-	DUMMY_firstProgram->addEntry({ "Forward Wave Dashes (Ball Cam On)", std::chrono::minutes(3) });
-	DUMMY_firstProgram->addEntry({ "Any Direction Wave Dashes", std::chrono::minutes(2) });
-	DUMMY_firstProgram->addEntry({ "Half Flips (ball cam off)", std::chrono::minutes(5) });
-	DUMMY_firstProgram->addEntry({ "Saves from the Wall (use BM)", std::chrono::minutes(5) });
+	_configurationAppService->addTrainingProgramEntry({ 1 });
+	_configurationAppService->addTrainingProgramEntry({ 1 });
+	_configurationAppService->addTrainingProgramEntry({ 1 });
+	_configurationAppService->addTrainingProgramEntry({ 1 });
+	_configurationAppService->addTrainingProgramEntry({ 1 });
+	_configurationAppService->addTrainingProgramEntry({ 1 });
 
+	_configurationAppService->renameTrainingProgramEntry({ 1, 0, "Forward Wave Dashes (No Boost)" });
+	_configurationAppService->renameTrainingProgramEntry({ 1, 1, "Forward Wave Dashes (With Boost)" });
+	_configurationAppService->renameTrainingProgramEntry({ 1, 2, "Forward Wave Dashes (Ball Cam On)" });
+	_configurationAppService->renameTrainingProgramEntry({ 1, 3, "Any Direction Wave Dashes" });
+	_configurationAppService->renameTrainingProgramEntry({ 1, 4, "Half Flips (ball cam off)" });
+	_configurationAppService->renameTrainingProgramEntry({ 1, 5, "Saves from the Wall (use BM)" });
 
-	auto DUMMY_secondProgram = DUMMY_trainingProgramList->getTrainingProgram(1);
-	DUMMY_secondProgram->addEntry({ "Dummy", std::chrono::minutes(30) });
+	_configurationAppService->changeTrainingProgramEntryDuration({ 1, 0, std::chrono::minutes(2) });
+	_configurationAppService->changeTrainingProgramEntryDuration({ 1, 1, std::chrono::minutes(3) });
+	_configurationAppService->changeTrainingProgramEntryDuration({ 1, 2, std::chrono::minutes(3) });
+	_configurationAppService->changeTrainingProgramEntryDuration({ 1, 3, std::chrono::minutes(2) });
+	_configurationAppService->changeTrainingProgramEntryDuration({ 1, 4, std::chrono::minutes(5) });
+	_configurationAppService->changeTrainingProgramEntryDuration({ 1, 5, std::chrono::minutes(5) });
+
+	_configurationAppService->addTrainingProgramEntry({ 2 });
+	_configurationAppService->changeTrainingProgramEntryDuration({ 2, 0, std::chrono::minutes(30) });
 
 	//subscribe(DUMMY_trainingProgramList);
 

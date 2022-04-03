@@ -1,9 +1,10 @@
 #include <pch.h>
 #include "TrainingProgramConfigurationService.h"
+#include "../events/TrainingProgramEvents.h"
 
 namespace Core::Configuration::Application
 {
-	void TrainingProgramConfigurationService::registerEventReceiver(std::shared_ptr<IConfigurationEventReceiver> eventReceiver)
+	void TrainingProgramConfigurationService::registerEventReceiver(IConfigurationEventReceiver* const eventReceiver)
 	{
 		_eventReceivers.push_back(eventReceiver);
 	}
@@ -11,8 +12,12 @@ namespace Core::Configuration::Application
 	void TrainingProgramConfigurationService::addTrainingProgram(const Commands::AddTrainingProgramCommand&)
 	{
 		_maximumId++;
-		const auto events = _trainingProgramList->addTrainingProgram(_maximumId);
-		publishEvents(events);
+		auto events = _trainingProgramList->addTrainingProgram(_maximumId);
+
+		// In addition to the regular events, we need to send an initial update so the UIs which focus on a single training program
+		// know that this program exists now
+		auto trainingProgram = _trainingProgramList->getTrainingProgram(_maximumId);
+		publishEvents(trainingProgram->addProgramChangedEvent(events));
 	}
 
 	void TrainingProgramConfigurationService::removeTrainingProgram(const Commands::RemoveTrainingProgramCommand& command)

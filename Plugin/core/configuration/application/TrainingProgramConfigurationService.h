@@ -39,7 +39,7 @@ namespace Core::Configuration::Application
 	public:
 
 		/** Registers a new event receiver. */
-		void registerEventReceiver(std::shared_ptr<IConfigurationEventReceiver> eventReceiver);
+		void registerEventReceiver(IConfigurationEventReceiver* const receiver);
 
 		/** Adds a training program. */
 		void addTrainingProgram(const Commands::AddTrainingProgramCommand& command);
@@ -67,7 +67,7 @@ namespace Core::Configuration::Application
 	private:
 		void publishEvents(const std::vector<std::shared_ptr<Kernel::DomainEvent>>& events) const;
 
-		std::vector<std::shared_ptr<IConfigurationEventReceiver>> _eventReceivers;
+		std::vector<IConfigurationEventReceiver*> _eventReceivers;
 		std::unique_ptr<Domain::TrainingProgramList> _trainingProgramList = std::make_unique<Domain::TrainingProgramList>();
 		std::uint64_t _maximumId = 0ULL;
 	};
