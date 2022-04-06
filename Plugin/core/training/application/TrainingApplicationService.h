@@ -27,10 +27,7 @@ namespace Core::Training::Application
 	{
 	public:
 		/** Constructor. */
-		explicit TrainingApplicationService(
-			std::shared_ptr<TrainingProgramDisplayReadModel> displayReadModel,
-			std::shared_ptr<TrainingProgramFlowControlReadModel> flowControlReadModel
-		);
+		explicit TrainingApplicationService();
 
 		/** Selects a program for the upcoming training. */
 		void selectTrainingProgram(const Commands::SelectTrainingProgramCommand& command);
@@ -57,10 +54,10 @@ namespace Core::Training::Application
 		void processEvent(const std::shared_ptr<Kernel::DomainEvent>& genericEvent) override;
 
 		/** Retrieves the read model for the training program flow control. */
-		inline TrainingProgramFlowControlReadModel getFlowControlReadModel() const { return *_flowControlReadModel; }
+		inline TrainingProgramFlowControlReadModel getFlowControlReadModel() const { return _flowControlReadModel; }
 		
 		/** Retrieves the read model for the training program display. */
-		inline TrainingProgramDisplayReadModel getDisplayReadModel() const { return *_displayReadModel; }
+		inline TrainingProgramDisplayReadModel getDisplayReadModel() const { return _displayReadModel; }
 
 	private:
 
@@ -73,8 +70,8 @@ namespace Core::Training::Application
 		std::vector<std::chrono::milliseconds> _trainingProgramEntryEndTimes;
 
 		std::unique_ptr<Domain::TrainingProgramFlow> _trainingProgramFlow = std::make_unique<Domain::TrainingProgramFlow>();
-		std::shared_ptr<TrainingProgramDisplayReadModel> _displayReadModel;
-		std::shared_ptr<TrainingProgramFlowControlReadModel> _flowControlReadModel;
+		TrainingProgramDisplayReadModel _displayReadModel;
+		TrainingProgramFlowControlReadModel _flowControlReadModel;
 
 	};
 }

@@ -17,7 +17,7 @@
 
 constexpr auto plugin_version = stringify(VERSION_MAJOR) "." stringify(VERSION_MINOR) "." stringify(VERSION_PATCH) "." stringify(VERSION_BUILD);
 
-class RLTrainingTimer : public BakkesMod::Plugin::BakkesModPlugin, public Adapter::TrainingProgramListUiAdapter //, public Ui::TrainingProgramFlowControlUi
+class RLTrainingTimer : public BakkesMod::Plugin::BakkesModPlugin, public Adapter::TrainingProgramListUiAdapter, public Ui::TrainingProgramFlowControlUi
 {
 public:
 	RLTrainingTimer() = default;
@@ -30,7 +30,7 @@ private:
 
 	std::shared_ptr<Core::Configuration::Application::TrainingProgramConfigurationService> _configurationAppService
 		= std::make_shared< Core::Configuration::Application::TrainingProgramConfigurationService>();
-	//std::shared_ptr<Core::Training::Application::TrainingApplicationService> _trainingAppService;
-	//std::shared_ptr<Adapter::RocketLeagueEventAdapter> _eventAdapter;
+	std::shared_ptr<Core::Training::Application::TrainingApplicationService> _trainingAppService;
+	std::shared_ptr<Adapter::RocketLeagueEventAdapter> _eventAdapter;
 };
 

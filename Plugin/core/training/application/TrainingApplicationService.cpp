@@ -6,14 +6,7 @@
 
 namespace Core::Training::Application
 {
-	TrainingApplicationService::TrainingApplicationService(
-		std::shared_ptr<TrainingProgramDisplayReadModel> displayReadModel,
-		std::shared_ptr<TrainingProgramFlowControlReadModel> flowControlReadModel
-	)
-		: _displayReadModel{ std::move(displayReadModel) }
-		, _flowControlReadModel{ std::move(flowControlReadModel) }
-	{
-	}
+	TrainingApplicationService::TrainingApplicationService() = default;
 
 	void TrainingApplicationService::selectTrainingProgram(const Commands::SelectTrainingProgramCommand& command)
 	{
@@ -167,8 +160,8 @@ namespace Core::Training::Application
 		{
 			if (genericEvent == nullptr) { continue; }
 
-			_displayReadModel->dispatchEvent(genericEvent);
-			_flowControlReadModel->dispatchEvent(genericEvent);
+			_displayReadModel.dispatchEvent(genericEvent);
+			_flowControlReadModel.dispatchEvent(genericEvent);
 		}
 	}
 
