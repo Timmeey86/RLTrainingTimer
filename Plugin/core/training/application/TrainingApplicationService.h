@@ -57,10 +57,10 @@ namespace Core::Training::Application
 		void processEvent(const std::shared_ptr<Kernel::DomainEvent>& genericEvent) override;
 
 		/** Retrieves the read model for the training program flow control. */
-		inline std::shared_ptr<TrainingProgramFlowControlReadModel> getFlowControlReadModel() const { return _flowControlReadModel; }
+		inline TrainingProgramFlowControlReadModel getFlowControlReadModel() const { return *_flowControlReadModel; }
 		
 		/** Retrieves the read model for the training program display. */
-		inline std::shared_ptr<TrainingProgramDisplayReadModel> getDisplayReadModel() const { return _displayReadModel; }
+		inline TrainingProgramDisplayReadModel getDisplayReadModel() const { return *_displayReadModel; }
 
 	private:
 

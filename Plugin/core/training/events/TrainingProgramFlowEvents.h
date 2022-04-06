@@ -13,8 +13,11 @@ namespace Core::Training::Events
 	public:
 		TrainingProgramSelectedEvent() : Kernel::DomainEvent(false) {} // We only store&restore configuration events
 
-		uint64_t SelectedTrainingProgramId;
-		std::optional<uint64_t> PreviouslySelectedTrainingProgramId;
+		uint64_t SelectedTrainingProgramId = 0;
+		std::optional<uint64_t> PreviouslySelectedTrainingProgramId = {};
+		std::string Name = {};
+		std::chrono::milliseconds Duration = {};
+		uint16_t NumberOfSteps = 0;
 	};
 
 	/** Signals a reset of the selection of a training program. */

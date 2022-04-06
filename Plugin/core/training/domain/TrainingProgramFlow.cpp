@@ -74,19 +74,28 @@ namespace Core::Training::Domain
             resultEvents.insert(resultEvents.end(), abortEvents.begin(), abortEvents.end());
         }
 
-        // Add a new selection event
-        auto selectionEvent = std::make_shared<Events::TrainingProgramSelectedEvent>();
-        selectionEvent->PreviouslySelectedTrainingProgramId = _selectedTrainingProgramId;
-        selectionEvent->SelectedTrainingProgramId = trainingProgramId;
-        resultEvents.push_back(selectionEvent);
+        if (_trainingProgramData.count(trainingProgramId) > 0)
+        {
+            // Add a new selection event
+            auto selectionEvent = std::make_shared<Events::TrainingProgramSelectedEvent>();
+            selectionEvent->PreviouslySelectedTrainingProgramId = _selectedTrainingProgramId;
+            selectionEvent->SelectedTrainingProgramId = trainingProgramId;
+            
+            const auto& trainingProgramData = _trainingProgramData.at(trainingProgramId);
+            selectionEvent->Name = trainingProgramData.TrainingProgramName;
+            selectionEvent->Duration = trainingProgramData.TrainingProgramDuration;
+            selectionEvent->NumberOfSteps = (uint16_t)trainingProgramData.TrainingProgramEntries.size();
 
-        // Add a state update for the UI
-        addWaitingForStartStateEvent(resultEvents);
+            resultEvents.push_back(selectionEvent);
 
-        // Adapt initial state                    
-        _selectedTrainingProgramId = trainingProgramId;
-        _currentTrainingStepNumber.reset();
-        _currentTrainingProgramState = Definitions::TrainingProgramState::WaitingForStart;
+            // Add a state update for the UI
+            addWaitingForStartStateEvent(resultEvents);
+
+            // Adapt initial state                    
+            _selectedTrainingProgramId = trainingProgramId;
+            _currentTrainingStepNumber.reset();
+            _currentTrainingProgramState = Definitions::TrainingProgramState::WaitingForStart;
+        }
 
         // Publish the events
         return resultEvents;
