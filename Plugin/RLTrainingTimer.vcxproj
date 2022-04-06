@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Release|x64">
@@ -98,7 +98,8 @@
     <ClCompile Include="core\configuration\application\TrainingProgramConfigurationService.cpp" />
     <ClCompile Include="core\kernel\InvalidStateException.cpp" />
     <ClCompile Include="core\training\application\TrainingApplicationService.cpp" />
-    <ClCompile Include="core\training\application\TrainingProgramFlowReadModel.cpp" />
+    <ClCompile Include="core\training\application\TrainingProgramDisplayReadModel.cpp" />
+    <ClCompile Include="core\training\application\TrainingProgramFlowControlReadModel.cpp" />
     <ClCompile Include="core\training\domain\TrainingProgramFlow.cpp" />
     <ClCompile Include="external\IMGUI\imgui_disable.cpp" />
     <ClCompile Include="ui\TrainingProgramDisplay.cpp" />
@@ -138,10 +139,10 @@
     <ClInclude Include="core\training\application\TrainingApplicationService.h" />
     <ClInclude Include="core\training\application\TrainingProgramDisplayReadModel.h" />
     <ClInclude Include="core\training\application\TrainingProgramFlowControlReadModel.h" />
+    <ClInclude Include="core\training\definitions\TrainingProgramStates.h" />
     <ClInclude Include="external\IMGUI\imgui_disable.h" />
     <ClInclude Include="ui\TrainingProgramDisplay.h" />
     <ClInclude Include="ui\TrainingProgramFlowControlUi.h" />
-    <ClInclude Include="core\training\application\TrainingProgramFlowReadModel.h" />
     <ClInclude Include="core\training\commands\TrainingCommands.h" />
     <ClInclude Include="core\training\domain\TrainingProgramFlow.h" />
     <ClInclude Include="core\training\events\TrainingProgramFlowEvents.h" />

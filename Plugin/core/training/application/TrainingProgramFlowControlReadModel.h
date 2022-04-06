@@ -1,6 +1,7 @@
 #pragma once
 
 #include <core/configuration/events/TrainingProgramEvents.h>
+#include <core/configuration/events/TrainingProgramEntryEvents.h>
 #include <core/training/events/TrainingProgramFlowEvents.h>
 
 #include <DLLImportExport.h>
@@ -19,7 +20,6 @@ namespace Core::Training::Application
 	public:
 
 		void on(const std::shared_ptr<Configuration::Events::TrainingProgramListChangedEvent>& changeEvent);
-		void on(const std::shared_ptr<Configuration::Events::TrainingProgramDetailsChangedEvent>& changeEvent);
 		void on(const std::shared_ptr<Events::TrainingProgramSelectedEvent>& selectionEvent);
 		void on(const std::shared_ptr<Events::TrainingProgramSelectionResetEvent>& selectionEvent);
 		void on(const std::shared_ptr<Events::TrainingProgramStateChangedEvent>& stateEvent);

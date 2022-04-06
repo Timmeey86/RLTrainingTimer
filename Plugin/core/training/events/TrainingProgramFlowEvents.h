@@ -39,11 +39,11 @@ namespace Core::Training::Events
 		bool SwitchingProgramIsPossible = false;
 	};
 
-	/** Signals the start of a training program step. */
-	class TrainingProgramStepActivatedEvent : public Kernel::DomainEvent
+	/** Signals the change to a new training program step. The valid flag is used for invalidating any currently displayed training step info. */
+	class TrainingProgramStepChangedEvent : public Kernel::DomainEvent
 	{
 	public:
-		TrainingProgramStepActivatedEvent() : Kernel::DomainEvent(false) {} // We only store&restore configuration events
+		TrainingProgramStepChangedEvent() : Kernel::DomainEvent(false) {} // We only store&restore configuration events
 
 		bool IsValid = false;
 		std::string Name = {};

@@ -78,13 +78,12 @@
     <ClCompile Include="core\training\application\TrainingApplicationService.cpp">
       <Filter>core\training\application</Filter>
     </ClCompile>
-    <ClCompile Include="core\training\application\TrainingProgramFlowReadModel.cpp">
-      <Filter>core\training\application</Filter>
-    </ClCompile>
     <ClCompile Include="ui\TrainingProgramFlowControlUi.cpp" />
     <ClCompile Include="external\IMGUI\imgui_disable.cpp" />
     <ClCompile Include="ui\TrainingProgramDisplay.cpp" />
     <ClCompile Include="core\configuration\application\TrainingProgramConfigurationService.cpp" />
+    <ClCompile Include="core\training\application\TrainingProgramFlowControlReadModel.cpp" />
+    <ClCompile Include="core\training\application\TrainingProgramDisplayReadModel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -220,9 +219,6 @@
     <ClInclude Include="core\training\application\TrainingApplicationService.h">
       <Filter>core\training\application</Filter>
     </ClInclude>
-    <ClInclude Include="core\training\application\TrainingProgramFlowReadModel.h">
-      <Filter>core\training\application</Filter>
-    </ClInclude>
     <ClInclude Include="core\training\commands\TrainingCommands.h">
       <Filter>core\training\commands</Filter>
     </ClInclude>
@@ -235,6 +231,7 @@
     <ClInclude Include="core\training\application\TrainingProgramDisplayReadModel.h" />
     <ClInclude Include="core\configuration\commands\TrainingProgramConfigurationCommands.h" />
     <ClInclude Include="core\configuration\application\TrainingProgramConfigurationService.h" />
+    <ClInclude Include="core\training\definitions\TrainingProgramStates.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="RLTrainingTimer.rc" />

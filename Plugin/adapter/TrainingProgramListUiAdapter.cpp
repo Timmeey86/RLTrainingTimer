@@ -12,7 +12,7 @@ namespace Adapter
     {
         _appService = appService;
 
-        // Function for switching the editing a single training program
+        // Function for switching to editing a single training program
         auto startEditingTrainingProgram = [this](uint64_t trainingProgramId)
         {
             _trainingProgramUi->setCurrentTrainingProgramId(trainingProgramId);
