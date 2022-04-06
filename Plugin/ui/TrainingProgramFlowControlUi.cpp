@@ -104,7 +104,7 @@ namespace Ui
 			ImGui::Disable disable_selection_if_necessary(!_currentReadModel.MostRecentStateEvent->SwitchingProgramIsPossible);
 			for( const auto& trainingProgramInfo : _currentReadModel.MostRecentChangeEvent->TrainingProgramListInfo)
 			{
-				const auto isSelected = _currentReadModel.MostRecentSelectionEvent->SelectedTrainingProgramId == trainingProgramInfo.Id;
+				const auto isSelected = _currentReadModel.MostRecentSelectionEvent != nullptr && _currentReadModel.MostRecentSelectionEvent->SelectedTrainingProgramId == trainingProgramInfo.Id;
 				if (ImGui::Selectable(trainingProgramInfo.Name.c_str(), isSelected))
 				{
 					try

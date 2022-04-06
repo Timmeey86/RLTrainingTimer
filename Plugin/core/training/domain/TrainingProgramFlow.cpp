@@ -119,12 +119,12 @@ namespace Core::Training::Domain
             _selectedTrainingProgramId.reset();
             resultEvents.push_back(resetEvent);
 
-            // Add a state update
-            addUninitializedStateEvent(resultEvents);
-
             _currentTrainingProgramState = Definitions::TrainingProgramState::Uninitialized;
         }
         // Else: Rather than throwing an exception, ignore this.
+
+        // Add a state update in any case (we abuse this for an initial update..)
+        addUninitializedStateEvent(resultEvents);
 
         return resultEvents;
     }
@@ -163,10 +163,12 @@ namespace Core::Training::Domain
                 {
                     _currentTrainingStepNumber = _currentTrainingStepNumber.value() + 1;
                 }
+                auto trainingProgramEntry = trainingProgramData.TrainingProgramEntries.at(_currentTrainingStepNumber.value());
+
                 auto stepActivationEvent = std::make_shared<Events::TrainingProgramStepChangedEvent>();
                 stepActivationEvent->IsValid = true;
-                stepActivationEvent->Name = trainingProgramData.TrainingProgramName;
-                stepActivationEvent->Duration = trainingProgramData.TrainingProgramDuration;
+                stepActivationEvent->Name = trainingProgramEntry.Name;
+                stepActivationEvent->Duration = trainingProgramEntry.Duration;
                 stepActivationEvent->StepNumber = _currentTrainingStepNumber.value();
                 resultEvents.push_back(stepActivationEvent);
 
@@ -275,7 +277,7 @@ namespace Core::Training::Domain
                 timeUpdatedEvent->TimeSpentInTraining = passedTime;
                 timeUpdatedEvent->CurrentTrainingStepDuration = currentTrainingStep.Duration;
                 timeUpdatedEvent->TimeLeftInProgram = currentTrainingProgram.TrainingProgramDuration - passedTime;
-                timeUpdatedEvent->TimeLeftInCurrentTrainingStep = nextThreshold - timeUpdatedEvent->CurrentTrainingStepDuration;
+                timeUpdatedEvent->TimeLeftInCurrentTrainingStep = nextThreshold - timeUpdatedEvent->TimeSpentInTraining;
 
                 // Fixup negative values (happens when "passedTime" doesn't match the training program duration exactly, which might be always)
                 if (timeUpdatedEvent->TimeLeftInProgram.count() < 0) 

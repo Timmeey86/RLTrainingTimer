@@ -6,7 +6,10 @@
 
 namespace Core::Training::Application
 {
-	TrainingApplicationService::TrainingApplicationService() = default;
+	TrainingApplicationService::TrainingApplicationService()
+	{
+		updateReadModels(_trainingProgramFlow->unselectTrainingProgram()); // Will generate just a state vent
+	}
 
 	void TrainingApplicationService::selectTrainingProgram(const Commands::SelectTrainingProgramCommand& command)
 	{
@@ -60,6 +63,9 @@ namespace Core::Training::Application
 		events.insert(events.end(), nextStepEvents.begin(), nextStepEvents.end());
 		events.insert(events.end(), pauseEvents.begin(), pauseEvents.end());
 
+		LOG("Starting");
+		_referenceTime = std::chrono::steady_clock::now();
+
 		updateReadModels(events);
 	}
 
@@ -71,6 +77,9 @@ namespace Core::Training::Application
 				"You tried pausing a training program, even though no training program was running, or the program was paused already."
 			);
 		}
+
+		LOG("Pausing");
+
 		updateReadModels(_trainingProgramFlow->pauseTrainingProgram());
 	}
 
@@ -82,11 +91,15 @@ namespace Core::Training::Application
 				"You tried resuming a training program which was not paused."
 			);
 		}
+
+		LOG("Resuming");
+
 		updateReadModels(_trainingProgramFlow->resumeTrainingProgram());
 	}
 
 	void TrainingApplicationService::abortTrainingProgram(const Commands::AbortTrainingProgramCommand&)
 	{
+		LOG("Aborting");
 		// Aborting is allowed from any state
 		updateReadModels(_trainingProgramFlow->abortRunningTrainingProgram());
 	}
@@ -123,6 +136,7 @@ namespace Core::Training::Application
 		{
 			if (currentTrainingProgramEntryIndex == _trainingProgramEntryEndTimes.size() - 1)
 			{
+				LOG("Finishing");
 				// Training has finished
 				auto finishEvents = _trainingProgramFlow->finishRunningTrainingProgram();
 				events.insert(events.end(), finishEvents.begin(), finishEvents.end());
@@ -139,6 +153,7 @@ namespace Core::Training::Application
 				
 				// Instead of a time update event, only switch to the next step (otherwise we would have to repeat what we did in the beginning of this method, for the new step index)
 				// There will be a timer tick almost immediately after this one anyway
+				LOG("Activating next step");
 				auto nextStepEvents = _trainingProgramFlow->activateNextTrainingProgramStep();
 				events.insert(events.end(), nextStepEvents.begin(), nextStepEvents.end());
 			}
@@ -172,6 +187,8 @@ namespace Core::Training::Application
 		{
 			_trainingProgramFlow->handleTrainingProgramChange(programChangeEvent);
 		}
-		// Currently, we're not interested in any other event
+		// Currently, we're not interested in any other event, but the read mdoels might be
+
+		updateReadModels({ genericEvent });
 	}
 }

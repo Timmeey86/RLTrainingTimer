@@ -12,6 +12,17 @@ void RLTrainingTimer::onLoad()
 
 	connectToAppService(_configurationAppService);
 
+	_trainingAppService = std::make_shared<Core::Training::Application::TrainingApplicationService>();
+
+	_eventAdapter = std::make_shared<Adapter::RocketLeagueEventAdapter>(_trainingAppService);
+	_eventAdapter->hookToEvents(gameWrapper);
+
+	initTrainingProgramFlowControlUi(gameWrapper, _trainingAppService);
+	_configurationAppService->registerEventReceiver(_trainingAppService.get());
+
+
+
+
 
 	// DUMMY CODE
 	_configurationAppService->addTrainingProgram({});
@@ -45,13 +56,6 @@ void RLTrainingTimer::onLoad()
 
 	_configurationAppService->addTrainingProgramEntry({ 2 });
 	_configurationAppService->changeTrainingProgramEntryDuration({ 2, 0, std::chrono::minutes(30) });
-
-	_trainingAppService = std::make_shared<Core::Training::Application::TrainingApplicationService>();
-
-	_eventAdapter = std::make_shared<Adapter::RocketLeagueEventAdapter>(_trainingAppService);
-	_eventAdapter->hookToEvents(gameWrapper);
-
-	initTrainingProgramFlowControlUi(gameWrapper, _trainingAppService);
 
 
 	cvarManager->log("Loaded RLTrainingTimer plugin");
