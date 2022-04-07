@@ -153,7 +153,8 @@ namespace Core::Training::Domain
         {
             const auto& trainingProgramData = _trainingProgramData.at(_selectedTrainingProgramId.value());
 
-            if (!_currentTrainingStepNumber.has_value() || _currentTrainingStepNumber < trainingProgramData.TrainingProgramEntries.size() - 1)
+            if (!trainingProgramData.TrainingProgramEntries.empty() &&
+                (!_currentTrainingStepNumber.has_value() || _currentTrainingStepNumber < trainingProgramData.TrainingProgramEntries.size() - 1))
             {
                 if (!_currentTrainingStepNumber.has_value())
                 {

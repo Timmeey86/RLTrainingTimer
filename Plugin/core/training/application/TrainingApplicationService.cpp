@@ -13,13 +13,6 @@ namespace Core::Training::Application
 
 	void TrainingApplicationService::selectTrainingProgram(const Commands::SelectTrainingProgramCommand& command)
 	{
-		if(_trainingProgramFlow->currentTrainingProgramState() != Definitions::TrainingProgramState::Uninitialized &&
-			_trainingProgramFlow->currentTrainingProgramState() != Definitions::TrainingProgramState::WaitingForStart)
-		{
-			throw Kernel::InvalidStateException(
-				"You tried selecting a training program while a different program was already running. You need to stop the running training program first."
-			);
-		}
 		std::vector<std::shared_ptr<Kernel::DomainEvent>> events;
 		if (command.TrainingProgramId.has_value())
 		{
