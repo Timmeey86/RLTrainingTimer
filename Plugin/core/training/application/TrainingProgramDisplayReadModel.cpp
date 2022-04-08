@@ -19,9 +19,17 @@ namespace Core::Training::Application
 			MostRecentTrainingStepEvent = nullptr;
 		}
 	}
-	void TrainingProgramDisplayReadModel::on(const std::shared_ptr<Events::TrainingProgramStepChangedEvent>& stateEvent)
+	void TrainingProgramDisplayReadModel::on(const std::shared_ptr<Events::TrainingProgramStepChangedEvent>& changeEvent)
 	{
-		MostRecentTrainingStepEvent = stateEvent;
+		MostRecentTrainingStepEvent = changeEvent;
+		if (changeEvent->IsValid)
+		{
+			TrainingStepStartTime = std::chrono::steady_clock::now();
+		}
+		else
+		{
+			TrainingStepStartTime.reset();
+		}
 	}
 	void TrainingProgramDisplayReadModel::on(const std::shared_ptr<Events::TrainingTimeUpdatedEvent>& stepEvent)
 	{

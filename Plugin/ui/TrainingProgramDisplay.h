@@ -6,6 +6,20 @@
 
 namespace Ui
 {
+	/** Defines positions on the screen. */
+	struct RenderInfo
+	{
+	public:
+		int LeftBorder;
+		int TopBorder;
+		int RightBorder;
+		int BottomBorder;
+		int Width;
+		int Height;
+		float TextWidthFactor;
+		float TextHeightFactor;
+	};
+	
 	/** This class is responsible for rendering information about the current training session to the screen. */
 	class TrainingProgramDisplay
 	{
@@ -16,11 +30,18 @@ namespace Ui
 		/** Updates the read model for rendering. */
 		inline void updateReadModel(Core::Training::Application::TrainingProgramDisplayReadModel readModel)
 		{
-			// TODO: Do we need to thread protect this?
 			_readModel = std::move( readModel );
 		}
 
 	private:
+
+		void drawPanelBackground(CanvasWrapper& canvas, const RenderInfo& renderInfo);
+		void drawRemainingProgramTime(CanvasWrapper& canvas, const RenderInfo& renderInfo);
+		void drawRemainingStepTime(CanvasWrapper& canvas, const RenderInfo& renderInfo);
+		void drawTrainingStepNumber(CanvasWrapper& canvas, const RenderInfo& renderInfo);
+		void drawProgramName(CanvasWrapper& canvas, const RenderInfo& renderInfo);
+		RenderInfo getRenderInfo(const std::shared_ptr<GameWrapper>& gameWrapper) const;
+
 		Core::Training::Application::TrainingProgramDisplayReadModel _readModel;
 	};
 }
