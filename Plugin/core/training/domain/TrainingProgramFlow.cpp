@@ -2,6 +2,8 @@
 #include "TrainingProgramFlow.h"
 #include "../events/TrainingProgramFlowEvents.h"
 
+#include <unordered_set>
+
 namespace Core::Training::Domain
 {
     std::vector<std::shared_ptr<Kernel::DomainEvent>> TrainingProgramFlow::handleTrainingProgramChange(const std::shared_ptr<Configuration::Events::TrainingProgramChangedEvent>& changeEvent)
@@ -20,47 +22,15 @@ namespace Core::Training::Domain
         return events; // Most often empty
     }
 
-    void addUninitializedStateEvent(std::vector<std::shared_ptr<Kernel::DomainEvent>>& events)
+    void TrainingProgramFlow::addStateEvent(std::vector<std::shared_ptr<Kernel::DomainEvent>>& events) const
     {
         auto stateEvent = std::make_shared<Events::TrainingProgramStateChangedEvent>();
-        stateEvent->StartingIsPossible = false;
-        stateEvent->PausingIsPossible = false;
-        stateEvent->ResumingIsPossible = false;
-        stateEvent->StoppingIsPossible = false;
-        stateEvent->SwitchingProgramIsPossible = true;
-        events.push_back(stateEvent);
-    }
-
-    void addWaitingForStartStateEvent(std::vector<std::shared_ptr<Kernel::DomainEvent>>& events)
-    {
-        auto stateEvent = std::make_shared<Events::TrainingProgramStateChangedEvent>();
-        stateEvent->StartingIsPossible = true;
-        stateEvent->PausingIsPossible = false;
-        stateEvent->ResumingIsPossible = false;
-        stateEvent->StoppingIsPossible = false;
-        stateEvent->SwitchingProgramIsPossible = true;
-        events.push_back(stateEvent);
-    }
-
-    void addRunningStateEvent(std::vector<std::shared_ptr<Kernel::DomainEvent>>& events)
-    {
-        auto stateEvent = std::make_shared<Events::TrainingProgramStateChangedEvent>();
-        stateEvent->StartingIsPossible = false;
-        stateEvent->PausingIsPossible = true;
-        stateEvent->ResumingIsPossible = false;
-        stateEvent->StoppingIsPossible = true;
-        stateEvent->SwitchingProgramIsPossible = true; // TODO: See if we can get this to work. Otherwise disable in all states except for waiting for start and uninitialized
-        events.push_back(stateEvent);
-    }
-
-    void addPausedStateEvent(std::vector<std::shared_ptr<Kernel::DomainEvent>>& events)
-    {
-        auto stateEvent = std::make_shared<Events::TrainingProgramStateChangedEvent>();
-        stateEvent->StartingIsPossible = false;
-        stateEvent->PausingIsPossible = false;
-        stateEvent->ResumingIsPossible = true;
-        stateEvent->StoppingIsPossible = true;
-        stateEvent->SwitchingProgramIsPossible = true;
+        stateEvent->StartingIsPossible = (_currentTrainingProgramState == Definitions::TrainingProgramState::WaitingForStart);
+        stateEvent->StoppingIsPossible = (_currentTrainingProgramState != Definitions::TrainingProgramState::Uninitialized && _currentTrainingProgramState != Definitions::TrainingProgramState::WaitingForStart);
+        stateEvent->SwitchingProgramIsPossible = true; // We currently always allow this
+        stateEvent->GameIsPaused = _gamePausedState == Definitions::PausedState::Paused;
+        stateEvent->PausingProgramIsPossible = _currentTrainingProgramState == Definitions::TrainingProgramState::Running || _currentTrainingProgramState == Definitions::TrainingProgramState::OnlyGamePaused;
+        stateEvent->ResumingProgramIsPossible = _currentTrainingProgramState == Definitions::TrainingProgramState::OnlyProgramPaused || _currentTrainingProgramState == Definitions::TrainingProgramState::BothPaused;
         events.push_back(stateEvent);
     }
 
@@ -88,13 +58,13 @@ namespace Core::Training::Domain
 
             resultEvents.push_back(selectionEvent);
 
-            // Add a state update for the UI
-            addWaitingForStartStateEvent(resultEvents);
-
             // Adapt initial state                    
             _selectedTrainingProgramId = trainingProgramId;
             _currentTrainingStepNumber.reset();
             _currentTrainingProgramState = Definitions::TrainingProgramState::WaitingForStart;
+
+            // Add a state update for the UI
+            addStateEvent(resultEvents);
         }
 
         // Publish the events
@@ -124,7 +94,7 @@ namespace Core::Training::Domain
         // Else: Rather than throwing an exception, ignore this.
 
         // Add a state update in any case (we abuse this for an initial update..)
-        addUninitializedStateEvent(resultEvents);
+        addStateEvent(resultEvents);
 
         return resultEvents;
     }
@@ -135,9 +105,9 @@ namespace Core::Training::Domain
         if (_selectedTrainingProgramId.has_value() && !trainingProgramIsActive())
         {
             // This is just a change in state - data are still the same
-            addRunningStateEvent(resultEvents);
-
             _currentTrainingProgramState = Definitions::TrainingProgramState::Running;
+
+            addStateEvent(resultEvents);
         }
         // Else: Rather than throwing an exception, ignore this.
         return resultEvents;
@@ -207,20 +177,47 @@ namespace Core::Training::Domain
 
     std::vector<std::shared_ptr<Kernel::DomainEvent>> TrainingProgramFlow::updatePauseState()
     {
-        auto flowIsPaused = (_currentTrainingProgramState == Definitions::TrainingProgramState::Paused);
-        auto flowShouldBePaused = _gamePausedState == Definitions::PausedState::Paused || _trainingProgramPausedState == Definitions::PausedState::Paused;
+        // Find out what is paused and if a state has changed
+        const auto trainingProgramIsPaused = _trainingProgramPausedState == Definitions::PausedState::Paused;
+        const auto gameIsPaused = _gamePausedState == Definitions::PausedState::Paused;
+        const auto trainingProgramPausedStateChanged = 
+            gameIsPaused != 
+            (_currentTrainingProgramState == Definitions::TrainingProgramState::OnlyProgramPaused || _currentTrainingProgramState == Definitions::TrainingProgramState::BothPaused);
+        const auto gamePausedStateChanged =
+            trainingProgramIsPaused !=
+            (_currentTrainingProgramState == Definitions::TrainingProgramState::OnlyGamePaused || _currentTrainingProgramState == Definitions::TrainingProgramState::BothPaused);
 
+        // Transition through the internal states only when in the Running state or one of the paused states
+        // Pausing the game in a different state will send a state update for the UI, but will not transition to a different state
+        // Pausing the training program should only be possible in the "Running" and "OnlyGamePaused" states
+        if(trainingProgramIsActive())
+        {
+            if (gameIsPaused && !trainingProgramIsPaused)
+            {
+                _currentTrainingProgramState = Definitions::TrainingProgramState::OnlyGamePaused;
+            }
+            else if (!gameIsPaused && trainingProgramIsPaused)
+            {
+                _currentTrainingProgramState = Definitions::TrainingProgramState::OnlyProgramPaused;
+            }
+            else if (gameIsPaused && trainingProgramIsPaused)
+            {
+                _currentTrainingProgramState = Definitions::TrainingProgramState::BothPaused;
+            }
+            else
+            {
+                _currentTrainingProgramState = Definitions::TrainingProgramState::Running;
+            }
+        }
+
+        // Send a state update as soon as a paused flag has changed, even if the internal state is still the same (can e.g. happen when pausing the game in the "WaitingForStart" state).
         std::vector<std::shared_ptr<Kernel::DomainEvent>> resultEvents;
-        if (!flowIsPaused && flowShouldBePaused && _currentTrainingProgramState == Definitions::TrainingProgramState::Running)
+        if (trainingProgramPausedStateChanged || gamePausedStateChanged)
         {
-            addPausedStateEvent(resultEvents);
-            _currentTrainingProgramState = Definitions::TrainingProgramState::Paused;
+            // At least one state has changed, send an event so at least the UI is updated
+            addStateEvent(resultEvents);
         }
-        if (flowIsPaused && !flowShouldBePaused && _currentTrainingProgramState == Definitions::TrainingProgramState::Paused)
-        {
-            addRunningStateEvent(resultEvents);
-            _currentTrainingProgramState = Definitions::TrainingProgramState::Running;
-        }
+
         return resultEvents;
     }
 
@@ -307,16 +304,23 @@ namespace Core::Training::Domain
         stepActivationEvent->IsValid = false;
         resultEvents.push_back(stepActivationEvent);
 
-        addWaitingForStartStateEvent(resultEvents);
-
         _currentTrainingProgramState = Definitions::TrainingProgramState::WaitingForStart;
         _trainingProgramPausedState = Definitions::PausedState::NotPaused;
         _currentTrainingStepNumber.reset();
+
+        addStateEvent(resultEvents);
 
         return resultEvents;
     }
     bool TrainingProgramFlow::trainingProgramIsActive() const
     {
-        return _currentTrainingProgramState == Definitions::TrainingProgramState::Running || _currentTrainingProgramState == Definitions::TrainingProgramState::Paused;
+        // The program is "active" if it is either running or paused
+        auto relevantStates = std::unordered_set<Definitions::TrainingProgramState>{
+            Definitions::TrainingProgramState::Running,
+            Definitions::TrainingProgramState::OnlyGamePaused,
+            Definitions::TrainingProgramState::OnlyProgramPaused,
+            Definitions::TrainingProgramState::BothPaused
+        };
+        return relevantStates.count(_currentTrainingProgramState) > 0;
     }
 }

@@ -136,8 +136,8 @@ namespace Ui
 		}
 		ImGui::SameLine();
 		{
-			ImGui::Disable disable_pause_if_necessary(!_currentReadModel.MostRecentStateEvent->PausingIsPossible);
-			if (ImGui::Button("Pause") && _currentReadModel.MostRecentStateEvent->PausingIsPossible)
+			ImGui::Disable disable_pause_if_necessary(!_currentReadModel.MostRecentStateEvent->PausingProgramIsPossible);
+			if (ImGui::Button("Pause") && _currentReadModel.MostRecentStateEvent->PausingProgramIsPossible)
 			{
 				try
 				{
@@ -151,8 +151,8 @@ namespace Ui
 		}
 		ImGui::SameLine();
 		{
-			ImGui::Disable disable_resume_if_necessary(!_currentReadModel.MostRecentStateEvent->ResumingIsPossible);
-			if (ImGui::Button("Resume") && _currentReadModel.MostRecentStateEvent->ResumingIsPossible)
+			ImGui::Disable disable_resume_if_necessary(!_currentReadModel.MostRecentStateEvent->ResumingProgramIsPossible);
+			if (ImGui::Button("Resume") && _currentReadModel.MostRecentStateEvent->ResumingProgramIsPossible)
 			{
 				try
 				{

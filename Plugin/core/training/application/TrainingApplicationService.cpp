@@ -64,7 +64,8 @@ namespace Core::Training::Application
 
 	void TrainingApplicationService::pauseTrainingProgram(const Commands::PauseTrainingProgramCommand&)
 	{
-		if (_trainingProgramFlow->currentTrainingProgramState() != Definitions::TrainingProgramState::Running)
+		if (_trainingProgramFlow->currentTrainingProgramState() != Definitions::TrainingProgramState::Running &&
+			_trainingProgramFlow->currentTrainingProgramState() != Definitions::TrainingProgramState::OnlyGamePaused)
 		{
 			throw Kernel::InvalidStateException(
 				"You tried pausing a training program, even though no training program was running, or the program was paused already."
@@ -74,11 +75,13 @@ namespace Core::Training::Application
 		LOG("Pausing");
 
 		updateReadModels(_trainingProgramFlow->pauseTrainingProgram());
+		handlePauseChange();
 	}
 
 	void TrainingApplicationService::resumeTrainingProgram(const Commands::ResumeTrainingProgramCommand&)
 	{
-		if (_trainingProgramFlow->currentTrainingProgramState() != Definitions::TrainingProgramState::Paused)
+		if (_trainingProgramFlow->currentTrainingProgramState() != Definitions::TrainingProgramState::OnlyProgramPaused &&
+			_trainingProgramFlow->currentTrainingProgramState() != Definitions::TrainingProgramState::BothPaused)
 		{
 			throw Kernel::InvalidStateException(
 				"You tried resuming a training program which was not paused."
@@ -88,6 +91,7 @@ namespace Core::Training::Application
 		LOG("Resuming");
 
 		updateReadModels(_trainingProgramFlow->resumeTrainingProgram());
+		handlePauseChange();
 	}
 
 	void TrainingApplicationService::abortTrainingProgram(const Commands::AbortTrainingProgramCommand&)
@@ -108,6 +112,7 @@ namespace Core::Training::Application
 			events = _trainingProgramFlow->handleGamePauseEnd();
 		}
 		updateReadModels(events);
+		handlePauseChange();
 	}
 	void TrainingApplicationService::processTimerTick()
 	{
@@ -160,6 +165,35 @@ namespace Core::Training::Application
 			}
 		}
 		updateReadModels(events);
+	}
+
+	void TrainingApplicationService::handlePauseChange()
+	{
+		if (!_trainingProgramFlow->trainingProgramIsActive())
+		{
+			// We're not interested in pause changes when there is no program running
+			return;
+		}
+		if (_trainingProgramFlow->currentTrainingProgramState() != Definitions::TrainingProgramState::Running)
+		{
+			// Remember the start of the pause so we can remove the pause time from the training time
+			if (!_pauseStartTime.has_value())
+			{
+				LOG("Starting pause");
+				_pauseStartTime = std::chrono::steady_clock::now();
+			}
+			// else: Ignore this, since e.g. the game was paused after the training program had already been paused
+		}
+		else
+		{
+			// Shift the start of the training program as if the pause happened before it. That way, we can always compare to the reference time
+			if (_pauseStartTime.has_value())
+			{
+				LOG("Finished pause");
+				_referenceTime = std::chrono::steady_clock::now() - (_pauseStartTime.value() - _referenceTime);
+				_pauseStartTime.reset();
+			}
+		}
 	}
 
 	void TrainingApplicationService::updateReadModels(std::vector<std::shared_ptr<Kernel::DomainEvent>> genericEvents)

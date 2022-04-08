@@ -36,10 +36,11 @@ namespace Core::Training::Events
 		TrainingProgramStateChangedEvent() : Kernel::DomainEvent(false) {} // We only store&restore configuration events
 
 		bool StartingIsPossible = false;
-		bool PausingIsPossible = false;
-		bool ResumingIsPossible = false;
 		bool StoppingIsPossible = false;
 		bool SwitchingProgramIsPossible = false;
+		bool PausingProgramIsPossible = false;
+		bool ResumingProgramIsPossible = false;
+		bool GameIsPaused = false;
 	};
 
 	/** Signals the change to a new training program step. The valid flag is used for invalidating any currently displayed training step info. */

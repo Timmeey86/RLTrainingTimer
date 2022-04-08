@@ -78,9 +78,10 @@ namespace Core::Training::Test
 		EXPECT_EQ(selectionEvent->NumberOfSteps, ProgramWithTwoSteps.TrainingProgramEntries.size());
 		EXPECT_FALSE(selectionEvent->PreviouslySelectedTrainingProgramId.has_value());
 
-		EXPECT_EQ(stateUpdateEvent->PausingIsPossible, false);
-		EXPECT_EQ(stateUpdateEvent->ResumingIsPossible, false);
+		EXPECT_EQ(stateUpdateEvent->GameIsPaused, false);
 		EXPECT_EQ(stateUpdateEvent->StartingIsPossible, true);
+		EXPECT_EQ(stateUpdateEvent->PausingProgramIsPossible, false);
+		EXPECT_EQ(stateUpdateEvent->ResumingProgramIsPossible, false);
 		EXPECT_EQ(stateUpdateEvent->StoppingIsPossible, false);
 		EXPECT_EQ(stateUpdateEvent->SwitchingProgramIsPossible, true);
 
@@ -107,9 +108,10 @@ namespace Core::Training::Test
 		ASSERT_TRUE(selectionEvent->PreviouslySelectedTrainingProgramId.has_value());
 		EXPECT_EQ(selectionEvent->PreviouslySelectedTrainingProgramId.value(), ProgramWithTwoSteps.TrainingProgramId);
 
-		EXPECT_EQ(stateUpdateEvent->PausingIsPossible, false);
-		EXPECT_EQ(stateUpdateEvent->ResumingIsPossible, false);
+		EXPECT_EQ(stateUpdateEvent->GameIsPaused, false);
 		EXPECT_EQ(stateUpdateEvent->StartingIsPossible, true);
+		EXPECT_EQ(stateUpdateEvent->PausingProgramIsPossible, false);
+		EXPECT_EQ(stateUpdateEvent->ResumingProgramIsPossible, false);
 		EXPECT_EQ(stateUpdateEvent->StoppingIsPossible, false);
 		EXPECT_EQ(stateUpdateEvent->SwitchingProgramIsPossible, true);
 
@@ -137,9 +139,10 @@ namespace Core::Training::Test
 
 		EXPECT_FALSE(abortEvent->IsValid);
 
-		EXPECT_EQ(abortStateEvent->PausingIsPossible, false);
-		EXPECT_EQ(abortStateEvent->ResumingIsPossible, false);
+		EXPECT_EQ(abortStateEvent->GameIsPaused, false);
 		EXPECT_EQ(abortStateEvent->StartingIsPossible, true);
+		EXPECT_EQ(abortStateEvent->PausingProgramIsPossible, false);
+		EXPECT_EQ(abortStateEvent->ResumingProgramIsPossible, false);
 		EXPECT_EQ(abortStateEvent->StoppingIsPossible, false);
 		EXPECT_EQ(abortStateEvent->SwitchingProgramIsPossible, true);
 
@@ -150,9 +153,10 @@ namespace Core::Training::Test
 		ASSERT_TRUE(selectionEvent->PreviouslySelectedTrainingProgramId.has_value());
 		EXPECT_EQ(selectionEvent->PreviouslySelectedTrainingProgramId.value(), ProgramWithTwoSteps.TrainingProgramId);
 
-		EXPECT_EQ(stateUpdateEvent->PausingIsPossible, false);
-		EXPECT_EQ(stateUpdateEvent->ResumingIsPossible, false);
+		EXPECT_EQ(stateUpdateEvent->GameIsPaused, false);
 		EXPECT_EQ(stateUpdateEvent->StartingIsPossible, true);
+		EXPECT_EQ(stateUpdateEvent->PausingProgramIsPossible, false);
+		EXPECT_EQ(stateUpdateEvent->ResumingProgramIsPossible, false);
 		EXPECT_EQ(stateUpdateEvent->StoppingIsPossible, false);
 		EXPECT_EQ(stateUpdateEvent->SwitchingProgramIsPossible, true);
 
@@ -248,59 +252,13 @@ namespace Core::Training::Test
 		EXPECT_EQ(events.size(), 0);
 	}
 
+	TEST_F(TrainingProgramFlowTestFixture, pausingGame_when_programIsRunning_will_notChangeUiState)
+	{
+
+	}
 
 
 
-//
-//	TEST_F(TrainingProgramFlowTestFixture, pauseOrResumeTrainingProgram_when_noProgramIsSelected_will_returnNullptr)
-//	{
-//		auto genericEvent = sut->pauseOrResumeTrainingProgram(false, true);
-//		
-//		EXPECT_EQ(genericEvent, nullptr);
-//
-//		EXPECT_FALSE(sut->runningTrainingProgramIsPaused());
-//		EXPECT_FALSE(sut->currentTrainingStepNumber().has_value());
-//	}
-//	TEST_F(TrainingProgramFlowTestFixture, pauseOrResumeTrainingProgram_when_programIsNotRunning_will_returnNullptr)
-//	{
-//		sut->selectTrainingProgram(DefaultId, DefaultSteps);
-//		auto genericEvent = sut->pauseOrResumeTrainingProgram(false, true);
-//
-//		EXPECT_EQ(genericEvent, nullptr);
-//
-//		EXPECT_FALSE(sut->runningTrainingProgramIsPaused());
-//		EXPECT_FALSE(sut->currentTrainingStepNumber().has_value());
-//		
-//	}
-//	TEST_F(TrainingProgramFlowTestFixture, pauseOrResumteTrainingProgram_when_programIsRunning_will_returnValidEvent)
-//	{
-//		sut->selectTrainingProgram(DefaultId, DefaultSteps);
-//		sut->startSelectedTrainingProgram();
-//		auto genericEvent = sut->pauseOrResumeTrainingProgram(false, true);
-//		auto pauseEvent = dynamic_cast<Events::TrainingProgramPausedEvent*>(genericEvent.get());
-//
-//		ASSERT_NE(pauseEvent, nullptr);
-//
-//		EXPECT_EQ(pauseEvent->TrainingProgramId, DefaultId);
-//		EXPECT_TRUE(sut->selectedTrainingProgramIsRunning()); // Running should still be true while paused
-//		EXPECT_TRUE(sut->runningTrainingProgramIsPaused());
-//		EXPECT_FALSE(sut->currentTrainingStepNumber().has_value());
-//	}
-//	TEST_F(TrainingProgramFlowTestFixture, pauseOrResumeTrainingProgram_when_programIsPaused_will_returnValidEvent)
-//	{
-//		sut->selectTrainingProgram(DefaultId, DefaultSteps);
-//		sut->startSelectedTrainingProgram();
-//		sut->pauseOrResumeTrainingProgram(false, true);
-//		auto genericEvent = sut->pauseOrResumeTrainingProgram(false, false);
-//		auto resumeEvent = dynamic_cast<Events::TrainingProgramResumedEvent*>(genericEvent.get());
-//
-//		ASSERT_NE(resumeEvent, nullptr);
-//
-//		EXPECT_EQ(resumeEvent->TrainingProgramId, DefaultId);
-//		EXPECT_TRUE(sut->selectedTrainingProgramIsRunning()); 
-//		EXPECT_FALSE(sut->runningTrainingProgramIsPaused());
-//		EXPECT_FALSE(sut->currentTrainingStepNumber().has_value());
-//	}
 //	TEST_F(TrainingProgramFlowTestFixture, finishRunningTrainingProgram_when_noProgramIsSelected_will_returnNullptr)
 //	{
 //		auto genericEvent = sut->finishRunningTrainingProgram();

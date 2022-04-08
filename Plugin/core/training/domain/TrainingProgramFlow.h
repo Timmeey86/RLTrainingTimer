@@ -89,10 +89,13 @@ namespace Core::Training::Domain
 		/** Creates a TrainingTimeUpdatedEvent for the given training duration and the currently active training step. */
 		std::shared_ptr<Kernel::DomainEvent> createTimeUpdatedEvent(const std::chrono::milliseconds& passedTime, const std::chrono::milliseconds& nextThreshold);
 
+		/** Checks whether the training program is currently in the running or a paused state (true), or a different state (false). */
+		bool trainingProgramIsActive() const;
+
 	private:
 
 		std::vector<std::shared_ptr<Kernel::DomainEvent>> abortCurrentTrainingProgram();
-		bool trainingProgramIsActive() const;
+		void addStateEvent(std::vector<std::shared_ptr<Kernel::DomainEvent>>& events) const;
 
 		std::optional<uint64_t> _selectedTrainingProgramId = {};
 		std::optional<uint16_t> _currentTrainingStepNumber = {};

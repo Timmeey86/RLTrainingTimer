@@ -8,7 +8,10 @@ namespace Core::Training::Definitions
 		Uninitialized, // No training program is selected
 		WaitingForStart, // A training program has been selected and is waiting to be started
 		Running, // A training program has been started after being selected. Neither the game nor the training program are paused.
-		Paused, // A training program has been paused after it was started, or the game has been paused (or both). Resuming will go back to "Running"
+		OnlyProgramPaused, // The training program has been paused, but the game has not
+		OnlyGamePaused, // The training program is still "running", but the game is paused. The UI might still want to allow pausing the training program explicilty,
+						// so it does not continue once the game gets unpaused.
+		BothPaused, // Both the training program and the game are paused
 	};
 
 	/** Defines the state of something which can be paused (game and training program). */

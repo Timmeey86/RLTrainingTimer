@@ -63,9 +63,10 @@ namespace Core::Training::Application
 
 		/** Updates the read model with a list of events  */
 		void updateReadModels(std::vector<std::shared_ptr<Kernel::DomainEvent>> genericEvents);
+		void handlePauseChange();
 
 		std::chrono::steady_clock::time_point _referenceTime; // The "start" time to do calculations again. Will be shifted to account for game pauses, if necessary.
-		std::chrono::steady_clock::time_point _pauseStartTime; // The point in time where a pause was started
+		std::optional<std::chrono::steady_clock::time_point> _pauseStartTime = {}; // The point in time where a pause was started
 		
 		std::vector<std::chrono::milliseconds> _trainingProgramEntryEndTimes;
 
