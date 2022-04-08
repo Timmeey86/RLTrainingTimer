@@ -41,6 +41,7 @@ namespace Ui
 		void drawTrainingStepNumber(CanvasWrapper& canvas, const RenderInfo& renderInfo);
 		void drawProgramName(CanvasWrapper& canvas, const RenderInfo& renderInfo);
 		RenderInfo getRenderInfo(const std::shared_ptr<GameWrapper>& gameWrapper) const;
+		void drawTrainingProgramStepTransition(CanvasWrapper& canvas, const Ui::RenderInfo& renderInfo, const std::shared_ptr<GameWrapper>& gameWrapper);
 
 		Core::Training::Application::TrainingProgramDisplayReadModel _readModel;
 	};

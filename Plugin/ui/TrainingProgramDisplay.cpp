@@ -19,6 +19,37 @@ namespace Ui
 		drawTrainingStepNumber(canvas, renderInfo);
 		drawRemainingStepTime(canvas, renderInfo);
 		drawRemainingProgramTime(canvas, renderInfo);
+		drawTrainingProgramStepTransition(canvas, renderInfo, gameWrapper);
+	}
+
+	void TrainingProgramDisplay::drawTrainingProgramStepTransition(CanvasWrapper& canvas, const Ui::RenderInfo& renderInfo, const std::shared_ptr<GameWrapper>& gameWrapper)
+	{
+
+		if (_readModel.TrainingStepStartTime.has_value())
+		{
+			auto durationSinceTrainingStepStartTime = std::chrono::duration_cast<std::chrono::milliseconds>(
+				std::chrono::steady_clock::now() - _readModel.TrainingStepStartTime.value()
+				).count();
+			if (durationSinceTrainingStepStartTime < 5000)
+			{
+				auto trainingStepName = _readModel.MostRecentTrainingStepEvent->Name;
+				auto stringScale = 5.0f;
+				auto textSize = canvas.GetStringSize(trainingStepName, stringScale * renderInfo.TextWidthFactor, stringScale * renderInfo.TextHeightFactor);
+
+				auto middleX = (float)gameWrapper->GetScreenSize().X / 2.0f;
+				auto middleY = (float)gameWrapper->GetScreenSize().Y / 2.0f;
+
+				// alpha: 100% for two seconds, then fade out
+				auto textAlpha = fmin(1.0f, (5000.0f - (float)durationSinceTrainingStepStartTime) / 3000.0f) * 255.0f;
+
+				auto textLeft = middleX - textSize.X / 2.0f;
+				auto textTop = middleY - textSize.Y / 2.0f;
+
+				canvas.SetColor(LinearColor{ 255.0f, 255.0f, 0.0f, textAlpha });
+				canvas.SetPosition(Vector2{ (int)floor(textLeft), (int)floor(textTop) });
+				canvas.DrawString(trainingStepName, stringScale * renderInfo.TextWidthFactor, stringScale * renderInfo.TextHeightFactor);
+			}
+		}
 	}
 
 	RenderInfo TrainingProgramDisplay::getRenderInfo(const std::shared_ptr<GameWrapper>& gameWrapper) const
@@ -40,20 +71,19 @@ namespace Ui
 	void TrainingProgramDisplay::drawPanelBackground(CanvasWrapper& canvas, const RenderInfo& renderInfo)
 	{
 		// Background
-		canvas.SetColor(LinearColor{ 0.0f, 0.0f, 255.0f, 100.0f });
+		canvas.SetColor(LinearColor{ 0.0f, 0.0f, 255.0f, 150.0f });
 		canvas.DrawRect(Vector2{ renderInfo.LeftBorder, renderInfo.TopBorder }, Vector2{ renderInfo.RightBorder, renderInfo.BottomBorder });
 	}
 	void TrainingProgramDisplay::drawProgramName(CanvasWrapper& canvas, const RenderInfo& renderInfo)
 	{
 		// Program Name
-		canvas.SetColor(LinearColor{ 255.0f, 255.0f, 255.0f, 150.0f });
+		canvas.SetColor(LinearColor{ 255.0f, 255.0f, 255.0f, 255.0f });
 		canvas.SetPosition(Vector2{ renderInfo.LeftBorder + (int)floor(renderInfo.Width * 0.005f), renderInfo.TopBorder + (int)floor(renderInfo.Height * 0.2f) });
 		const auto shortenedName = _readModel.MostRecentSelectionEvent->Name.substr(0, 40);
 		canvas.DrawString(shortenedName, 1.6f * renderInfo.TextWidthFactor, 1.6f * renderInfo.TextHeightFactor);
 	}
 	void TrainingProgramDisplay::drawTrainingStepNumber(CanvasWrapper& canvas, const RenderInfo& renderInfo)
 	{
-
 		// Training Step Number and Name
 		canvas.SetPosition(Vector2{ renderInfo.LeftBorder + (int)floor(renderInfo.Width * 0.25f), renderInfo.TopBorder + (int)floor(renderInfo.Height * 0.1f) });
 		const auto shortenedName = _readModel.MostRecentTrainingStepEvent->Name.substr(0, 50);
@@ -65,7 +95,6 @@ namespace Ui
 	}
 	void TrainingProgramDisplay::drawRemainingStepTime(CanvasWrapper& canvas, const RenderInfo& renderInfo)
 	{
-
 		// Remaining Step Time
 		canvas.SetPosition(Vector2{ renderInfo.LeftBorder + (int)floor(renderInfo.Width * 0.7f), renderInfo.TopBorder + (int)floor(renderInfo.Height * 0.1f) });
 		const auto remainingStepTime = std::chrono::milliseconds(_readModel.MostRecentTimeEvent->TimeLeftInCurrentTrainingStep);

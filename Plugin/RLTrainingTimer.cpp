@@ -30,7 +30,7 @@ void RLTrainingTimer::onLoad()
 	_configurationAppService->addTrainingProgram({});
 
 	_configurationAppService->renameTrainingProgram({ 1, "Coaching Training Schedule" });
-	_configurationAppService->renameTrainingProgram({ 2, "Second Program" });
+	_configurationAppService->renameTrainingProgram({ 2, "Demo Program" });
 	_configurationAppService->renameTrainingProgram({ 3, "Third Program" });
 
 	_configurationAppService->addTrainingProgramEntry({ 1 });
@@ -55,7 +55,14 @@ void RLTrainingTimer::onLoad()
 	_configurationAppService->changeTrainingProgramEntryDuration({ 1, 5, std::chrono::minutes(5) });
 
 	_configurationAppService->addTrainingProgramEntry({ 2 });
-	_configurationAppService->changeTrainingProgramEntryDuration({ 2, 0, std::chrono::minutes(30) });
+	_configurationAppService->addTrainingProgramEntry({ 2 });
+	_configurationAppService->addTrainingProgramEntry({ 2 });
+	_configurationAppService->renameTrainingProgramEntry({ 2, 0, "Wave Dashes" });
+	_configurationAppService->renameTrainingProgramEntry({ 2, 1, "Half Flips" });
+	_configurationAppService->renameTrainingProgramEntry({ 2, 2, "Ground Dribbling" });
+	_configurationAppService->changeTrainingProgramEntryDuration({ 2, 0, std::chrono::seconds(7) });
+	_configurationAppService->changeTrainingProgramEntryDuration({ 2, 1, std::chrono::seconds(7) });
+	_configurationAppService->changeTrainingProgramEntryDuration({ 2, 2, std::chrono::seconds(7) });
 
 
 	cvarManager->log("Loaded RLTrainingTimer plugin");
