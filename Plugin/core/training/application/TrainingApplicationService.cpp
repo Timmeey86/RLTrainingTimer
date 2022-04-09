@@ -119,7 +119,8 @@ namespace Core::Training::Application
 		// This would usually be in a domain service most likely
 		
 		// Note: This method will be called _very_ often. Keep actions in here to a minimum
-		if (_trainingProgramFlow->currentTrainingProgramState() != Definitions::TrainingProgramState::Running)
+		if (_trainingProgramFlow->currentTrainingProgramState() != Definitions::TrainingProgramState::Running ||
+			!_trainingProgramFlow->currentTrainingStepNumber().has_value())
 		{
 			return; // The "running" state is the only one in which we will ever need to make time comparisons
 		}

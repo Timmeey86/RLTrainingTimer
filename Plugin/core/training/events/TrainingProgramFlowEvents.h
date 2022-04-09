@@ -41,6 +41,7 @@ namespace Core::Training::Events
 		bool PausingProgramIsPossible = false;
 		bool ResumingProgramIsPossible = false;
 		bool GameIsPaused = false;
+		bool TrainingWasFinished = false; // Only set when finishing, not when aborting
 	};
 
 	/** Signals the change to a new training program step. The valid flag is used for invalidating any currently displayed training step info. */

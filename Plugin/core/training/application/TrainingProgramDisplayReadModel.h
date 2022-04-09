@@ -31,5 +31,6 @@ namespace Core::Training::Application
 		std::shared_ptr<Events::TrainingProgramStepChangedEvent> MostRecentTrainingStepEvent = nullptr;
 		std::shared_ptr<Events::TrainingTimeUpdatedEvent> MostRecentTimeEvent = nullptr;
 		std::optional<std::chrono::steady_clock::time_point> TrainingStepStartTime = {};
+		std::optional<std::chrono::steady_clock::time_point> TrainingFinishedTime = {};
 	};
 }

@@ -58,11 +58,13 @@ void RLTrainingTimer::onLoad()
 	_configurationAppService->addTrainingProgramEntry({ 2 });
 	_configurationAppService->addTrainingProgramEntry({ 2 });
 	_configurationAppService->renameTrainingProgramEntry({ 2, 0, "Wave Dashes" });
-	_configurationAppService->renameTrainingProgramEntry({ 2, 1, "Half Flips" });
+	_configurationAppService->renameTrainingProgramEntry({ 2, 1, "Step with a very long name which needs reduced font size" });
 	_configurationAppService->renameTrainingProgramEntry({ 2, 2, "Ground Dribbling" });
-	_configurationAppService->changeTrainingProgramEntryDuration({ 2, 0, std::chrono::seconds(7) });
-	_configurationAppService->changeTrainingProgramEntryDuration({ 2, 1, std::chrono::seconds(7) });
-	_configurationAppService->changeTrainingProgramEntryDuration({ 2, 2, std::chrono::seconds(7) });
+	_configurationAppService->changeTrainingProgramEntryDuration({ 2, 0, std::chrono::seconds(8) });
+	_configurationAppService->changeTrainingProgramEntryDuration({ 2, 1, std::chrono::seconds(8) });
+	_configurationAppService->changeTrainingProgramEntryDuration({ 2, 2, std::chrono::seconds(8) });
+
+	_configurationAppService->addTrainingProgramEntry({ 3 });
 
 
 	cvarManager->log("Loaded RLTrainingTimer plugin");

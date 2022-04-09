@@ -35,13 +35,14 @@ namespace Ui
 
 	private:
 
-		void drawPanelBackground(CanvasWrapper& canvas, const RenderInfo& renderInfo);
-		void drawRemainingProgramTime(CanvasWrapper& canvas, const RenderInfo& renderInfo);
-		void drawRemainingStepTime(CanvasWrapper& canvas, const RenderInfo& renderInfo);
-		void drawTrainingStepNumber(CanvasWrapper& canvas, const RenderInfo& renderInfo);
-		void drawProgramName(CanvasWrapper& canvas, const RenderInfo& renderInfo);
+		void drawPanelBackground(CanvasWrapper& canvas, const RenderInfo& renderInfo) const;
+		void drawRemainingProgramTime(CanvasWrapper& canvas, const RenderInfo& renderInfo) const;
+		void drawRemainingStepTime(CanvasWrapper& canvas, const RenderInfo& renderInfo) const;
+		void drawTrainingStepNumber(CanvasWrapper& canvas, const RenderInfo& renderInfo) const;
+		void drawProgramName(CanvasWrapper& canvas, const RenderInfo& renderInfo) const;
 		RenderInfo getRenderInfo(const std::shared_ptr<GameWrapper>& gameWrapper) const;
-		void drawTrainingProgramStepTransition(CanvasWrapper& canvas, const Ui::RenderInfo& renderInfo, const std::shared_ptr<GameWrapper>& gameWrapper);
+		void drawTrainingProgramStepTransition(CanvasWrapper& canvas, const RenderInfo& renderInfo, const std::shared_ptr<GameWrapper>& gameWrapper) const;
+		void drawTrainingProgramFinishedInfo(CanvasWrapper& canvas, const RenderInfo& renderInfo, const std::shared_ptr<GameWrapper>& gameWrapper) const;
 
 		Core::Training::Application::TrainingProgramDisplayReadModel _readModel;
 	};

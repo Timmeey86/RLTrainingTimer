@@ -18,6 +18,11 @@ namespace Core::Training::Application
 			// This means the program is not running any longer, thus there is no current training step
 			MostRecentTrainingStepEvent = nullptr;
 		}
+		if (stateEvent->TrainingWasFinished)
+		{
+			LOG("Storing finish time");
+			TrainingFinishedTime = std::chrono::steady_clock::now();
+		}
 	}
 	void TrainingProgramDisplayReadModel::on(const std::shared_ptr<Events::TrainingProgramStepChangedEvent>& changeEvent)
 	{
@@ -25,6 +30,8 @@ namespace Core::Training::Application
 		if (changeEvent->IsValid)
 		{
 			TrainingStepStartTime = std::chrono::steady_clock::now();
+			LOG("Resetting finish time");
+			TrainingFinishedTime = {};
 		}
 		else
 		{

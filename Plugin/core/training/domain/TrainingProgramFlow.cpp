@@ -22,7 +22,7 @@ namespace Core::Training::Domain
         return events; // Most often empty
     }
 
-    void TrainingProgramFlow::addStateEvent(std::vector<std::shared_ptr<Kernel::DomainEvent>>& events) const
+    void TrainingProgramFlow::addStateEvent(std::vector<std::shared_ptr<Kernel::DomainEvent>>& events, bool trainingWasFinished) const
     {
         auto stateEvent = std::make_shared<Events::TrainingProgramStateChangedEvent>();
         stateEvent->StartingIsPossible = (_currentTrainingProgramState == Definitions::TrainingProgramState::WaitingForStart);
@@ -31,6 +31,7 @@ namespace Core::Training::Domain
         stateEvent->GameIsPaused = _gamePausedState == Definitions::PausedState::Paused;
         stateEvent->PausingProgramIsPossible = _currentTrainingProgramState == Definitions::TrainingProgramState::Running || _currentTrainingProgramState == Definitions::TrainingProgramState::OnlyGamePaused;
         stateEvent->ResumingProgramIsPossible = _currentTrainingProgramState == Definitions::TrainingProgramState::OnlyProgramPaused || _currentTrainingProgramState == Definitions::TrainingProgramState::BothPaused;
+        stateEvent->TrainingWasFinished = trainingWasFinished;
         events.push_back(stateEvent);
     }
 
@@ -229,7 +230,7 @@ namespace Core::Training::Domain
         std::vector<std::shared_ptr<Kernel::DomainEvent>> resultEvents;
         if (_selectedTrainingProgramId.has_value() && _currentTrainingProgramState == Definitions::TrainingProgramState::Running)
         {
-            auto abortEvents = abortCurrentTrainingProgram();
+            auto abortEvents = abortCurrentTrainingProgram(true /* program was finished */);
             resultEvents.insert(resultEvents.end(), abortEvents.begin(), abortEvents.end());
         }
         // Else: Rather than throwing an exception, ignore this.
@@ -294,7 +295,7 @@ namespace Core::Training::Domain
 
     }
 
-    std::vector<std::shared_ptr<Kernel::DomainEvent>> TrainingProgramFlow::abortCurrentTrainingProgram()
+    std::vector<std::shared_ptr<Kernel::DomainEvent>> TrainingProgramFlow::abortCurrentTrainingProgram(bool trainingWasFinished)
     {
         // No matter if a training program gets aborted or finished, we reset to the WaitingForStart state.
         // We also clear the current training step since none is active
@@ -308,7 +309,7 @@ namespace Core::Training::Domain
         _trainingProgramPausedState = Definitions::PausedState::NotPaused;
         _currentTrainingStepNumber.reset();
 
-        addStateEvent(resultEvents);
+        addStateEvent(resultEvents, trainingWasFinished);
 
         return resultEvents;
     }

@@ -94,8 +94,8 @@ namespace Core::Training::Domain
 
 	private:
 
-		std::vector<std::shared_ptr<Kernel::DomainEvent>> abortCurrentTrainingProgram();
-		void addStateEvent(std::vector<std::shared_ptr<Kernel::DomainEvent>>& events) const;
+		std::vector<std::shared_ptr<Kernel::DomainEvent>> abortCurrentTrainingProgram(bool trainingWasFinished = false);
+		void addStateEvent(std::vector<std::shared_ptr<Kernel::DomainEvent>>& events, bool trainingWasFinished = false) const;
 
 		std::optional<uint64_t> _selectedTrainingProgramId = {};
 		std::optional<uint16_t> _currentTrainingStepNumber = {};

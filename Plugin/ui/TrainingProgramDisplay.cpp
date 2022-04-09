@@ -5,6 +5,11 @@ namespace Ui
 {
 	void TrainingProgramDisplay::renderOneFrame(const std::shared_ptr<GameWrapper>& gameWrapper, CanvasWrapper canvas)
 	{
+		if (_readModel.TrainingFinishedTime.has_value())
+		{
+			drawTrainingProgramFinishedInfo(canvas, getRenderInfo(gameWrapper), gameWrapper);
+		}
+
 		if (_readModel.MostRecentTrainingStepEvent == nullptr || !_readModel.MostRecentTrainingStepEvent->IsValid ||
 			_readModel.MostRecentSelectionEvent == nullptr || _readModel.MostRecentTimeEvent == nullptr)
 		{
@@ -20,36 +25,6 @@ namespace Ui
 		drawRemainingStepTime(canvas, renderInfo);
 		drawRemainingProgramTime(canvas, renderInfo);
 		drawTrainingProgramStepTransition(canvas, renderInfo, gameWrapper);
-	}
-
-	void TrainingProgramDisplay::drawTrainingProgramStepTransition(CanvasWrapper& canvas, const Ui::RenderInfo& renderInfo, const std::shared_ptr<GameWrapper>& gameWrapper)
-	{
-
-		if (_readModel.TrainingStepStartTime.has_value())
-		{
-			auto durationSinceTrainingStepStartTime = std::chrono::duration_cast<std::chrono::milliseconds>(
-				std::chrono::steady_clock::now() - _readModel.TrainingStepStartTime.value()
-				).count();
-			if (durationSinceTrainingStepStartTime < 5000)
-			{
-				auto trainingStepName = _readModel.MostRecentTrainingStepEvent->Name;
-				auto stringScale = 5.0f;
-				auto textSize = canvas.GetStringSize(trainingStepName, stringScale * renderInfo.TextWidthFactor, stringScale * renderInfo.TextHeightFactor);
-
-				auto middleX = (float)gameWrapper->GetScreenSize().X / 2.0f;
-				auto middleY = (float)gameWrapper->GetScreenSize().Y / 2.0f;
-
-				// alpha: 100% for two seconds, then fade out
-				auto textAlpha = fmin(1.0f, (5000.0f - (float)durationSinceTrainingStepStartTime) / 3000.0f) * 255.0f;
-
-				auto textLeft = middleX - textSize.X / 2.0f;
-				auto textTop = middleY - textSize.Y / 2.0f;
-
-				canvas.SetColor(LinearColor{ 255.0f, 255.0f, 0.0f, textAlpha });
-				canvas.SetPosition(Vector2{ (int)floor(textLeft), (int)floor(textTop) });
-				canvas.DrawString(trainingStepName, stringScale * renderInfo.TextWidthFactor, stringScale * renderInfo.TextHeightFactor);
-			}
-		}
 	}
 
 	RenderInfo TrainingProgramDisplay::getRenderInfo(const std::shared_ptr<GameWrapper>& gameWrapper) const
@@ -68,13 +43,13 @@ namespace Ui
 		return renderInfo;
 	}
 
-	void TrainingProgramDisplay::drawPanelBackground(CanvasWrapper& canvas, const RenderInfo& renderInfo)
+	void TrainingProgramDisplay::drawPanelBackground(CanvasWrapper& canvas, const RenderInfo& renderInfo) const
 	{
 		// Background
 		canvas.SetColor(LinearColor{ 0.0f, 0.0f, 255.0f, 150.0f });
 		canvas.DrawRect(Vector2{ renderInfo.LeftBorder, renderInfo.TopBorder }, Vector2{ renderInfo.RightBorder, renderInfo.BottomBorder });
 	}
-	void TrainingProgramDisplay::drawProgramName(CanvasWrapper& canvas, const RenderInfo& renderInfo)
+	void TrainingProgramDisplay::drawProgramName(CanvasWrapper& canvas, const RenderInfo& renderInfo) const
 	{
 		// Program Name
 		canvas.SetColor(LinearColor{ 255.0f, 255.0f, 255.0f, 255.0f });
@@ -82,18 +57,18 @@ namespace Ui
 		const auto shortenedName = _readModel.MostRecentSelectionEvent->Name.substr(0, 40);
 		canvas.DrawString(shortenedName, 1.6f * renderInfo.TextWidthFactor, 1.6f * renderInfo.TextHeightFactor);
 	}
-	void TrainingProgramDisplay::drawTrainingStepNumber(CanvasWrapper& canvas, const RenderInfo& renderInfo)
+	void TrainingProgramDisplay::drawTrainingStepNumber(CanvasWrapper& canvas, const RenderInfo& renderInfo) const
 	{
 		// Training Step Number and Name
 		canvas.SetPosition(Vector2{ renderInfo.LeftBorder + (int)floor(renderInfo.Width * 0.25f), renderInfo.TopBorder + (int)floor(renderInfo.Height * 0.1f) });
-		const auto shortenedName = _readModel.MostRecentTrainingStepEvent->Name.substr(0, 50);
+		const auto shortenedName = _readModel.MostRecentTrainingStepEvent->Name.substr(0, 40);
 		canvas.DrawString(
 			fmt::format("{} / {}: {}", _readModel.MostRecentTrainingStepEvent->StepNumber + 1, _readModel.MostRecentSelectionEvent->NumberOfSteps, shortenedName),
 			2.5f * renderInfo.TextWidthFactor,
 			2.5f * renderInfo.TextHeightFactor
 		);
 	}
-	void TrainingProgramDisplay::drawRemainingStepTime(CanvasWrapper& canvas, const RenderInfo& renderInfo)
+	void TrainingProgramDisplay::drawRemainingStepTime(CanvasWrapper& canvas, const RenderInfo& renderInfo) const
 	{
 		// Remaining Step Time
 		canvas.SetPosition(Vector2{ renderInfo.LeftBorder + (int)floor(renderInfo.Width * 0.7f), renderInfo.TopBorder + (int)floor(renderInfo.Height * 0.1f) });
@@ -106,7 +81,7 @@ namespace Ui
 			2.5f * renderInfo.TextHeightFactor
 		);
 	}
-	void TrainingProgramDisplay::drawRemainingProgramTime(CanvasWrapper& canvas, const RenderInfo& renderInfo)
+	void TrainingProgramDisplay::drawRemainingProgramTime(CanvasWrapper& canvas, const RenderInfo& renderInfo) const
 	{
 		// Remaining Program Time
 		canvas.SetPosition(Vector2{ renderInfo.LeftBorder + (int)floor(renderInfo.Width * 0.9f), renderInfo.TopBorder + (int)floor(renderInfo.Height * 0.2f) });
@@ -118,5 +93,70 @@ namespace Ui
 			2.0f * renderInfo.TextWidthFactor,
 			2.0f * renderInfo.TextHeightFactor
 		);
+	}
+
+	void drawCenteredText(const std::string& text, CanvasWrapper& canvas, const RenderInfo& renderInfo, const std::shared_ptr<GameWrapper>& gameWrapper, float stringScale, float alpha)
+	{
+		auto screenSize = gameWrapper->GetScreenSize();
+		Vector2F textSize = {};
+		// Try to fit the text in the screen
+		stringScale += 1.0f;
+		do
+		{
+			stringScale -= .25f;
+			textSize = canvas.GetStringSize(text, stringScale * renderInfo.TextWidthFactor, stringScale * renderInfo.TextHeightFactor);
+		} while (textSize.X > (float)screenSize.X && stringScale >= .0f);
+
+		// Calculate the text position so it is centered
+		auto middleX = (float)screenSize.X / 2.0f;
+		auto middleY = (float)screenSize.Y / 2.0f;
+		auto textLeft = middleX - textSize.X / 2.0f;
+		auto textTop = middleY - textSize.Y / 2.0f;
+
+		// Draw the string
+		canvas.SetColor(LinearColor{ 255.0f, 255.0f, 0.0f, alpha });
+		canvas.SetPosition(Vector2{ (int)floor(textLeft), (int)floor(textTop) });
+		canvas.DrawString(text, stringScale * renderInfo.TextWidthFactor, stringScale * renderInfo.TextHeightFactor, true);
+	}
+
+	void TrainingProgramDisplay::drawTrainingProgramStepTransition(CanvasWrapper& canvas, const RenderInfo& renderInfo, const std::shared_ptr<GameWrapper>& gameWrapper) const
+	{
+		if (_readModel.TrainingStepStartTime.has_value())
+		{
+			auto millisecondsInCurrentTrainingStep = (_readModel.MostRecentTimeEvent->CurrentTrainingStepDuration - _readModel.MostRecentTimeEvent->TimeLeftInCurrentTrainingStep).count();
+			if (millisecondsInCurrentTrainingStep < 5000)
+			{
+				auto trainingStepName = _readModel.MostRecentTrainingStepEvent->Name;
+				// alpha: 100% for two seconds, then fade out
+				auto textAlpha = fmin(1.0f, (5000.0f - (float)millisecondsInCurrentTrainingStep) / 3000.0f) * 255.0f;
+				auto stringScale = 10.0f;
+
+				drawCenteredText(trainingStepName, canvas, renderInfo, gameWrapper, stringScale, textAlpha);
+			}
+			if (auto msLeftInStep = _readModel.MostRecentTimeEvent->TimeLeftInCurrentTrainingStep.count();
+				msLeftInStep <= 3000)
+			{
+				auto secondsLeft = (int)ceil((float)msLeftInStep / 1000.0f);
+				if (secondsLeft > 0)
+				{
+					auto textAlpha = (float)(msLeftInStep - (secondsLeft - 1LL) * 1000LL) * 0.155f + 100.0f;
+					auto stringScale = 20.0f;
+					drawCenteredText(std::to_string(secondsLeft), canvas, renderInfo, gameWrapper, stringScale, textAlpha);
+				}
+			}
+		}
+	}
+
+	void TrainingProgramDisplay::drawTrainingProgramFinishedInfo(CanvasWrapper& canvas, const RenderInfo& renderInfo, const std::shared_ptr<GameWrapper>& gameWrapper) const
+	{
+		auto millisecondsSinceFinished = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - _readModel.TrainingFinishedTime.value()).count();
+		if (millisecondsSinceFinished < 5000)
+		{
+			auto stringScale = 20.0f;
+			auto textAlpha = 255.0f;
+			auto text = "FINISHED";
+
+			drawCenteredText(text, canvas, renderInfo, gameWrapper, stringScale, textAlpha);
+		}
 	}
 }
