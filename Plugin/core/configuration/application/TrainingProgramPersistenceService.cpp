@@ -42,6 +42,28 @@ namespace Core::Configuration::Application
 	{
 		if (genericEvent->shallBeStoredPersistently())
 		{
+			// Optimization: Changing a name sends an event for every keystroke. We squash these events down to only the last.
+			if (!_events.empty())
+			{
+				auto lastRenameEvent = std::dynamic_pointer_cast<Core::Configuration::Events::TrainingProgramRenamedEvent>(_events.back());
+				auto currentRenameEvent = std::dynamic_pointer_cast<Core::Configuration::Events::TrainingProgramRenamedEvent>(genericEvent);
+				if (lastRenameEvent != nullptr && currentRenameEvent != nullptr && lastRenameEvent->AffectedTrainingProgramIds.front() == currentRenameEvent->AffectedTrainingProgramIds.front())
+				{
+					_events.back() = genericEvent;
+					return;
+				}
+
+				auto lastEntryRenameEvent = std::dynamic_pointer_cast<Core::Configuration::Events::TrainingProgramEntryRenamedEvent>(_events.back());
+				auto currentEntryRenameEvent = std::dynamic_pointer_cast<Core::Configuration::Events::TrainingProgramEntryRenamedEvent>(genericEvent);
+				if (lastEntryRenameEvent != nullptr && currentEntryRenameEvent != nullptr &&
+					lastEntryRenameEvent->TrainingProgramId == currentEntryRenameEvent->TrainingProgramId &&
+					lastEntryRenameEvent->TrainingProgramEntryPosition == currentEntryRenameEvent->TrainingProgramEntryPosition)
+				{
+					_events.back() = genericEvent;
+					return;
+				}
+			}
+			// all other cases: simply store the event
 			_events.push_back(genericEvent);
 		}
 	}
