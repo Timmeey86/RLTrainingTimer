@@ -1,14 +1,16 @@
 #include <pch.h>
-#include "TrainingProgramListUiAdapter.h"
+#include "TrainingProgramConfigurationUiAdapter.h"
 
 namespace Adapter
 {
-    TrainingProgramListUiAdapter::TrainingProgramListUiAdapter()
+    TrainingProgramConfigurationUiAdapter::TrainingProgramConfigurationUiAdapter()
         : BakkesMod::Plugin::PluginSettingsWindow()
     {
     }
 
-    void TrainingProgramListUiAdapter::connectToAppService(std::shared_ptr<Core::Configuration::Application::TrainingProgramConfigurationService> appService)
+    void TrainingProgramConfigurationUiAdapter::connectToAppService(
+        std::shared_ptr<Core::Configuration::Application::TrainingProgramConfigurationService> appService,
+        std::shared_ptr<GameWrapper> gameWrapper)
     {
         _appService = appService;
 
@@ -70,7 +72,8 @@ namespace Adapter
             renameEntryFunc,
             changeDurationFunc,
             swapEntriesFunc);
-        _trainingProgramListUi = std::make_shared<Ui::TrainingProgramListUi>(
+        _TrainingProgramOverviewUi = std::make_shared<Ui::TrainingProgramOverviewUi>(
+            gameWrapper,
             startEditingTrainingProgram,
             addTrainingProgramFunc,
             removeTrainingProgramFunc,
@@ -80,7 +83,7 @@ namespace Adapter
         appService->registerEventReceiver(this);
     }
 
-    void TrainingProgramListUiAdapter::RenderSettings()
+    void TrainingProgramConfigurationUiAdapter::RenderSettings()
     {
         if (_isEditing)
         {
@@ -88,28 +91,28 @@ namespace Adapter
         }
         else
         {
-            _trainingProgramListUi->renderTrainingProgramList();
+            _TrainingProgramOverviewUi->renderTrainingProgramList();
         }
     }
 
 
-    std::string TrainingProgramListUiAdapter::GetPluginName()
+    std::string TrainingProgramConfigurationUiAdapter::GetPluginName()
     {
         return "RL Training Timer";
     }
 
-    void TrainingProgramListUiAdapter::SetImGuiContext(uintptr_t ctx)
+    void TrainingProgramConfigurationUiAdapter::SetImGuiContext(uintptr_t ctx)
     {
         ImGui::SetCurrentContext(reinterpret_cast<ImGuiContext*>(ctx));
     }
 
-    void TrainingProgramListUiAdapter::processEvent(const std::shared_ptr<Core::Kernel::DomainEvent>& genericEvent)
+    void TrainingProgramConfigurationUiAdapter::processEvent(const std::shared_ptr<Core::Kernel::DomainEvent>& genericEvent)
     {
         
         if (auto programListChangeEvent = std::dynamic_pointer_cast<Core::Configuration::Events::TrainingProgramListChangedEvent>(genericEvent); 
             programListChangeEvent != nullptr)
         {
-            _trainingProgramListUi->adaptToEvent(programListChangeEvent);
+            _TrainingProgramOverviewUi->adaptToEvent(programListChangeEvent);
         }
         else if (auto programChangeEvent = std::dynamic_pointer_cast<Core::Configuration::Events::TrainingProgramChangedEvent>(genericEvent);
                  programChangeEvent != nullptr)

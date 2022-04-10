@@ -4,11 +4,11 @@
 #include "bakkesmod/plugin/pluginwindow.h"
 #include "bakkesmod/plugin/PluginSettingsWindow.h"
 
-#include <adapter/TrainingProgramListUiAdapter.h>
+#include <adapter/TrainingProgramConfigurationUiAdapter.h>
 #include <adapter/RocketLeagueEventAdapter.h>
 
-#include "ui/TrainingProgramFlowControlUi.h"
-#include "ui/TrainingProgramDisplay.h"
+#include "ui/training/TrainingProgramFlowControlUi.h"
+#include "ui/training/TrainingProgramDisplay.h"
 
 #include <core/configuration/application/TrainingProgramConfigurationService.h>
 #include <core/configuration/application/TrainingProgramPersistenceService.h>
@@ -18,7 +18,7 @@
 
 constexpr auto plugin_version = stringify(VERSION_MAJOR) "." stringify(VERSION_MINOR) "." stringify(VERSION_PATCH) "." stringify(VERSION_BUILD);
 
-class RLTrainingTimer : public BakkesMod::Plugin::BakkesModPlugin, public Adapter::TrainingProgramListUiAdapter, public Ui::TrainingProgramFlowControlUi
+class RLTrainingTimer : public BakkesMod::Plugin::BakkesModPlugin, public Adapter::TrainingProgramConfigurationUiAdapter, public Ui::TrainingProgramFlowControlUi
 {
 public:
 	RLTrainingTimer() = default;

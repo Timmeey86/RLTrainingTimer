@@ -3,8 +3,8 @@
 #include <core/configuration/application/TrainingProgramConfigurationService.h>
 #include <core/configuration/events/TrainingProgramEvents.h>
 
-#include <ui/TrainingProgramListUi.h>
-#include <ui/TrainingProgramUi.h>
+#include <ui/configuration/TrainingProgramOverviewUi.h>
+#include <ui/configuration/TrainingProgramUi.h>
 
 #include <bakkesmod/plugin/PluginSettingsWindow.h>
 
@@ -24,14 +24,16 @@ namespace Adapter
 	  * Another thing to keep in mind is that the plugin loading mechanism of bakkesmod dictates that the
 	  * RLTrainingTimer plugin class must inherit this adapter, therefore we may not have a custom constructor.
 	  */
-	class TrainingProgramListUiAdapter 
+	class TrainingProgramConfigurationUiAdapter 
 		: public BakkesMod::Plugin::PluginSettingsWindow
 		, public Core::Configuration::Application::IConfigurationEventReceiver
 	{
 	public:
-		TrainingProgramListUiAdapter();
+		TrainingProgramConfigurationUiAdapter();
 
-		void connectToAppService(std::shared_ptr<Core::Configuration::Application::TrainingProgramConfigurationService> appService);
+		void connectToAppService(
+			std::shared_ptr<Core::Configuration::Application::TrainingProgramConfigurationService> appService,
+			std::shared_ptr<GameWrapper> gameWrapper);
 
 		// Inherited via PluginSettingsWindow
 		void RenderSettings() override;
@@ -45,7 +47,7 @@ namespace Adapter
 	private: 
 
 		std::shared_ptr<Ui::TrainingProgramUi> _trainingProgramUi;
-		std::shared_ptr<Ui::TrainingProgramListUi> _trainingProgramListUi;
+		std::shared_ptr<Ui::TrainingProgramOverviewUi> _TrainingProgramOverviewUi;
 		bool _isEditing = false;
 		
 		std::shared_ptr<Core::Configuration::Application::TrainingProgramConfigurationService> _appService;

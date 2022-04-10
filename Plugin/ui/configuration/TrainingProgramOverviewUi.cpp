@@ -1,11 +1,12 @@
 #include <pch.h>
-#include "TrainingProgramListUi.h"
+#include "TrainingProgramOverviewUi.h"
 #include <IMGUI/imgui_stdlib.h>
 #include <IMGUI/imgui_disable.h>
 
 namespace Ui
 {
-    TrainingProgramListUi::TrainingProgramListUi(
+    TrainingProgramOverviewUi::TrainingProgramOverviewUi(
+        std::shared_ptr<GameWrapper> gameWrapper,
         std::function<void(uint64_t)> startEditingFunc,
         std::function<void()> addTrainingProgramFunc,
         std::function<void(uint64_t)> removeTrainingProgramFunc,
@@ -15,7 +16,8 @@ namespace Ui
         // The reason is that this way the caller of this constructor knows that we are going to store the object.
         // If the caller provides an RValue to the constructor, the compiler might even elide the copy made in the constructor.
         // Therefore we have an expressive interface ("Express what you intend"), while not making unnecessary copies.
-        : _startEditingFunc{ std::move(startEditingFunc) }
+        : _gameWrapper{ gameWrapper }
+        , _startEditingFunc{ std::move(startEditingFunc) }
         , _addTrainingProgramFunc{ std::move(addTrainingProgramFunc) }
         , _removeTrainingProgramFunc{ std::move(removeTrainingProgramFunc) }
         , _renameTrainingProgramFunc{ std::move(renameTrainingProgramFunc) }
@@ -23,9 +25,14 @@ namespace Ui
     {
     }
 
-    void TrainingProgramListUi::renderTrainingProgramList()
+    void TrainingProgramOverviewUi::renderTrainingProgramList()
     {
+        ImGui::TextUnformatted("Training control");
+        addTrainingControlWindowButton();
+        ImGui::Separator();
+
         ImGui::TextUnformatted("Available Training programs");
+        ImGui::TextUnformatted("Editing these while training is running or paused may result in undefined behavior");
 
         if (_mostRecentChangeEvent == nullptr) { return; }
 
@@ -50,7 +57,7 @@ namespace Ui
         addAddButton();
     }
 
-    void TrainingProgramListUi::adaptToEvent(const std::shared_ptr<Core::Configuration::Events::TrainingProgramListChangedEvent>& changeEvent)
+    void TrainingProgramOverviewUi::adaptToEvent(const std::shared_ptr<Core::Configuration::Events::TrainingProgramListChangedEvent>& changeEvent)
     {
         _mostRecentChangeEvent = changeEvent;
 
@@ -62,23 +69,32 @@ namespace Ui
         }
     }
 
-    void TrainingProgramListUi::addProgramNameTextBox(uint16_t index, const Core::Configuration::Events::TrainingProgramInfo& info)
+    void TrainingProgramOverviewUi::addTrainingControlWindowButton()
+    {
+        if (ImGui::Button("Open Training Window"))
+        {
+            _gameWrapper->Execute([](GameWrapper*) {
+                _globalCvarManager->executeCommand("togglemenu rltrainingtimer");
+            });
+        }
+    }
+
+    void TrainingProgramOverviewUi::addProgramNameTextBox(uint16_t index, const Core::Configuration::Events::TrainingProgramInfo& info)
     {
         // Note: ## hides the label
         if (ImGui::InputText(fmt::format("##name{}", index).c_str(), &_entryNameCache[info.Id]))
         {
-            // TODO: Rename through timer so only one event is being sent
             _renameTrainingProgramFunc(info.Id, _entryNameCache[info.Id]);
         }
     }
 
-    void TrainingProgramListUi::addProgramDurationLabel(const Core::Configuration::Events::TrainingProgramInfo& info)
+    void TrainingProgramOverviewUi::addProgramDurationLabel(const Core::Configuration::Events::TrainingProgramInfo& info)
     {
         auto durationString = fmt::format("{:>3} min", std::chrono::duration_cast<std::chrono::minutes>(info.Duration).count()); // minutes max 3 digits, right aligned
         ImGui::TextUnformatted(durationString.c_str());
     }
 
-    void TrainingProgramListUi::addUpButton(
+    void TrainingProgramOverviewUi::addUpButton(
         uint16_t index,
         const Core::Configuration::Events::TrainingProgramInfo& info,
         const Core::Configuration::Events::TrainingProgramInfo* const previousInfo)
@@ -89,7 +105,7 @@ namespace Ui
             _swapTrainingProgramsFunc(info.Id, previousInfo->Id);
         }
     }
-    void TrainingProgramListUi::addDownButton(
+    void TrainingProgramOverviewUi::addDownButton(
         uint16_t index,
         const Core::Configuration::Events::TrainingProgramInfo& info,
         const Core::Configuration::Events::TrainingProgramInfo* const nextInfo)
@@ -101,7 +117,7 @@ namespace Ui
         }
     }
 
-    void TrainingProgramListUi::addEditButton(uint16_t index, const Core::Configuration::Events::TrainingProgramInfo& info)
+    void TrainingProgramOverviewUi::addEditButton(uint16_t index, const Core::Configuration::Events::TrainingProgramInfo& info)
     {
         if (ImGui::Button(fmt::format("##edit_{}", index).c_str(), "Edit"))
         {
@@ -109,7 +125,7 @@ namespace Ui
         }
     }
 
-    void TrainingProgramListUi::addDeleteButton(uint16_t index, const Core::Configuration::Events::TrainingProgramInfo& info)
+    void TrainingProgramOverviewUi::addDeleteButton(uint16_t index, const Core::Configuration::Events::TrainingProgramInfo& info)
     {
         if (ImGui::Button(fmt::format("##delete_{}", index).c_str(), "Delete"))
         {
@@ -117,7 +133,7 @@ namespace Ui
         }
     }
 
-    void TrainingProgramListUi::addAddButton()
+    void TrainingProgramOverviewUi::addAddButton()
     {
         if (ImGui::Button("Add"))
         {

@@ -8,12 +8,13 @@
 namespace Ui
 {
 	/** This class is responsible for rendering the overview of available training programs as well as editing this list. */
-	class TrainingProgramListUi
+	class TrainingProgramOverviewUi
 	{
 	public:
 
 		/** Constructor. Expectes a function to be called when switching to editing of a training program. */
-		TrainingProgramListUi(
+		TrainingProgramOverviewUi(
+			std::shared_ptr<GameWrapper> gameWrapper,
 			std::function<void(uint64_t)> startEditingFunc,
 			std::function<void()> addTrainingProgramFunc,
 			std::function<void(uint64_t)> removeTrainingProgramFunc,
@@ -28,6 +29,8 @@ namespace Ui
 		void adaptToEvent(const std::shared_ptr<Core::Configuration::Events::TrainingProgramListChangedEvent>& changeEvent);
 
 	private:
+
+		void addTrainingControlWindowButton();
 
 		void addProgramNameTextBox(uint16_t index, const Core::Configuration::Events::TrainingProgramInfo& info);
 		void addProgramDurationLabel(const Core::Configuration::Events::TrainingProgramInfo& info);
@@ -45,6 +48,8 @@ namespace Ui
 
 		// Caches requried for editing in the UI
 		std::unordered_map<uint64_t, std::string> _entryNameCache;
+
+		std::shared_ptr<GameWrapper> _gameWrapper;
 
 		// Caches for the current values to be rendered
 		std::shared_ptr<Core::Configuration::Events::TrainingProgramListChangedEvent> _mostRecentChangeEvent = nullptr;

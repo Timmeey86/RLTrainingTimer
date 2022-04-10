@@ -54,17 +54,11 @@
     <ClCompile Include="core\configuration\domain\TrainingProgramList.cpp">
       <Filter>core\configuration\domain</Filter>
     </ClCompile>
-    <ClCompile Include="adapter\TrainingProgramListUiAdapter.cpp">
+    <ClCompile Include="adapter\TrainingProgramConfigurationUiAdapter.cpp">
       <Filter>adapter</Filter>
     </ClCompile>
     <ClCompile Include="external\IMGUI\imgui_stdlib.cpp">
       <Filter>external\IMGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\TrainingProgramListUi.cpp">
-      <Filter>ui</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\TrainingProgramUi.cpp">
-      <Filter>ui</Filter>
     </ClCompile>
     <ClCompile Include="core\training\domain\TrainingProgramFlow.cpp">
       <Filter>core\training\domain</Filter>
@@ -87,17 +81,23 @@
     <ClCompile Include="external\IMGUI\imgui_disable.cpp">
       <Filter>external\IMGUI</Filter>
     </ClCompile>
-    <ClCompile Include="ui\TrainingProgramDisplay.cpp">
-      <Filter>ui</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\TrainingProgramFlowControlUi.cpp">
-      <Filter>ui</Filter>
-    </ClCompile>
     <ClCompile Include="core\training\application\TrainingProgramDisplayReadModel.cpp">
       <Filter>core\training\application</Filter>
     </ClCompile>
     <ClCompile Include="core\training\application\TrainingProgramFlowControlReadModel.cpp">
       <Filter>core\training\application</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\training\TrainingProgramDisplay.cpp">
+      <Filter>ui\training</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\training\TrainingProgramFlowControlUi.cpp">
+      <Filter>ui\training</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\configuration\TrainingProgramOverviewUi.cpp">
+      <Filter>ui\configuration</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\configuration\TrainingProgramUi.cpp">
+      <Filter>ui\configuration</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -207,17 +207,11 @@
       <Filter>qol</Filter>
     </ClInclude>
     <ClInclude Include="DLLImportExport.h" />
-    <ClInclude Include="adapter\TrainingProgramListUiAdapter.h">
+    <ClInclude Include="adapter\TrainingProgramConfigurationUiAdapter.h">
       <Filter>adapter</Filter>
     </ClInclude>
     <ClInclude Include="external\IMGUI\imgui_stdlib.h">
       <Filter>external\IMGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\TrainingProgramListUi.h">
-      <Filter>ui</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\TrainingProgramUi.h">
-      <Filter>ui</Filter>
     </ClInclude>
     <ClInclude Include="core\training\domain\TrainingProgramFlow.h">
       <Filter>core\training\domain</Filter>
@@ -236,9 +230,6 @@
     </ClInclude>
     <ClInclude Include="core\training\commands\TrainingCommands.h">
       <Filter>core\training\commands</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\TrainingProgramFlowControlUi.h">
-      <Filter>ui</Filter>
     </ClInclude>
     <ClInclude Include="core\configuration\commands\TrainingProgramConfigurationCommands.h">
       <Filter>core\configuration\commands</Filter>
@@ -261,9 +252,6 @@
     <ClInclude Include="external\nlohmann\json.hpp">
       <Filter>external\nlohmann</Filter>
     </ClInclude>
-    <ClInclude Include="ui\TrainingProgramDisplay.h">
-      <Filter>ui</Filter>
-    </ClInclude>
     <ClInclude Include="core\training\application\TrainingProgramDisplayReadModel.h">
       <Filter>core\training\application</Filter>
     </ClInclude>
@@ -272,6 +260,18 @@
     </ClInclude>
     <ClInclude Include="core\training\definitions\TrainingProgramStates.h">
       <Filter>core\training\definitions</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\training\TrainingProgramDisplay.h">
+      <Filter>ui\training</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\training\TrainingProgramFlowControlUi.h">
+      <Filter>ui\training</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\configuration\TrainingProgramOverviewUi.h">
+      <Filter>ui\configuration</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\configuration\TrainingProgramUi.h">
+      <Filter>ui\configuration</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -337,6 +337,12 @@
     </Filter>
     <Filter Include="core\training\definitions">
       <UniqueIdentifier>{51b02c6b-8a2f-44d8-b89d-25ba8b31145a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui\configuration">
+      <UniqueIdentifier>{ed79f326-678d-469e-ab62-0217542ee6eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui\training">
+      <UniqueIdentifier>{7eb5aa32-f2df-4015-a989-85d49f5f66d8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
