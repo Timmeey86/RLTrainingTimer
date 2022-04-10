@@ -13,7 +13,7 @@
 8) For each training step you want to do in the training, click `Add`, change the name, enter a duration in minutes (or press the + button several times) for this step.
 9) If you decide otherwise, you can move the training steps up or down with the arrow buttons, and you can also delete them.
 10) Click the `Back` button on top and click `Open Training Window`, then close the `Bakkesmod settings window`.
-11) You should see something like this:
+11) You should see something like this:<br />
 ![Training Timer Window with Start, Pause etc buttons](img/TimerWindow.png)
 12) Load into freeplay (you could also load into custom training, a private game or any other mode really)
 13) Select your program through the `Choose a program` box, then click `Start`
