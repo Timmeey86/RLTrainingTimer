@@ -32,7 +32,8 @@ namespace Ui
         ImGui::Separator();
 
         ImGui::TextUnformatted("Available Training programs");
-        ImGui::TextUnformatted("Editing these while training is running or paused may result in undefined behavior");
+
+        addAddButton();
 
         if (_mostRecentChangeEvent == nullptr) { return; }
 
@@ -53,8 +54,6 @@ namespace Ui
             ImGui::SameLine();
             addDeleteButton(index, trainingProgramInfo);
         }
-
-        addAddButton();
     }
 
     void TrainingProgramOverviewUi::adaptToEvent(const std::shared_ptr<Core::Configuration::Events::TrainingProgramListChangedEvent>& changeEvent)

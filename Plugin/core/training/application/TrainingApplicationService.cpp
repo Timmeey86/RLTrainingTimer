@@ -210,13 +210,17 @@ namespace Core::Training::Application
 
 	void TrainingApplicationService::processEvent(const std::shared_ptr<Kernel::DomainEvent>& genericEvent)
 	{
+		std::vector<std::shared_ptr<Kernel::DomainEvent>> events;
+		events.push_back(genericEvent);
+
 		if (auto programChangeEvent = std::dynamic_pointer_cast<Configuration::Events::TrainingProgramChangedEvent>(genericEvent);
 			programChangeEvent != nullptr)
 		{
-			_trainingProgramFlow->handleTrainingProgramChange(programChangeEvent);
+			auto changeEvents = _trainingProgramFlow->handleTrainingProgramChange(programChangeEvent);
+			events.insert(events.end(), changeEvents.begin(), changeEvents.end());
 		}
 		// Currently, we're not interested in any other event, but the read mdoels might be
 
-		updateReadModels({ genericEvent });
+		updateReadModels(events);
 	}
 }
