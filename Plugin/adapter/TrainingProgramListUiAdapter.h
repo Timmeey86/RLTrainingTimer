@@ -40,6 +40,7 @@ namespace Adapter
 
 		// Inherited via IConfigurationEventReceiver
 		void processEvent(const std::shared_ptr<Core::Kernel::DomainEvent>& genericEvent) override;
+		void postProcessEvents() override {}
 
 	private: 
 

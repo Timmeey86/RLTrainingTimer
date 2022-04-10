@@ -52,6 +52,7 @@ namespace Core::Training::Application
 
 		/** Updates the internal information based on the events feeded from the configuration domain. */
 		void processEvent(const std::shared_ptr<Kernel::DomainEvent>& genericEvent) override;
+		void postProcessEvents() override {}
 
 		/** Retrieves the read model for the training program flow control. */
 		inline TrainingProgramFlowControlReadModel getFlowControlReadModel() const { return _flowControlReadModel; }

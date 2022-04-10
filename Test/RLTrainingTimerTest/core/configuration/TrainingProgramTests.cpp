@@ -92,29 +92,6 @@ namespace Core::Configuration::Test
 		EXPECT_EQ(firstEntry.Duration, secondEntry.Duration);
 	}
 
-	// Tests that replaying an addition event will produce the same object as the initial addition
-	TEST_F(TrainingProgramTestFixture, addEntry_when_restored_then_producesSameResult)
-	{
-		// Add an entry to an empty training program and remember the event
-		Domain::TrainingProgram manuallyCreatedProgram(DefaultId);
-		auto entryName = "New Entry";
-		auto entryDuration = std::chrono::seconds(2);
-		auto genericEvents = manuallyCreatedProgram.addEntry({ entryName, entryDuration });
-
-		// Create another empty training program, but this time restore it through events
-		Domain::TrainingProgram restoredProgram(DefaultId);
-		restoredProgram.applyEvents(genericEvents);
-
-		auto manualEntries = manuallyCreatedProgram.entries();
-		auto restoredEntries = restoredProgram.entries();
-
-		EXPECT_EQ(manualEntries.size(), restoredEntries.size());
-		ASSERT_EQ(restoredEntries.size(), 1);
-		EXPECT_EQ(manuallyCreatedProgram.programDuration(), restoredProgram.programDuration());
-		EXPECT_EQ(manualEntries.back().Name, restoredEntries.back().Name);
-		EXPECT_EQ(manualEntries.back().Duration, restoredEntries.back().Duration);
-	}
-
 	TEST_F(TrainingProgramTestFixture, removeEntry_when_calledWithInvalidPosition_will_throw)
 	{
 		auto firstExpectedException = Kernel::IndexOutOfBoundsException(
@@ -201,25 +178,6 @@ namespace Core::Configuration::Test
 		EXPECT_EQ(sut->entries().size(), 1);
 		EXPECT_EQ(sut->programDuration(), FirstEntryDuration);
 	}
-	TEST_F(TrainingProgramTestFixture, removeEntry_when_restored_then_producesSameResult)
-	{
-		ASSERT_GE(sut->entries().size(), 2);
-
-		auto restoredTrainingProgram = Domain::TrainingProgram(*sut);
-
-		auto genericEvents = sut->removeEntry(0);
-
-		restoredTrainingProgram.applyEvents(genericEvents);
-
-		auto sutEntries = sut->entries();
-		auto restoredEntries = restoredTrainingProgram.entries();
-
-		ASSERT_GE(sutEntries.size(), 1);
-		ASSERT_GE(restoredEntries.size(), 1);
-
-		EXPECT_EQ(sutEntries.size(), restoredEntries.size());
-		EXPECT_EQ(sut->programDuration(), restoredTrainingProgram.programDuration());
-	}
 
 	TEST_F(TrainingProgramTestFixture, renameEntry_when_calledWithInvalidPosition_will_throw)
 	{
@@ -290,29 +248,6 @@ namespace Core::Configuration::Test
 		EXPECT_EQ(renameEvent->TrainingProgramId, DefaultId);
 		EXPECT_EQ(renameEvent->TrainingProgramEntryName, newName);
 		EXPECT_EQ(renameEvent->TrainingProgramEntryPosition, 0);
-	}
-
-	TEST_F(TrainingProgramTestFixture, renameEntry_when_restored_then_producesSameResult)
-	{
-		ASSERT_GE(sut->entries().size(), 1);
-
-		auto newName = "New entry name";
-		auto newDuration = 15000U;
-
-		auto restoredTrainingProgram = Domain::TrainingProgram(*sut);
-
-		auto renameEvent = sut->renameEntry(0, { newName, newDuration });
-
-		restoredTrainingProgram.applyEvents({ renameEvent });
-
-		auto sutEntries = sut->entries();
-		auto restoredEntries = restoredTrainingProgram.entries();
-
-		ASSERT_GE(sutEntries.size(), InitialSize);
-		ASSERT_GE(restoredEntries.size(), InitialSize);
-
-		EXPECT_EQ(sutEntries.size(), restoredEntries.size());
-		EXPECT_EQ(sut->programDuration(), restoredTrainingProgram.programDuration());
 	}
 
 	TEST_F(TrainingProgramTestFixture, swapEntries_when_calledWithInvalidPosition_will_throw)
@@ -386,27 +321,5 @@ namespace Core::Configuration::Test
 		EXPECT_EQ(swapEvent->TrainingProgramId, DefaultId);
 		EXPECT_EQ(swapEvent->FirstTrainingProgramEntryPosition, 0);
 		EXPECT_EQ(swapEvent->SecondTrainingProgramEntryPosition, 1);
-	}
-
-	TEST_F(TrainingProgramTestFixture, swapEntries_when_restored_then_producesSameResult)
-	{
-		ASSERT_GE(sut->entries().size(), 2);
-
-		auto restoredProgram = Domain::TrainingProgram(*sut);
-
-		auto swapEvent = sut->swapEntries(0, 1);
-
-		restoredProgram.applyEvents({ swapEvent });
-
-		auto sutEntries = sut->entries();
-		auto restoredEntries = restoredProgram.entries();
-
-		ASSERT_EQ(sutEntries.size(), restoredEntries.size());
-		for (int index = 0; index < sutEntries.size(); index++)
-		{
-			EXPECT_EQ(sutEntries[index].Name, restoredEntries[index].Name);
-			EXPECT_EQ(sutEntries[index].Duration, restoredEntries[index].Duration);
-		}
-		EXPECT_EQ(sut->programDuration(), restoredProgram.programDuration());
 	}
 }

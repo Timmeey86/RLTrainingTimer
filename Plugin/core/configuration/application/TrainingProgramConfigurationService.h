@@ -25,6 +25,7 @@ namespace Core::Configuration::Application
 		virtual ~IConfigurationEventReceiver() = default;
 
 		virtual void processEvent(const std::shared_ptr<Kernel::DomainEvent>& genericEvent) = 0;
+		virtual void postProcessEvents() = 0;
 	};
 
 	/** An <<Application Service>> used for controlling the configuration part of training programs.
@@ -40,6 +41,8 @@ namespace Core::Configuration::Application
 
 		/** Registers a new event receiver. */
 		void registerEventReceiver(IConfigurationEventReceiver* const receiver);
+
+		void applyEvents(const std::vector<std::shared_ptr<Kernel::DomainEvent>>& events);
 
 		/** Adds a training program. */
 		void addTrainingProgram(const Commands::AddTrainingProgramCommand& command);
@@ -60,9 +63,6 @@ namespace Core::Configuration::Application
 		void changeTrainingProgramEntryDuration(const Commands::ChangeTrainingProgramEntryDurationCommand& command);
 		/** Swaps two entries of a training program. */
 		void swapTrainingProgramEntries(const Commands::SwapTrainingProgramEntriesCommand& command);
-
-		/** Restores the training program list from the list of given events. */
-		void restoreTrainingProgramList(const std::vector<std::shared_ptr<Kernel::DomainEvent>>& genericEvents);
 
 	private:
 		void publishEvents(const std::vector<std::shared_ptr<Kernel::DomainEvent>>& events) const;

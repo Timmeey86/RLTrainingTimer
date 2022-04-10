@@ -46,9 +46,6 @@ namespace Core::Configuration::Domain
 		/** Swaps the positions of two training programs. */
 		std::vector<std::shared_ptr<Kernel::DomainEvent>> swapTrainingPrograms(uint64_t firsttrainingProgramId, uint64_t secondtrainingProgramId);
 
-		/** Applies the given list of events to this object. */
-		void applyEvents(const std::vector<std::shared_ptr<Kernel::DomainEvent>>& events);
-
 		/** Provides details for a training program so it can be edited. */
 		std::shared_ptr<TrainingProgram> getTrainingProgram(uint64_t trainingProgramId) const;
 

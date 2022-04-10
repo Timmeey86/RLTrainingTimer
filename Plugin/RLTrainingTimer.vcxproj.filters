@@ -78,12 +78,27 @@
     <ClCompile Include="core\training\application\TrainingApplicationService.cpp">
       <Filter>core\training\application</Filter>
     </ClCompile>
-    <ClCompile Include="ui\TrainingProgramFlowControlUi.cpp" />
-    <ClCompile Include="external\IMGUI\imgui_disable.cpp" />
-    <ClCompile Include="ui\TrainingProgramDisplay.cpp" />
-    <ClCompile Include="core\configuration\application\TrainingProgramConfigurationService.cpp" />
-    <ClCompile Include="core\training\application\TrainingProgramFlowControlReadModel.cpp" />
-    <ClCompile Include="core\training\application\TrainingProgramDisplayReadModel.cpp" />
+    <ClCompile Include="core\configuration\application\TrainingProgramConfigurationService.cpp">
+      <Filter>core\configuration\application</Filter>
+    </ClCompile>
+    <ClCompile Include="core\configuration\application\TrainingProgramPersistenceService.cpp">
+      <Filter>core\configuration\application</Filter>
+    </ClCompile>
+    <ClCompile Include="external\IMGUI\imgui_disable.cpp">
+      <Filter>external\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\TrainingProgramDisplay.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\TrainingProgramFlowControlUi.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="core\training\application\TrainingProgramDisplayReadModel.cpp">
+      <Filter>core\training\application</Filter>
+    </ClCompile>
+    <ClCompile Include="core\training\application\TrainingProgramFlowControlReadModel.cpp">
+      <Filter>core\training\application</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -225,13 +240,39 @@
     <ClInclude Include="ui\TrainingProgramFlowControlUi.h">
       <Filter>ui</Filter>
     </ClInclude>
-    <ClInclude Include="external\IMGUI\imgui_disable.h" />
-    <ClInclude Include="ui\TrainingProgramDisplay.h" />
-    <ClInclude Include="core\training\application\TrainingProgramFlowControlReadModel.h" />
-    <ClInclude Include="core\training\application\TrainingProgramDisplayReadModel.h" />
-    <ClInclude Include="core\configuration\commands\TrainingProgramConfigurationCommands.h" />
-    <ClInclude Include="core\configuration\application\TrainingProgramConfigurationService.h" />
-    <ClInclude Include="core\training\definitions\TrainingProgramStates.h" />
+    <ClInclude Include="core\configuration\commands\TrainingProgramConfigurationCommands.h">
+      <Filter>core\configuration\commands</Filter>
+    </ClInclude>
+    <ClInclude Include="core\configuration\application\event_serializing.hpp">
+      <Filter>core\configuration\application</Filter>
+    </ClInclude>
+    <ClInclude Include="core\configuration\application\json_serializer.hpp">
+      <Filter>core\configuration\application</Filter>
+    </ClInclude>
+    <ClInclude Include="core\configuration\application\TrainingProgramConfigurationService.h">
+      <Filter>core\configuration\application</Filter>
+    </ClInclude>
+    <ClInclude Include="core\configuration\application\TrainingProgramPersistenceService.h">
+      <Filter>core\configuration\application</Filter>
+    </ClInclude>
+    <ClInclude Include="external\IMGUI\imgui_disable.h">
+      <Filter>external\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="external\nlohmann\json.hpp">
+      <Filter>external\nlohmann</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\TrainingProgramDisplay.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="core\training\application\TrainingProgramDisplayReadModel.h">
+      <Filter>core\training\application</Filter>
+    </ClInclude>
+    <ClInclude Include="core\training\application\TrainingProgramFlowControlReadModel.h">
+      <Filter>core\training\application</Filter>
+    </ClInclude>
+    <ClInclude Include="core\training\definitions\TrainingProgramStates.h">
+      <Filter>core\training\definitions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="RLTrainingTimer.rc" />
@@ -264,9 +305,6 @@
     <Filter Include="qol">
       <UniqueIdentifier>{3b6b5c39-9030-4993-beed-a25e25701413}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ports">
-      <UniqueIdentifier>{1b0dd963-7739-483a-ab93-9a2f13a93344}</UniqueIdentifier>
-    </Filter>
     <Filter Include="adapter">
       <UniqueIdentifier>{2ab53b75-c475-44c9-9bf5-8c54c3037b9f}</UniqueIdentifier>
     </Filter>
@@ -287,6 +325,18 @@
     </Filter>
     <Filter Include="core\training\commands">
       <UniqueIdentifier>{87071c69-24b1-4422-b74f-4d8cdb10ab68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\configuration\application">
+      <UniqueIdentifier>{edc557cb-08f0-4fa1-9f9d-dd6aafbc31dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\configuration\commands">
+      <UniqueIdentifier>{b0f4f130-147a-438f-a04d-f05783d5dd1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="external\nlohmann">
+      <UniqueIdentifier>{6c38bf80-2441-4fe0-9920-c94d95cff3fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\training\definitions">
+      <UniqueIdentifier>{51b02c6b-8a2f-44d8-b89d-25ba8b31145a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

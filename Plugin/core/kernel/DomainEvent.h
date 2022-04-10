@@ -10,6 +10,9 @@ namespace Core::Kernel
 		/** Returns true if it makes sense to store this event persistently, which also means an object can be restored with it (and other events). */
 		inline bool shallBeStoredPersistently() const { return _shallBeStoredPersistently; }
 
+		/** Required for serialization. */
+		DomainEvent() : DomainEvent(false) {}
+
 	protected:
 		explicit DomainEvent(bool shallBeStoredPersistently) 
 			: _shallBeStoredPersistently{ shallBeStoredPersistently }

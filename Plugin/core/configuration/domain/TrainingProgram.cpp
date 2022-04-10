@@ -101,39 +101,6 @@ namespace Core::Configuration::Domain
         return addProgramChangedEvent({ renameEvent });
     }
 
-    void TrainingProgram::applyEvents(const std::vector<std::shared_ptr<Kernel::DomainEvent>>& events)
-    {
-        for (auto genericEvent : events)
-        {
-            if (auto additionEvent = dynamic_cast<Events::TrainingProgramEntryAddedEvent*>(genericEvent.get()))
-            {
-                if (additionEvent->TrainingProgramId != _id) { continue; }
-                addEntry({ additionEvent->TrainingProgramEntryName, additionEvent->TrainingProgramEntryDuration });
-            }
-            else if (auto removalEvent = dynamic_cast<Events::TrainingProgramEntryRemovedEvent*>(genericEvent.get()))
-            {
-                if (removalEvent->TrainingProgramId != _id) { continue; }
-                removeEntry(removalEvent->TrainingProgramEntryPosition);
-            }
-            else if (auto renameEvent = dynamic_cast<Events::TrainingProgramEntryRenamedEvent*>(genericEvent.get()))
-            {
-                if (renameEvent->TrainingProgramId != _id) { continue; }
-                renameEntry(renameEvent->TrainingProgramEntryPosition, renameEvent->TrainingProgramEntryName);
-            }
-            else if (auto durationChangeEvent = dynamic_cast<Events::TrainingProgramEntryDurationChangedEvent*>(genericEvent.get()))
-            {
-                if (durationChangeEvent->TrainingProgramId != _id) { continue; }
-                changeEntryDuration(durationChangeEvent->TrainingProgramEntryPosition, durationChangeEvent->TrainingProgramEntryDuration);
-            }
-            else if (auto swapEvent = dynamic_cast<Events::TrainingProgramEntrySwappedEvent*>(genericEvent.get()))
-            {
-                if (swapEvent->TrainingProgramId != _id) { continue; }
-                swapEntries(swapEvent->FirstTrainingProgramEntryPosition, swapEvent->SecondTrainingProgramEntryPosition);
-            }
-            // else: the event was most likely intended for a different object
-        }
-    }
-
     std::vector<std::shared_ptr<Kernel::DomainEvent>> TrainingProgram::addProgramChangedEvent(std::vector<std::shared_ptr<Kernel::DomainEvent>> otherEvents)
     {
         auto changedEvent = std::make_shared<Events::TrainingProgramChangedEvent>();

@@ -38,7 +38,7 @@ namespace Core::Configuration::Domain
     {
         ensureIdIsKnown(firstProgramId, "first training program ID");
         ensureIdIsKnown(secondProgramId, "second training program ID");
-        
+
         auto firstIter = std::find(_trainingProgramOrder.begin(), _trainingProgramOrder.end(), firstProgramId);
         auto secondIter = std::find(_trainingProgramOrder.begin(), _trainingProgramOrder.end(), secondProgramId);
         if (firstIter != _trainingProgramOrder.end() && secondIter != _trainingProgramOrder.end())
@@ -56,25 +56,6 @@ namespace Core::Configuration::Domain
         swapEvent->AffectedTrainingProgramIds.push_back(secondProgramId);
 
         return addListChangedEvent({ swapEvent });
-    }
-    void TrainingProgramList::applyEvents(const std::vector<std::shared_ptr<Kernel::DomainEvent>>& events)
-    {
-        for (auto genericEvent : events)
-        {
-            if (auto additionEvent = dynamic_cast<Events::TrainingProgramAddedEvent*>(genericEvent.get()))
-            {
-                addTrainingProgram(additionEvent->AffectedTrainingProgramIds.front());
-            }
-            else if (auto removalEvent = dynamic_cast<Events::TrainingProgramRemovedEvent*>(genericEvent.get()))
-            {
-                removeTrainingProgram(removalEvent->AffectedTrainingProgramIds.front());
-            }
-            else if (auto swapEvent = dynamic_cast<Events::TrainingProgramSwappedEvent*>(genericEvent.get()))
-            {
-                swapTrainingPrograms(swapEvent->AffectedTrainingProgramIds.front(), swapEvent->AffectedTrainingProgramIds.back());
-            }
-            // else: ignore, this might be an event targeting user interfaces instead
-        }
     }
     std::shared_ptr<TrainingProgram> TrainingProgramList::getTrainingProgram(uint64_t trainingProgramId) const
     {

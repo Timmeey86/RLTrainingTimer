@@ -48,9 +48,6 @@ namespace Core::Configuration::Domain
 		/** Changes the name of the training program. */
 		std::vector<std::shared_ptr<Kernel::DomainEvent>> renameProgram(const std::string& newName);
 
-		/** Applies the given list of events to this object. */
-		void applyEvents(const std::vector<std::shared_ptr<Kernel::DomainEvent>>& events);
-
 		/** Helper which creates a new ProgramChangedEvent and adds it to a list of already existing events. */
 		std::vector<std::shared_ptr<Kernel::DomainEvent>> addProgramChangedEvent(std::vector<std::shared_ptr<Kernel::DomainEvent>> otherEvents);
 
