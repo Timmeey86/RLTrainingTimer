@@ -84,7 +84,7 @@ namespace Core::Training::Domain
 		inline std::optional<uint16_t> currentTrainingStepNumber() const { return _currentTrainingStepNumber; }
 
 		/** Retrieves the entries of the selected training program (if any). */
-		std::vector<Configuration::Domain::TrainingProgramEntry> getCurrentEntries();
+		std::vector<Configuration::Events::TrainingProgramEntryParams> getCurrentEntries();
 
 		/** Creates a TrainingTimeUpdatedEvent for the given training duration and the currently active training step. */
 		std::shared_ptr<Kernel::DomainEvent> createTimeUpdatedEvent(const std::chrono::milliseconds& passedTime, const std::chrono::milliseconds& nextThreshold);

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <core/kernel/DomainEvent.h>
-#include "../domain/TrainingProgramEntry.h"
 
 #include <vector>
 

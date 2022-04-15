@@ -250,9 +250,9 @@ namespace Core::Training::Domain
         return resultEvents;
     }
 
-    std::vector<Configuration::Domain::TrainingProgramEntry> TrainingProgramFlow::getCurrentEntries()
+    std::vector<Configuration::Events::TrainingProgramEntryParams> TrainingProgramFlow::getCurrentEntries()
     {
-        std::vector<Configuration::Domain::TrainingProgramEntry> entries;
+        std::vector<Configuration::Events::TrainingProgramEntryParams> entries;
         if (_selectedTrainingProgramId.has_value() && _trainingProgramData.count(_selectedTrainingProgramId.value() > 0))
         {
             entries = _trainingProgramData.at(_selectedTrainingProgramId.value()).TrainingProgramEntries;

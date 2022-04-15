@@ -1,9 +1,9 @@
 #pragma once
 
 #include <core/kernel/DomainEvent.h>
-#include "../domain/TrainingProgramEntry.h"
 
 #include <string>
+#include <chrono>
 
 #include <DLLImportExport.h>
 
@@ -62,6 +62,12 @@ namespace Core::Configuration::Events
 		int SecondTrainingProgramEntryPosition;
 	};
 
+	/** Defines details of a training program entry. */
+	struct TrainingProgramEntryParams
+	{
+		std::string Name;
+		std::chrono::milliseconds Duration;
+	};
 	/** Signals a generic change in the training program, i.e. anything which affects:
 	 *
 	 * - The amount of entries
@@ -77,6 +83,6 @@ namespace Core::Configuration::Events
 		uint64_t TrainingProgramId;
 		std::string TrainingProgramName;
 		std::chrono::milliseconds TrainingProgramDuration;
-		std::vector<Domain::TrainingProgramEntry> TrainingProgramEntries; // Note: We are forwarding a domain object here, but it's only a "dumb" value object.
+		std::vector<TrainingProgramEntryParams> TrainingProgramEntries; 
 	};
 }

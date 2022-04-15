@@ -109,7 +109,7 @@ namespace Core::Configuration::Domain
         changedEvent->TrainingProgramDuration = _duration; 
         for (const auto& entry : _entries)
         {
-            changedEvent->TrainingProgramEntries.push_back(entry);
+            changedEvent->TrainingProgramEntries.push_back({ entry.Name, entry.Duration });
         }
 
         otherEvents.push_back(changedEvent);
