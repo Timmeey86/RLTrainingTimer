@@ -2,8 +2,8 @@
 
 #include "TrainingProgramListConfigurationUi.h"
 #include "TrainingProgramConfigurationUi.h"
-#include "TrainingProgramConfigurationControl.h"
-#include "TrainingProgramListConfigurationControl.h"
+#include "../control/TrainingProgramConfigurationControl.h"
+#include "../control/TrainingProgramListConfigurationControl.h"
 
 #include <bakkesmod/plugin/PluginSettingsWindow.h>
 

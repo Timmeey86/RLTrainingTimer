@@ -78,23 +78,23 @@
     <ClCompile Include="ui\training\TrainingProgramFlowControlUi.cpp">
       <Filter>ui\training</Filter>
     </ClCompile>
-    <ClCompile Include="configuration\ConfigurationUi.cpp">
+    <ClCompile Include="configuration\ui\ConfigurationUi.cpp">
       <Filter>configuration\Ui</Filter>
     </ClCompile>
-    <ClCompile Include="configuration\TrainingProgramConfigurationUi.cpp">
+    <ClCompile Include="configuration\ui\TrainingProgramConfigurationUi.cpp">
       <Filter>configuration\Ui</Filter>
     </ClCompile>
-    <ClCompile Include="configuration\TrainingProgramListConfigurationUi.cpp">
+    <ClCompile Include="configuration\ui\TrainingProgramListConfigurationUi.cpp">
       <Filter>configuration\Ui</Filter>
     </ClCompile>
-    <ClCompile Include="configuration\TrainingProgramConfigurationControl.cpp">
+    <ClCompile Include="configuration\control\TrainingProgramConfigurationControl.cpp">
       <Filter>configuration\Control</Filter>
     </ClCompile>
-    <ClCompile Include="configuration\TrainingProgramListConfigurationControl.cpp">
+    <ClCompile Include="configuration\control\TrainingProgramListConfigurationControl.cpp">
       <Filter>configuration\Control</Filter>
     </ClCompile>
-    <ClCompile Include="configuration\TrainingProgramPersistenceService.cpp">
-      <Filter>configuration\Data</Filter>
+    <ClCompile Include="configuration\control\TrainingProgramPersistenceService.cpp">
+      <Filter>configuration\Control</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -225,34 +225,34 @@
     <ClInclude Include="ui\training\TrainingProgramFlowControlUi.h">
       <Filter>ui\training</Filter>
     </ClInclude>
-    <ClInclude Include="configuration\ConfigurationUi.h">
+    <ClInclude Include="configuration\ui\ConfigurationUi.h">
       <Filter>configuration\Ui</Filter>
     </ClInclude>
-    <ClInclude Include="configuration\TrainingProgramConfigurationUi.h">
+    <ClInclude Include="configuration\ui\TrainingProgramConfigurationUi.h">
       <Filter>configuration\Ui</Filter>
     </ClInclude>
-    <ClInclude Include="configuration\TrainingProgramListConfigurationUi.h">
+    <ClInclude Include="configuration\ui\TrainingProgramListConfigurationUi.h">
       <Filter>configuration\Ui</Filter>
     </ClInclude>
-    <ClInclude Include="configuration\TrainingProgramConfigurationControl.h">
-      <Filter>configuration\Control</Filter>
-    </ClInclude>
-    <ClInclude Include="configuration\TrainingProgramListConfigurationControl.h">
-      <Filter>configuration\Control</Filter>
-    </ClInclude>
-    <ClInclude Include="configuration\TrainingProgramData.h">
+    <ClInclude Include="configuration\data\TrainingProgramEntry.h">
       <Filter>configuration\Data</Filter>
     </ClInclude>
-    <ClInclude Include="configuration\TrainingProgramEntry.h">
+    <ClInclude Include="configuration\data\TrainingProgramData.h">
       <Filter>configuration\Data</Filter>
     </ClInclude>
-    <ClInclude Include="configuration\TrainingProgramPersistenceService.h">
-      <Filter>configuration\Data</Filter>
-    </ClInclude>
-    <ClInclude Include="configuration\event_serializing.hpp">
+    <ClInclude Include="configuration\control\TrainingProgramConfigurationControl.h">
       <Filter>configuration\Control</Filter>
     </ClInclude>
-    <ClInclude Include="configuration\json_serializer.hpp">
+    <ClInclude Include="configuration\control\TrainingProgramListConfigurationControl.h">
+      <Filter>configuration\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="configuration\control\TrainingProgramPersistenceService.h">
+      <Filter>configuration\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="configuration\control\event_serializing.hpp">
+      <Filter>configuration\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="configuration\control\json_serializer.hpp">
       <Filter>configuration\Control</Filter>
     </ClInclude>
   </ItemGroup>

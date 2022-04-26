@@ -1,7 +1,7 @@
 #pragma once
 
-#include "TrainingProgramConfigurationControl.h"
-#include "TrainingProgramListConfigurationControl.h"
+#include "../control/TrainingProgramConfigurationControl.h"
+#include "../control/TrainingProgramListConfigurationControl.h"
 
 #include <memory>
 #include <functional>

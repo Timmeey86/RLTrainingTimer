@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TrainingProgramData.h"
+#include "../data/TrainingProgramData.h"
 
 #include <map>
 #include <memory>

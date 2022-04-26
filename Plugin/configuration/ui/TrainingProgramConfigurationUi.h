@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TrainingProgramConfigurationControl.h"
+#include "../control/TrainingProgramConfigurationControl.h"
 
 #include <memory>
 #include <functional>

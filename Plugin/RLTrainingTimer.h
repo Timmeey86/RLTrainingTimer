@@ -6,7 +6,7 @@
 
 #include <adapter/RocketLeagueEventAdapter.h>
 
-#include <configuration/ConfigurationUi.h>
+#include <configuration/ui/ConfigurationUi.h>
 
 #include "version.h"
 
