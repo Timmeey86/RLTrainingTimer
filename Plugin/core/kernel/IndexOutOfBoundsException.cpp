@@ -4,22 +4,20 @@
 namespace Core::Kernel
 {
 	IndexOutOfBoundsException::IndexOutOfBoundsException(
-		const std::string& domainContext,
-		const std::string& domainTypeName,
-		const std::string& domainClassName,
+		const std::string& context,
+		const std::string& className,
 		const std::string& parameterName,
 		int lowerBound,
 		int upperBound,
 		int parameterValue)
 		: std::runtime_error(fmt::format(
-			"Value {} is out of bounds [{},{}] for parameter {} of {} '{}' (Context: {})",
+			"Value {} is out of bounds [{},{}] for parameter {} of '{}' (Context: {})",
 			parameterValue,
 			lowerBound,
 			upperBound,
 			parameterName,
-			domainTypeName,
-			domainClassName,
-			domainContext
+			context,
+			className
 		).c_str())
 	{
 	}

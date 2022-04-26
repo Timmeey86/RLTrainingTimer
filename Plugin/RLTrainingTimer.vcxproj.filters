@@ -42,20 +42,11 @@
     <ClCompile Include="external\fmt\src\format.cc">
       <Filter>external\fmt</Filter>
     </ClCompile>
-    <ClCompile Include="core\configuration\domain\TrainingProgram.cpp">
-      <Filter>core\configuration\domain</Filter>
-    </ClCompile>
     <ClCompile Include="core\kernel\IndexOutOfBoundsException.cpp">
       <Filter>core\kernel</Filter>
     </ClCompile>
     <ClCompile Include="core\kernel\InvalidValueException.cpp">
       <Filter>core\kernel</Filter>
-    </ClCompile>
-    <ClCompile Include="core\configuration\domain\TrainingProgramList.cpp">
-      <Filter>core\configuration\domain</Filter>
-    </ClCompile>
-    <ClCompile Include="adapter\TrainingProgramConfigurationUiAdapter.cpp">
-      <Filter>adapter</Filter>
     </ClCompile>
     <ClCompile Include="external\IMGUI\imgui_stdlib.cpp">
       <Filter>external\IMGUI</Filter>
@@ -72,12 +63,6 @@
     <ClCompile Include="core\training\application\TrainingApplicationService.cpp">
       <Filter>core\training\application</Filter>
     </ClCompile>
-    <ClCompile Include="core\configuration\application\TrainingProgramConfigurationService.cpp">
-      <Filter>core\configuration\application</Filter>
-    </ClCompile>
-    <ClCompile Include="core\configuration\application\TrainingProgramPersistenceService.cpp">
-      <Filter>core\configuration\application</Filter>
-    </ClCompile>
     <ClCompile Include="external\IMGUI\imgui_disable.cpp">
       <Filter>external\IMGUI</Filter>
     </ClCompile>
@@ -93,11 +78,23 @@
     <ClCompile Include="ui\training\TrainingProgramFlowControlUi.cpp">
       <Filter>ui\training</Filter>
     </ClCompile>
-    <ClCompile Include="ui\configuration\TrainingProgramOverviewUi.cpp">
-      <Filter>ui\configuration</Filter>
+    <ClCompile Include="configuration\ConfigurationUi.cpp">
+      <Filter>configuration\Ui</Filter>
     </ClCompile>
-    <ClCompile Include="ui\configuration\TrainingProgramUi.cpp">
-      <Filter>ui\configuration</Filter>
+    <ClCompile Include="configuration\TrainingProgramConfigurationUi.cpp">
+      <Filter>configuration\Ui</Filter>
+    </ClCompile>
+    <ClCompile Include="configuration\TrainingProgramListConfigurationUi.cpp">
+      <Filter>configuration\Ui</Filter>
+    </ClCompile>
+    <ClCompile Include="configuration\TrainingProgramConfigurationControl.cpp">
+      <Filter>configuration\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="configuration\TrainingProgramListConfigurationControl.cpp">
+      <Filter>configuration\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="configuration\TrainingProgramPersistenceService.cpp">
+      <Filter>configuration\Data</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -179,45 +176,21 @@
     <ClInclude Include="external\fmt\include\fmt\chrono.h">
       <Filter>external\fmt</Filter>
     </ClInclude>
-    <ClInclude Include="core\configuration\domain\TrainingProgramEntry.h">
-      <Filter>core\configuration\domain</Filter>
-    </ClInclude>
-    <ClInclude Include="core\configuration\domain\TrainingProgram.h">
-      <Filter>core\configuration\domain</Filter>
-    </ClInclude>
     <ClInclude Include="core\kernel\IndexOutOfBoundsException.h">
       <Filter>core\kernel</Filter>
     </ClInclude>
     <ClInclude Include="core\kernel\InvalidValueException.h">
       <Filter>core\kernel</Filter>
     </ClInclude>
-    <ClInclude Include="core\configuration\events\TrainingProgramEvents.h">
-      <Filter>core\configuration\event</Filter>
-    </ClInclude>
-    <ClInclude Include="core\kernel\DomainEvent.h">
-      <Filter>core\kernel</Filter>
-    </ClInclude>
-    <ClInclude Include="core\configuration\events\TrainingProgramEntryEvents.h">
-      <Filter>core\configuration\event</Filter>
-    </ClInclude>
-    <ClInclude Include="core\configuration\domain\TrainingProgramList.h">
-      <Filter>core\configuration\domain</Filter>
-    </ClInclude>
     <ClInclude Include="qol\vectorext.h">
       <Filter>qol</Filter>
     </ClInclude>
     <ClInclude Include="DLLImportExport.h" />
-    <ClInclude Include="adapter\TrainingProgramConfigurationUiAdapter.h">
-      <Filter>adapter</Filter>
-    </ClInclude>
     <ClInclude Include="external\IMGUI\imgui_stdlib.h">
       <Filter>external\IMGUI</Filter>
     </ClInclude>
     <ClInclude Include="core\training\domain\TrainingProgramFlow.h">
       <Filter>core\training\domain</Filter>
-    </ClInclude>
-    <ClInclude Include="core\training\events\TrainingProgramFlowEvents.h">
-      <Filter>core\training\event</Filter>
     </ClInclude>
     <ClInclude Include="core\kernel\InvalidStateException.h">
       <Filter>core\kernel</Filter>
@@ -230,21 +203,6 @@
     </ClInclude>
     <ClInclude Include="core\training\commands\TrainingCommands.h">
       <Filter>core\training\commands</Filter>
-    </ClInclude>
-    <ClInclude Include="core\configuration\commands\TrainingProgramConfigurationCommands.h">
-      <Filter>core\configuration\commands</Filter>
-    </ClInclude>
-    <ClInclude Include="core\configuration\application\event_serializing.hpp">
-      <Filter>core\configuration\application</Filter>
-    </ClInclude>
-    <ClInclude Include="core\configuration\application\json_serializer.hpp">
-      <Filter>core\configuration\application</Filter>
-    </ClInclude>
-    <ClInclude Include="core\configuration\application\TrainingProgramConfigurationService.h">
-      <Filter>core\configuration\application</Filter>
-    </ClInclude>
-    <ClInclude Include="core\configuration\application\TrainingProgramPersistenceService.h">
-      <Filter>core\configuration\application</Filter>
     </ClInclude>
     <ClInclude Include="external\IMGUI\imgui_disable.h">
       <Filter>external\IMGUI</Filter>
@@ -267,11 +225,35 @@
     <ClInclude Include="ui\training\TrainingProgramFlowControlUi.h">
       <Filter>ui\training</Filter>
     </ClInclude>
-    <ClInclude Include="ui\configuration\TrainingProgramOverviewUi.h">
-      <Filter>ui\configuration</Filter>
+    <ClInclude Include="configuration\ConfigurationUi.h">
+      <Filter>configuration\Ui</Filter>
     </ClInclude>
-    <ClInclude Include="ui\configuration\TrainingProgramUi.h">
-      <Filter>ui\configuration</Filter>
+    <ClInclude Include="configuration\TrainingProgramConfigurationUi.h">
+      <Filter>configuration\Ui</Filter>
+    </ClInclude>
+    <ClInclude Include="configuration\TrainingProgramListConfigurationUi.h">
+      <Filter>configuration\Ui</Filter>
+    </ClInclude>
+    <ClInclude Include="configuration\TrainingProgramConfigurationControl.h">
+      <Filter>configuration\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="configuration\TrainingProgramListConfigurationControl.h">
+      <Filter>configuration\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="configuration\TrainingProgramData.h">
+      <Filter>configuration\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="configuration\TrainingProgramEntry.h">
+      <Filter>configuration\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="configuration\TrainingProgramPersistenceService.h">
+      <Filter>configuration\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="configuration\event_serializing.hpp">
+      <Filter>configuration\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="configuration\json_serializer.hpp">
+      <Filter>configuration\Control</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -290,17 +272,8 @@
     <Filter Include="core">
       <UniqueIdentifier>{4b40c2d7-d292-494a-8b05-a6196071e2f1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="core\configuration">
-      <UniqueIdentifier>{03793328-caaa-4d28-a730-aec0800ee7e9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="core\configuration\domain">
-      <UniqueIdentifier>{9f7682b9-257c-4588-8237-8660a5748fcd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="core\kernel">
       <UniqueIdentifier>{69313b61-31b5-479d-9d19-bf6f5af03f97}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="core\configuration\event">
-      <UniqueIdentifier>{1fc11483-da09-47fe-b445-8be7dec89355}</UniqueIdentifier>
     </Filter>
     <Filter Include="qol">
       <UniqueIdentifier>{3b6b5c39-9030-4993-beed-a25e25701413}</UniqueIdentifier>
@@ -317,20 +290,11 @@
     <Filter Include="core\training\domain">
       <UniqueIdentifier>{ceb496f6-3589-4ba2-b844-e679b3e51a8d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="core\training\event">
-      <UniqueIdentifier>{e615cc1a-c6b9-4e6c-9a3d-202e71af7030}</UniqueIdentifier>
-    </Filter>
     <Filter Include="core\training\application">
       <UniqueIdentifier>{97c5eb49-e891-41a9-ab24-c62195c38e45}</UniqueIdentifier>
     </Filter>
     <Filter Include="core\training\commands">
       <UniqueIdentifier>{87071c69-24b1-4422-b74f-4d8cdb10ab68}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="core\configuration\application">
-      <UniqueIdentifier>{edc557cb-08f0-4fa1-9f9d-dd6aafbc31dd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="core\configuration\commands">
-      <UniqueIdentifier>{b0f4f130-147a-438f-a04d-f05783d5dd1b}</UniqueIdentifier>
     </Filter>
     <Filter Include="external\nlohmann">
       <UniqueIdentifier>{6c38bf80-2441-4fe0-9920-c94d95cff3fc}</UniqueIdentifier>
@@ -338,11 +302,20 @@
     <Filter Include="core\training\definitions">
       <UniqueIdentifier>{51b02c6b-8a2f-44d8-b89d-25ba8b31145a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ui\configuration">
-      <UniqueIdentifier>{ed79f326-678d-469e-ab62-0217542ee6eb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ui\training">
       <UniqueIdentifier>{7eb5aa32-f2df-4015-a989-85d49f5f66d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="configuration">
+      <UniqueIdentifier>{03793328-caaa-4d28-a730-aec0800ee7e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="configuration\Ui">
+      <UniqueIdentifier>{ca7e0453-de4e-4713-b66b-32c7c644db79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="configuration\Data">
+      <UniqueIdentifier>{1bfbd2ad-c822-40ab-a307-1be2446adf61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="configuration\Control">
+      <UniqueIdentifier>{aea81612-91e9-48e4-8f0a-e6ae9fe6ae63}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

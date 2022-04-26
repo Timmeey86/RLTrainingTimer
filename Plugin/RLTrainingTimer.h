@@ -4,21 +4,15 @@
 #include "bakkesmod/plugin/pluginwindow.h"
 #include "bakkesmod/plugin/PluginSettingsWindow.h"
 
-#include <adapter/TrainingProgramConfigurationUiAdapter.h>
 #include <adapter/RocketLeagueEventAdapter.h>
 
-#include "ui/training/TrainingProgramFlowControlUi.h"
-#include "ui/training/TrainingProgramDisplay.h"
-
-#include <core/configuration/application/TrainingProgramConfigurationService.h>
-#include <core/configuration/application/TrainingProgramPersistenceService.h>
-#include <core/training/application/TrainingApplicationService.h>
+#include <configuration/ConfigurationUi.h>
 
 #include "version.h"
 
 constexpr auto plugin_version = stringify(VERSION_MAJOR) "." stringify(VERSION_MINOR) "." stringify(VERSION_PATCH) "." stringify(VERSION_BUILD);
 
-class RLTrainingTimer : public BakkesMod::Plugin::BakkesModPlugin, public Adapter::TrainingProgramConfigurationUiAdapter, public Ui::TrainingProgramFlowControlUi
+class RLTrainingTimer : public BakkesMod::Plugin::BakkesModPlugin, public configuration::ConfigurationUi//, public Ui::TrainingProgramFlowControlUi
 {
 public:
 	RLTrainingTimer() = default;
@@ -28,11 +22,5 @@ public:
 	virtual void onUnload();
 
 private:
-
-	std::shared_ptr<Core::Configuration::Application::TrainingProgramConfigurationService> _configurationAppService
-		= std::make_shared< Core::Configuration::Application::TrainingProgramConfigurationService>();
-	std::shared_ptr<Core::Configuration::Application::TrainingProgramPersistenceService> _configurationPersistenceService;
-	std::shared_ptr<Core::Training::Application::TrainingApplicationService> _trainingAppService;
-	std::shared_ptr<Adapter::RocketLeagueEventAdapter> _eventAdapter;
 };
 

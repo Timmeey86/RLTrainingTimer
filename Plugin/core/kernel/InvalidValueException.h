@@ -12,9 +12,8 @@ namespace Core::Kernel
 	{
 	public:
 		InvalidValueException(
-			const std::string& domainContext,
-			const std::string& domainTypeName,
-			const std::string& domainClassName,
+			const std::string& context,
+			const std::string& className,
 			const std::string& parameterName,
 			const std::string& invalidityReason,
 			const std::string& value

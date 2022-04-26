@@ -95,17 +95,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="adapter\RocketLeagueEventAdapter.cpp" />
-    <ClCompile Include="core\configuration\application\TrainingProgramConfigurationService.cpp" />
-    <ClCompile Include="core\configuration\application\TrainingProgramPersistenceService.cpp" />
+    <ClCompile Include="configuration\ConfigurationUi.cpp" />
+    <ClCompile Include="configuration\TrainingProgramConfigurationControl.cpp" />
+    <ClCompile Include="configuration\TrainingProgramConfigurationUi.cpp" />
+    <ClCompile Include="configuration\TrainingProgramListConfigurationControl.cpp" />
+    <ClCompile Include="configuration\TrainingProgramListConfigurationUi.cpp" />
+    <ClCompile Include="configuration\TrainingProgramPersistenceService.cpp" />
     <ClCompile Include="core\kernel\InvalidStateException.cpp" />
     <ClCompile Include="core\training\application\TrainingApplicationService.cpp" />
     <ClCompile Include="core\training\application\TrainingProgramDisplayReadModel.cpp" />
     <ClCompile Include="core\training\application\TrainingProgramFlowControlReadModel.cpp" />
     <ClCompile Include="core\training\domain\TrainingProgramFlow.cpp" />
     <ClCompile Include="external\IMGUI\imgui_disable.cpp" />
-    <ClCompile Include="adapter\TrainingProgramConfigurationUiAdapter.cpp" />
-    <ClCompile Include="core\configuration\domain\TrainingProgram.cpp" />
-    <ClCompile Include="core\configuration\domain\TrainingProgramList.cpp" />
     <ClCompile Include="core\kernel\IndexOutOfBoundsException.cpp" />
     <ClCompile Include="external\fmt\src\format.cc" />
     <ClCompile Include="external\fmt\src\os.cc" />
@@ -127,18 +128,20 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="RLTrainingTimer.cpp" />
-    <ClCompile Include="ui\configuration\TrainingProgramOverviewUi.cpp" />
-    <ClCompile Include="ui\configuration\TrainingProgramUi.cpp" />
     <ClCompile Include="ui\training\TrainingProgramDisplay.cpp" />
     <ClCompile Include="ui\training\TrainingProgramFlowControlUi.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="adapter\RocketLeagueEventAdapter.h" />
-    <ClInclude Include="core\configuration\application\event_serializing.hpp" />
-    <ClInclude Include="core\configuration\application\json_serializer.hpp" />
-    <ClInclude Include="core\configuration\application\TrainingProgramConfigurationService.h" />
-    <ClInclude Include="core\configuration\application\TrainingProgramPersistenceService.h" />
-    <ClInclude Include="core\configuration\commands\TrainingProgramConfigurationCommands.h" />
+    <ClInclude Include="configuration\ConfigurationUi.h" />
+    <ClInclude Include="configuration\event_serializing.hpp" />
+    <ClInclude Include="configuration\json_serializer.hpp" />
+    <ClInclude Include="configuration\TrainingProgramConfigurationControl.h" />
+    <ClInclude Include="configuration\TrainingProgramConfigurationUi.h" />
+    <ClInclude Include="configuration\TrainingProgramEntry.h" />
+    <ClInclude Include="configuration\TrainingProgramListConfigurationControl.h" />
+    <ClInclude Include="configuration\TrainingProgramListConfigurationUi.h" />
+    <ClInclude Include="configuration\TrainingProgramPersistenceService.h" />
     <ClInclude Include="core\kernel\InvalidStateException.h" />
     <ClInclude Include="core\training\application\TrainingApplicationService.h" />
     <ClInclude Include="core\training\application\TrainingProgramDisplayReadModel.h" />
@@ -148,13 +151,6 @@
     <ClInclude Include="external\nlohmann\json.hpp" />
     <ClInclude Include="core\training\commands\TrainingCommands.h" />
     <ClInclude Include="core\training\domain\TrainingProgramFlow.h" />
-    <ClInclude Include="core\training\events\TrainingProgramFlowEvents.h" />
-    <ClInclude Include="adapter\TrainingProgramConfigurationUiAdapter.h" />
-    <ClInclude Include="core\configuration\domain\TrainingProgram.h" />
-    <ClInclude Include="core\configuration\domain\TrainingProgramList.h" />
-    <ClInclude Include="core\configuration\events\TrainingProgramEvents.h" />
-    <ClInclude Include="core\configuration\events\TrainingProgramEntryEvents.h" />
-    <ClInclude Include="core\kernel\DomainEvent.h" />
     <ClInclude Include="core\kernel\IndexOutOfBoundsException.h" />
     <ClInclude Include="DLLImportExport.h" />
     <ClInclude Include="external\fmt\include\fmt\chrono.h" />
@@ -187,9 +183,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="qol\vectorext.h" />
     <ClInclude Include="RLTrainingTimer.h" />
-    <ClInclude Include="core\configuration\domain\TrainingProgramEntry.h" />
-    <ClInclude Include="ui\configuration\TrainingProgramOverviewUi.h" />
-    <ClInclude Include="ui\configuration\TrainingProgramUi.h" />
+    <ClInclude Include="configuration\TrainingProgramData.h" />
     <ClInclude Include="ui\training\TrainingProgramDisplay.h" />
     <ClInclude Include="ui\training\TrainingProgramFlowControlUi.h" />
     <ClInclude Include="version.h" />

@@ -12,9 +12,8 @@ namespace Core::Kernel
 	{
 	public:
 		IndexOutOfBoundsException(
-			const std::string& domainContext,
-			const std::string& domainTypeName,
-			const std::string& domainClassName,
+			const std::string& context,
+			const std::string& className,
 			const std::string& parameterName,
 			int lowerBound,
 			int upperBound,

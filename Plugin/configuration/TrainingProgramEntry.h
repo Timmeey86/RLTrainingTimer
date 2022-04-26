@@ -2,7 +2,8 @@
 
 #include <string>
 #include <chrono>
-namespace Core::Configuration::Domain
+
+namespace configuration
 {
 	/**
 	 * This is a <<Value Object>> which represents a single entry in a training program.
