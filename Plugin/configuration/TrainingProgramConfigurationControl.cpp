@@ -42,7 +42,7 @@ namespace configuration
         auto data = internalData(trainingProgramId);
         validatePosition(data, position, "position");
 
-        auto affectedEntry = data->Entries.at(position);
+        auto& affectedEntry = data->Entries.at(position);
         data->Duration -= affectedEntry.Duration;
         data->Duration += newDuration;
         affectedEntry.Duration = newDuration;

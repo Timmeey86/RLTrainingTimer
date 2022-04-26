@@ -13,6 +13,7 @@ namespace configuration
         : _gameWrapper{ gameWrapper }
         , _listConfigurationControl{ listConfigurationControl }
         , _programConfigurationControl{ programConfigurationControl }
+        , _startEditingCallback{ std::move(startEditingCallback) }
     {
     }
 
@@ -31,19 +32,29 @@ namespace configuration
 
         // TODO: Store this in a cache and update only when something in here changes, or when returning from the single training program screen, and after initially loading data
         const auto data = _listConfigurationControl->getTrainingProgramList();
+        _entryNameCache.clear();
+        for (auto [id, trainingProgramData] : data.TrainingProgramData)
+        {
+            _entryNameCache.emplace(id, trainingProgramData.Name);
+        }
+
         auto numberOfPrograms = data.TrainingProgramOrder.size();
         for (auto index = (uint16_t)0; index < (uint16_t)numberOfPrograms; index++)
         {
             const auto& trainingProgramId = data.TrainingProgramOrder[index];
             const auto& trainingProgramInfo = data.TrainingProgramData.at(trainingProgramId);
+            const auto previousProgramId = (index > 0 ? &data.TrainingProgramOrder.at(index - 1) : nullptr);
+            const auto nextProgramId = (index < numberOfPrograms - 1 ? &data.TrainingProgramOrder.at(index + 1) : nullptr);
+            const auto previousData = previousProgramId == nullptr ? nullptr : &data.TrainingProgramData.at(*previousProgramId);
+            const auto nextData = nextProgramId == nullptr ? nullptr : &data.TrainingProgramData.at(*nextProgramId);
 
             listHasChanged |= addProgramNameTextBox(index, trainingProgramInfo);
             ImGui::SameLine();
             addProgramDurationLabel(trainingProgramInfo);
             ImGui::SameLine();
-            listHasChanged |= addUpButton(index, trainingProgramInfo, (index > 0 ? &data.TrainingProgramData.at(index - 1) : nullptr));
+            listHasChanged |= addUpButton(index, trainingProgramInfo, previousData);
             ImGui::SameLine();
-            listHasChanged |= addDownButton(index, trainingProgramInfo, (index < numberOfPrograms - 1 ? &data.TrainingProgramData.at(index + 1) : nullptr));
+            listHasChanged |= addDownButton(index, trainingProgramInfo, nextData);
             ImGui::SameLine();
             addEditButton(index, trainingProgramInfo);
             ImGui::SameLine();
