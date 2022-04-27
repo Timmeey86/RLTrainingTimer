@@ -2,7 +2,7 @@
 //
 //#include "TrainingProgramDisplay.h"
 //
-//#include <core/training/application/TrainingApplicationService.h>
+//#include "../control/TrainingProgramFlowControl.h"
 //
 //#include <bakkesmod/plugin/pluginwindow.h>
 //

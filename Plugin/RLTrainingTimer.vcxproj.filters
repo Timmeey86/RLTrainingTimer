@@ -210,6 +210,9 @@
     <ClInclude Include="training\control\TrainingProgramFlowControl.h">
       <Filter>training\control</Filter>
     </ClInclude>
+    <ClInclude Include="configuration\control\ITrainingProgramListReceiver.h">
+      <Filter>configuration\control</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="RLTrainingTimer.rc" />

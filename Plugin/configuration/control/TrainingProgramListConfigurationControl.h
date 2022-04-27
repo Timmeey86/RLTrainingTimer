@@ -1,9 +1,11 @@
 #pragma once
 
 #include "../data/TrainingProgramData.h"
+#include "ITrainingProgramListReceiver.h"
 
 #include <map>
 #include <memory>
+#include <functional>
 
 #include <DLLImportExport.h>
 
@@ -18,6 +20,9 @@ namespace configuration
 	public:
 		/** Creates an empty program list. */
 		explicit TrainingProgramListConfigurationControl(std::shared_ptr<std::map<uint64_t, TrainingProgramData>> trainingProgramData);
+
+		/** Registers a receiver for training program list changes. */
+		void registerTrainingProgramListReceiver(std::shared_ptr<ITrainingProgramListReceiver> receiver);
 
 		/** Adds a new empty training program and returns its ID */
 		uint64_t addTrainingProgram();
@@ -37,12 +42,15 @@ namespace configuration
 		/** Overrides any internal data. Use this only for restoring a saved state. */
 		void restoreData(const TrainingProgramListData& data);
 
+		/** Notifies any receiver about a change in the training program list. */
+		void notifyReceivers();
+
 	private:
 		void ensureIdDoesntExist(uint64_t trainingProgramId) const;
 		void ensureIdIsKnown(uint64_t trainingProgramId, const std::string& parameterName) const;
-
 		
 		std::vector<uint64_t> _trainingProgramOrder; // The order of training programs
 		std::shared_ptr<std::map<uint64_t, TrainingProgramData>> _trainingProgramData; // The training programs
+		std::vector<std::shared_ptr<ITrainingProgramListReceiver>> _receivers;
 	};
 }

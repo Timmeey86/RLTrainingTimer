@@ -316,4 +316,10 @@ namespace training
         };
         return relevantStates.count(_currentTrainingProgramState) > 0;
     }
+
+    void TrainingProgramFlowControl::receiveListData(const configuration::TrainingProgramListData& data)
+    {
+        stopRunningTrainingProgram();
+        _trainingProgramList = data;
+    }
 }

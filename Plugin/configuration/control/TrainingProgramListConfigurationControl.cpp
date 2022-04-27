@@ -20,6 +20,11 @@ namespace configuration
 
     }
 
+    void TrainingProgramListConfigurationControl::registerTrainingProgramListReceiver(std::shared_ptr<ITrainingProgramListReceiver> receiver)
+    {
+        _receivers.push_back(receiver);
+    }
+
     uint64_t TrainingProgramListConfigurationControl::addTrainingProgram()
     {
         // Since _trainingProgramData is a map ordered by keys, we can retreive a new ID by adding 1 to the last element (which is guaranteed to have the highest key)
@@ -33,6 +38,8 @@ namespace configuration
         _trainingProgramData->emplace(newId, data);
         _trainingProgramOrder.push_back(newId);
 
+        notifyReceivers();
+
         return newId;        
     }
 
@@ -43,6 +50,8 @@ namespace configuration
 
         removeOne(_trainingProgramOrder, trainingProgramId);
         _trainingProgramData->erase(trainingProgramId);
+
+        notifyReceivers();
     }
 
     void TrainingProgramListConfigurationControl::swapTrainingPrograms(uint64_t firstProgramId, uint64_t secondProgramId)
@@ -55,6 +64,7 @@ namespace configuration
         if (firstIter != _trainingProgramOrder.end() && secondIter != _trainingProgramOrder.end())
         {
             std::iter_swap(firstIter, secondIter);
+            notifyReceivers();
         }
         else
         {
@@ -89,6 +99,17 @@ namespace configuration
         for (auto [id, programData] : data.TrainingProgramData)
         {
             _trainingProgramData->emplace(id, programData);
+        }
+
+        notifyReceivers();
+    }
+
+    void TrainingProgramListConfigurationControl::notifyReceivers()
+    {
+        auto listData = getTrainingProgramList();
+        for (const auto& receiver : _receivers)
+        {
+            receiver->receiveListData(listData);
         }
     }
 

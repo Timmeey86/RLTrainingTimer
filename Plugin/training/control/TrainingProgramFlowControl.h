@@ -2,7 +2,7 @@
 
 
 #include <DLLImportExport.h>
-#include <configuration/control/TrainingProgramListConfigurationControl.h>
+#include <configuration/control/ITrainingProgramListReceiver.h>
 
 #include "../data/TrainingProgramFlowData.h"
 #include "../data/TrainingProgramExecutionData.h"
@@ -42,7 +42,7 @@ namespace training
 	 *  - Only a running training program can have a valid training step value.
 	 *  - Only a running, unpaused training program can have the next state activated or be finished.
 	 */
-	class RLTT_IMPORT_EXPORT TrainingProgramFlowControl
+	class RLTT_IMPORT_EXPORT TrainingProgramFlowControl : public configuration::ITrainingProgramListReceiver
 	{
 
 	public:
@@ -70,11 +70,7 @@ namespace training
 		void resumeTrainingProgram();
 
 		/** Receives data from the configuration context. */
-		inline void receiveListData(configuration::TrainingProgramListData data) 
-		{
-			stopRunningTrainingProgram();
-			_trainingProgramList = std::move(data);
-		}
+		void receiveListData(const configuration::TrainingProgramListData& data) override;
 
 		/** Retrieves the current flow state (e.g. so an appropriate UI can be rendered). */
 		inline TrainingProgramFlowData getCurrentFlowData() const { return _currentFlowData; }

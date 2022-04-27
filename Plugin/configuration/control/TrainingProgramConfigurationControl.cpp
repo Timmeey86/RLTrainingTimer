@@ -11,8 +11,11 @@ void remove(std::vector<T>& vec, size_t pos)
 
 namespace configuration
 {
-    TrainingProgramConfigurationControl::TrainingProgramConfigurationControl(std::shared_ptr<std::map<uint64_t, TrainingProgramData>> trainingProgramData)
+    TrainingProgramConfigurationControl::TrainingProgramConfigurationControl(
+        std::shared_ptr<std::map<uint64_t, TrainingProgramData>> trainingProgramData,
+        std::function<void()> changeNotificationCallback)
         : _trainingProgramData{ std::move(trainingProgramData) }
+        , _changeNotificationCallback{ std::move(changeNotificationCallback) }
     {
     }
 
@@ -21,6 +24,8 @@ namespace configuration
         auto data = internalData(trainingProgramId);
         data->Entries.push_back(entry);
         data->Duration += entry.Duration;
+
+        _changeNotificationCallback();
     }
 
     void TrainingProgramConfigurationControl::removeEntry(uint64_t trainingProgramId, int position)
@@ -30,6 +35,8 @@ namespace configuration
 
         data->Duration -= data->Entries.at(position).Duration;
         remove(data->Entries, position);
+
+        _changeNotificationCallback();
     }
 
     void TrainingProgramConfigurationControl::renameEntry(uint64_t trainingProgramId, int position, const std::string& newName)
@@ -38,6 +45,8 @@ namespace configuration
         validatePosition(data, position, "position");
 
         data->Entries.at(position).Name = newName;
+
+        _changeNotificationCallback();
     }
 
     void TrainingProgramConfigurationControl::changeEntryDuration(uint64_t trainingProgramId, int position, const std::chrono::milliseconds& newDuration)
@@ -49,6 +58,8 @@ namespace configuration
         data->Duration -= affectedEntry.Duration;
         data->Duration += newDuration;
         affectedEntry.Duration = newDuration;
+
+        _changeNotificationCallback();
     }
 
     void TrainingProgramConfigurationControl::swapEntries(uint64_t trainingProgramId, int firstPosition, int secondPosition)
@@ -59,12 +70,16 @@ namespace configuration
 
         std::swap(data->Entries[firstPosition], data->Entries[secondPosition]);
         // Duration will stay identical, no need to update it
+
+        _changeNotificationCallback();
     }
 
     void TrainingProgramConfigurationControl::renameProgram(uint64_t trainingProgramId, const std::string& newName)
     {
         auto data = internalData(trainingProgramId);
         data->Name = newName;
+
+        _changeNotificationCallback();
     }
 
     TrainingProgramData TrainingProgramConfigurationControl::getData(uint64_t trainingProgramId) const

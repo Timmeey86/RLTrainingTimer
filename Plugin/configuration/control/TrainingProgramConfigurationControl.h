@@ -4,6 +4,7 @@
 
 #include <map>
 #include <memory>
+#include <functional>
 
 #include <DLLImportExport.h>
 
@@ -17,7 +18,10 @@ namespace configuration
 	{
 	public:
 		/** Constructor. */
-		explicit TrainingProgramConfigurationControl(std::shared_ptr<std::map<uint64_t, TrainingProgramData>> trainingProgramData);
+		explicit TrainingProgramConfigurationControl(
+			std::shared_ptr<std::map<uint64_t, TrainingProgramData>> trainingProgramData,
+			std::function<void()> changeNotificationCallback
+		);
 
 		/** Adds an entry to the training program. */
 		void addEntry(uint64_t trainingProgramId, const TrainingProgramEntry& entry);
@@ -47,6 +51,7 @@ namespace configuration
 		void validatePosition(const TrainingProgramData* const data, int position, const std::string& variableName) const;
 
 		std::shared_ptr<std::map<uint64_t, TrainingProgramData>> _trainingProgramData;
+		std::function<void()> _changeNotificationCallback;
 
 	};
 }

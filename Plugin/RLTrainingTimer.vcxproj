@@ -135,6 +135,7 @@
     <ClInclude Include="configuration\ui\ConfigurationUi.h" />
     <ClInclude Include="configuration\ui\TrainingProgramConfigurationUi.h" />
     <ClInclude Include="configuration\ui\TrainingProgramListConfigurationUi.h" />
+    <ClInclude Include="configuration\control\ITrainingProgramListReceiver.h" />
     <ClInclude Include="training\data\TrainingProgramExecutionData.h" />
     <ClInclude Include="training\data\TrainingProgramFlowData.h" />
     <ClInclude Include="external\IMGUI\imgui_disable.h" />
