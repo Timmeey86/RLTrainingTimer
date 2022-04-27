@@ -49,22 +49,22 @@
       <Filter>external\IMGUI</Filter>
     </ClCompile>
     <ClCompile Include="configuration\ui\ConfigurationUi.cpp">
-      <Filter>configuration\Ui</Filter>
+      <Filter>configuration\ui</Filter>
     </ClCompile>
     <ClCompile Include="configuration\ui\TrainingProgramConfigurationUi.cpp">
-      <Filter>configuration\Ui</Filter>
+      <Filter>configuration\ui</Filter>
     </ClCompile>
     <ClCompile Include="configuration\ui\TrainingProgramListConfigurationUi.cpp">
-      <Filter>configuration\Ui</Filter>
+      <Filter>configuration\ui</Filter>
     </ClCompile>
     <ClCompile Include="configuration\control\TrainingProgramConfigurationControl.cpp">
-      <Filter>configuration\Control</Filter>
+      <Filter>configuration\control</Filter>
     </ClCompile>
     <ClCompile Include="configuration\control\TrainingProgramListConfigurationControl.cpp">
-      <Filter>configuration\Control</Filter>
+      <Filter>configuration\control</Filter>
     </ClCompile>
     <ClCompile Include="configuration\control\TrainingProgramPersistenceService.cpp">
-      <Filter>configuration\Control</Filter>
+      <Filter>configuration\control</Filter>
     </ClCompile>
     <ClCompile Include="training\ui\TrainingProgramDisplay.cpp">
       <Filter>training\ui</Filter>
@@ -166,34 +166,34 @@
       <Filter>external\nlohmann</Filter>
     </ClInclude>
     <ClInclude Include="configuration\ui\ConfigurationUi.h">
-      <Filter>configuration\Ui</Filter>
+      <Filter>configuration\ui</Filter>
     </ClInclude>
     <ClInclude Include="configuration\ui\TrainingProgramConfigurationUi.h">
-      <Filter>configuration\Ui</Filter>
+      <Filter>configuration\ui</Filter>
     </ClInclude>
     <ClInclude Include="configuration\ui\TrainingProgramListConfigurationUi.h">
-      <Filter>configuration\Ui</Filter>
+      <Filter>configuration\ui</Filter>
     </ClInclude>
     <ClInclude Include="configuration\data\TrainingProgramEntry.h">
-      <Filter>configuration\Data</Filter>
+      <Filter>configuration\data</Filter>
     </ClInclude>
     <ClInclude Include="configuration\data\TrainingProgramData.h">
-      <Filter>configuration\Data</Filter>
+      <Filter>configuration\data</Filter>
     </ClInclude>
     <ClInclude Include="configuration\control\TrainingProgramConfigurationControl.h">
-      <Filter>configuration\Control</Filter>
+      <Filter>configuration\control</Filter>
     </ClInclude>
     <ClInclude Include="configuration\control\TrainingProgramListConfigurationControl.h">
-      <Filter>configuration\Control</Filter>
+      <Filter>configuration\control</Filter>
     </ClInclude>
     <ClInclude Include="configuration\control\TrainingProgramPersistenceService.h">
-      <Filter>configuration\Control</Filter>
+      <Filter>configuration\control</Filter>
     </ClInclude>
     <ClInclude Include="configuration\control\event_serializing.hpp">
-      <Filter>configuration\Control</Filter>
+      <Filter>configuration\control</Filter>
     </ClInclude>
     <ClInclude Include="configuration\control\json_serializer.hpp">
-      <Filter>configuration\Control</Filter>
+      <Filter>configuration\control</Filter>
     </ClInclude>
     <ClInclude Include="training\data\TrainingProgramExecutionData.h">
       <Filter>training\data</Filter>
@@ -230,15 +230,6 @@
     <Filter Include="configuration">
       <UniqueIdentifier>{03793328-caaa-4d28-a730-aec0800ee7e9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="configuration\Ui">
-      <UniqueIdentifier>{ca7e0453-de4e-4713-b66b-32c7c644db79}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="configuration\Data">
-      <UniqueIdentifier>{1bfbd2ad-c822-40ab-a307-1be2446adf61}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="configuration\Control">
-      <UniqueIdentifier>{aea81612-91e9-48e4-8f0a-e6ae9fe6ae63}</UniqueIdentifier>
-    </Filter>
     <Filter Include="training">
       <UniqueIdentifier>{6deb761f-fe7a-4c66-a327-1276a6395398}</UniqueIdentifier>
     </Filter>
@@ -247,6 +238,15 @@
     </Filter>
     <Filter Include="training\data">
       <UniqueIdentifier>{47e25e90-697c-42d0-ac75-f11fcecca6e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="configuration\control">
+      <UniqueIdentifier>{aea81612-91e9-48e4-8f0a-e6ae9fe6ae63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="configuration\data">
+      <UniqueIdentifier>{1bfbd2ad-c822-40ab-a307-1be2446adf61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="configuration\ui">
+      <UniqueIdentifier>{ca7e0453-de4e-4713-b66b-32c7c644db79}</UniqueIdentifier>
     </Filter>
     <Filter Include="training\control">
       <UniqueIdentifier>{ad4e8585-4043-4588-ab3f-08840c2dfad3}</UniqueIdentifier>
