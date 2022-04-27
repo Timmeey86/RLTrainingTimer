@@ -42,41 +42,11 @@
     <ClCompile Include="external\fmt\src\format.cc">
       <Filter>external\fmt</Filter>
     </ClCompile>
-    <ClCompile Include="core\kernel\IndexOutOfBoundsException.cpp">
-      <Filter>core\kernel</Filter>
-    </ClCompile>
-    <ClCompile Include="core\kernel\InvalidValueException.cpp">
-      <Filter>core\kernel</Filter>
-    </ClCompile>
     <ClCompile Include="external\IMGUI\imgui_stdlib.cpp">
       <Filter>external\IMGUI</Filter>
     </ClCompile>
-    <ClCompile Include="core\training\domain\TrainingProgramFlow.cpp">
-      <Filter>core\training\domain</Filter>
-    </ClCompile>
-    <ClCompile Include="core\kernel\InvalidStateException.cpp">
-      <Filter>core\kernel</Filter>
-    </ClCompile>
-    <ClCompile Include="adapter\RocketLeagueEventAdapter.cpp">
-      <Filter>adapter</Filter>
-    </ClCompile>
-    <ClCompile Include="core\training\application\TrainingApplicationService.cpp">
-      <Filter>core\training\application</Filter>
-    </ClCompile>
     <ClCompile Include="external\IMGUI\imgui_disable.cpp">
       <Filter>external\IMGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="core\training\application\TrainingProgramDisplayReadModel.cpp">
-      <Filter>core\training\application</Filter>
-    </ClCompile>
-    <ClCompile Include="core\training\application\TrainingProgramFlowControlReadModel.cpp">
-      <Filter>core\training\application</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\training\TrainingProgramDisplay.cpp">
-      <Filter>ui\training</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\training\TrainingProgramFlowControlUi.cpp">
-      <Filter>ui\training</Filter>
     </ClCompile>
     <ClCompile Include="configuration\ui\ConfigurationUi.cpp">
       <Filter>configuration\Ui</Filter>
@@ -95,6 +65,15 @@
     </ClCompile>
     <ClCompile Include="configuration\control\TrainingProgramPersistenceService.cpp">
       <Filter>configuration\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="training\ui\TrainingProgramDisplay.cpp">
+      <Filter>training\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="training\ui\TrainingProgramFlowControlUi.cpp">
+      <Filter>training\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="training\control\TrainingProgramFlowControl.cpp">
+      <Filter>training\control</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -176,54 +155,15 @@
     <ClInclude Include="external\fmt\include\fmt\chrono.h">
       <Filter>external\fmt</Filter>
     </ClInclude>
-    <ClInclude Include="core\kernel\IndexOutOfBoundsException.h">
-      <Filter>core\kernel</Filter>
-    </ClInclude>
-    <ClInclude Include="core\kernel\InvalidValueException.h">
-      <Filter>core\kernel</Filter>
-    </ClInclude>
-    <ClInclude Include="qol\vectorext.h">
-      <Filter>qol</Filter>
-    </ClInclude>
     <ClInclude Include="DLLImportExport.h" />
     <ClInclude Include="external\IMGUI\imgui_stdlib.h">
       <Filter>external\IMGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="core\training\domain\TrainingProgramFlow.h">
-      <Filter>core\training\domain</Filter>
-    </ClInclude>
-    <ClInclude Include="core\kernel\InvalidStateException.h">
-      <Filter>core\kernel</Filter>
-    </ClInclude>
-    <ClInclude Include="adapter\RocketLeagueEventAdapter.h">
-      <Filter>adapter</Filter>
-    </ClInclude>
-    <ClInclude Include="core\training\application\TrainingApplicationService.h">
-      <Filter>core\training\application</Filter>
-    </ClInclude>
-    <ClInclude Include="core\training\commands\TrainingCommands.h">
-      <Filter>core\training\commands</Filter>
     </ClInclude>
     <ClInclude Include="external\IMGUI\imgui_disable.h">
       <Filter>external\IMGUI</Filter>
     </ClInclude>
     <ClInclude Include="external\nlohmann\json.hpp">
       <Filter>external\nlohmann</Filter>
-    </ClInclude>
-    <ClInclude Include="core\training\application\TrainingProgramDisplayReadModel.h">
-      <Filter>core\training\application</Filter>
-    </ClInclude>
-    <ClInclude Include="core\training\application\TrainingProgramFlowControlReadModel.h">
-      <Filter>core\training\application</Filter>
-    </ClInclude>
-    <ClInclude Include="core\training\definitions\TrainingProgramStates.h">
-      <Filter>core\training\definitions</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\training\TrainingProgramDisplay.h">
-      <Filter>ui\training</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\training\TrainingProgramFlowControlUi.h">
-      <Filter>ui\training</Filter>
     </ClInclude>
     <ClInclude Include="configuration\ui\ConfigurationUi.h">
       <Filter>configuration\Ui</Filter>
@@ -255,6 +195,21 @@
     <ClInclude Include="configuration\control\json_serializer.hpp">
       <Filter>configuration\Control</Filter>
     </ClInclude>
+    <ClInclude Include="training\data\TrainingProgramExecutionData.h">
+      <Filter>training\data</Filter>
+    </ClInclude>
+    <ClInclude Include="training\data\TrainingProgramFlowData.h">
+      <Filter>training\data</Filter>
+    </ClInclude>
+    <ClInclude Include="training\ui\TrainingProgramDisplay.h">
+      <Filter>training\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="training\ui\TrainingProgramFlowControlUi.h">
+      <Filter>training\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="training\control\TrainingProgramFlowControl.h">
+      <Filter>training\control</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="RLTrainingTimer.rc" />
@@ -269,41 +224,8 @@
     <Filter Include="external\IMGUI">
       <UniqueIdentifier>{90e911e5-25d3-4ef1-a3bf-fba62cfe2e18}</UniqueIdentifier>
     </Filter>
-    <Filter Include="core">
-      <UniqueIdentifier>{4b40c2d7-d292-494a-8b05-a6196071e2f1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="core\kernel">
-      <UniqueIdentifier>{69313b61-31b5-479d-9d19-bf6f5af03f97}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="qol">
-      <UniqueIdentifier>{3b6b5c39-9030-4993-beed-a25e25701413}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="adapter">
-      <UniqueIdentifier>{2ab53b75-c475-44c9-9bf5-8c54c3037b9f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ui">
-      <UniqueIdentifier>{0323d12f-3cdf-48a0-8977-b59cc3d64d80}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="core\training">
-      <UniqueIdentifier>{fd81fdaa-c054-46fc-9694-6fcc6223f9a7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="core\training\domain">
-      <UniqueIdentifier>{ceb496f6-3589-4ba2-b844-e679b3e51a8d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="core\training\application">
-      <UniqueIdentifier>{97c5eb49-e891-41a9-ab24-c62195c38e45}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="core\training\commands">
-      <UniqueIdentifier>{87071c69-24b1-4422-b74f-4d8cdb10ab68}</UniqueIdentifier>
-    </Filter>
     <Filter Include="external\nlohmann">
       <UniqueIdentifier>{6c38bf80-2441-4fe0-9920-c94d95cff3fc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="core\training\definitions">
-      <UniqueIdentifier>{51b02c6b-8a2f-44d8-b89d-25ba8b31145a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ui\training">
-      <UniqueIdentifier>{7eb5aa32-f2df-4015-a989-85d49f5f66d8}</UniqueIdentifier>
     </Filter>
     <Filter Include="configuration">
       <UniqueIdentifier>{03793328-caaa-4d28-a730-aec0800ee7e9}</UniqueIdentifier>
@@ -316,6 +238,18 @@
     </Filter>
     <Filter Include="configuration\Control">
       <UniqueIdentifier>{aea81612-91e9-48e4-8f0a-e6ae9fe6ae63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="training">
+      <UniqueIdentifier>{6deb761f-fe7a-4c66-a327-1276a6395398}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="training\ui">
+      <UniqueIdentifier>{7d5d0ea5-6801-474a-9ac9-a2b58115ca09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="training\data">
+      <UniqueIdentifier>{47e25e90-697c-42d0-ac75-f11fcecca6e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="training\control">
+      <UniqueIdentifier>{ad4e8585-4043-4588-ab3f-08840c2dfad3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

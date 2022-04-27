@@ -94,20 +94,14 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="adapter\RocketLeagueEventAdapter.cpp" />
     <ClCompile Include="configuration\control\TrainingProgramConfigurationControl.cpp" />
     <ClCompile Include="configuration\control\TrainingProgramListConfigurationControl.cpp" />
     <ClCompile Include="configuration\control\TrainingProgramPersistenceService.cpp" />
     <ClCompile Include="configuration\ui\ConfigurationUi.cpp" />
     <ClCompile Include="configuration\ui\TrainingProgramConfigurationUi.cpp" />
     <ClCompile Include="configuration\ui\TrainingProgramListConfigurationUi.cpp" />
-    <ClCompile Include="core\kernel\InvalidStateException.cpp" />
-    <ClCompile Include="core\training\application\TrainingApplicationService.cpp" />
-    <ClCompile Include="core\training\application\TrainingProgramDisplayReadModel.cpp" />
-    <ClCompile Include="core\training\application\TrainingProgramFlowControlReadModel.cpp" />
-    <ClCompile Include="core\training\domain\TrainingProgramFlow.cpp" />
+    <ClCompile Include="training\control\TrainingProgramFlowControl.cpp" />
     <ClCompile Include="external\IMGUI\imgui_disable.cpp" />
-    <ClCompile Include="core\kernel\IndexOutOfBoundsException.cpp" />
     <ClCompile Include="external\fmt\src\format.cc" />
     <ClCompile Include="external\fmt\src\os.cc" />
     <ClCompile Include="external\IMGUI\imgui.cpp" />
@@ -122,17 +116,15 @@
     <ClCompile Include="external\IMGUI\imgui_stdlib.cpp" />
     <ClCompile Include="external\IMGUI\imgui_timeline.cpp" />
     <ClCompile Include="external\IMGUI\imgui_widgets.cpp" />
-    <ClCompile Include="core\kernel\InvalidValueException.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="RLTrainingTimer.cpp" />
-    <ClCompile Include="ui\training\TrainingProgramDisplay.cpp" />
-    <ClCompile Include="ui\training\TrainingProgramFlowControlUi.cpp" />
+    <ClCompile Include="training\ui\TrainingProgramDisplay.cpp" />
+    <ClCompile Include="training\ui\TrainingProgramFlowControlUi.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="adapter\RocketLeagueEventAdapter.h" />
     <ClInclude Include="configuration\control\event_serializing.hpp" />
     <ClInclude Include="configuration\control\json_serializer.hpp" />
     <ClInclude Include="configuration\control\TrainingProgramConfigurationControl.h" />
@@ -143,16 +135,11 @@
     <ClInclude Include="configuration\ui\ConfigurationUi.h" />
     <ClInclude Include="configuration\ui\TrainingProgramConfigurationUi.h" />
     <ClInclude Include="configuration\ui\TrainingProgramListConfigurationUi.h" />
-    <ClInclude Include="core\kernel\InvalidStateException.h" />
-    <ClInclude Include="core\training\application\TrainingApplicationService.h" />
-    <ClInclude Include="core\training\application\TrainingProgramDisplayReadModel.h" />
-    <ClInclude Include="core\training\application\TrainingProgramFlowControlReadModel.h" />
-    <ClInclude Include="core\training\definitions\TrainingProgramStates.h" />
+    <ClInclude Include="training\data\TrainingProgramExecutionData.h" />
+    <ClInclude Include="training\data\TrainingProgramFlowData.h" />
     <ClInclude Include="external\IMGUI\imgui_disable.h" />
     <ClInclude Include="external\nlohmann\json.hpp" />
-    <ClInclude Include="core\training\commands\TrainingCommands.h" />
-    <ClInclude Include="core\training\domain\TrainingProgramFlow.h" />
-    <ClInclude Include="core\kernel\IndexOutOfBoundsException.h" />
+    <ClInclude Include="training\control\TrainingProgramFlowControl.h" />
     <ClInclude Include="DLLImportExport.h" />
     <ClInclude Include="external\fmt\include\fmt\chrono.h" />
     <ClInclude Include="external\fmt\include\fmt\color.h" />
@@ -180,12 +167,10 @@
     <ClInclude Include="external\IMGUI\imstb_rectpack.h" />
     <ClInclude Include="external\IMGUI\imstb_textedit.h" />
     <ClInclude Include="external\IMGUI\imstb_truetype.h" />
-    <ClInclude Include="core\kernel\InvalidValueException.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="qol\vectorext.h" />
     <ClInclude Include="RLTrainingTimer.h" />
-    <ClInclude Include="ui\training\TrainingProgramDisplay.h" />
-    <ClInclude Include="ui\training\TrainingProgramFlowControlUi.h" />
+    <ClInclude Include="training\ui\TrainingProgramDisplay.h" />
+    <ClInclude Include="training\ui\TrainingProgramFlowControlUi.h" />
     <ClInclude Include="version.h" />
   </ItemGroup>
   <ItemGroup>

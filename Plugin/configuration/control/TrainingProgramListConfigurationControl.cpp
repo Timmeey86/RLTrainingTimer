@@ -1,9 +1,16 @@
 #include <pch.h>
 #include "TrainingProgramListConfigurationControl.h"
 
-#include <core/kernel/InvalidValueException.h>
-
-#include <qol/vectorext.h>
+template <typename T>
+bool removeOne(std::vector<T>& vec, const T& value)
+{
+    auto it = std::find(vec.begin(), vec.end(), value);
+    if (it != vec.end()) {
+        vec.erase(it);
+        return true;
+    }
+    return false;
+}
 
 namespace configuration
 {
@@ -89,26 +96,14 @@ namespace configuration
     {
         if (_trainingProgramData->count(trainingProgramId) > 0)
         {
-            throw Core::Kernel::InvalidValueException(
-                "Configuration",
-                "TrainingProgramListConfigurationControl",
-                "training program ID",
-                "There is already a program with such an ID.",
-                std::to_string(trainingProgramId)
-            );
+            throw std::runtime_error(fmt::format("There is already a training program with ID {}", trainingProgramId));
         }
     }
     void TrainingProgramListConfigurationControl::ensureIdIsKnown(uint64_t trainingProgramId, const std::string& parameterName) const
     {
         if (_trainingProgramData->count(trainingProgramId) == 0)
         {
-            throw Core::Kernel::InvalidValueException(
-                "Configuration",
-                "TrainingProgramListConfigurationControl",
-                parameterName,
-                "There is no training program with such an ID.",
-                std::to_string(trainingProgramId)
-            );
+            throw std::runtime_error(fmt::format("There is no training program with ID {} (parameter {})", trainingProgramId, parameterName));
         }
     }
 }

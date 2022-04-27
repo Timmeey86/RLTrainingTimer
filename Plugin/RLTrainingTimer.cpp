@@ -1,10 +1,6 @@
 #include <pch.h>
 #include "RLTrainingTimer.h"
 
-#include "ui/training/TrainingProgramFlowControlUi.h"
-#include "ui/training/TrainingProgramDisplay.h"
-
-
 BAKKESMOD_PLUGIN(RLTrainingTimer, "RL Training Timer", plugin_version, PLUGINTYPE_FREEPLAY)
 
 std::shared_ptr<CVarManagerWrapper> _globalCvarManager;

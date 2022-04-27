@@ -4,8 +4,6 @@
 #include "bakkesmod/plugin/pluginwindow.h"
 #include "bakkesmod/plugin/PluginSettingsWindow.h"
 
-#include <adapter/RocketLeagueEventAdapter.h>
-
 #include <configuration/ui/ConfigurationUi.h>
 
 #include "version.h"

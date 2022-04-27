@@ -1,8 +1,9 @@
 #pragma once
 
 #include <vector>
+#include <string>
 
-namespace Core::Training::Application
+namespace training
 {
 	/** POD struct which combines an ID and a string. */
 	struct IdAndTitle

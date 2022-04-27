@@ -1,10 +1,13 @@
 #include <pch.h>
 #include "TrainingProgramConfigurationControl.h"
 
-#include <core/kernel/InvalidValueException.h>
-#include <core/kernel/IndexOutOfBoundsException.h>
-
-#include <qol/vectorext.h>
+template <typename T>
+void remove(std::vector<T>& vec, size_t pos)
+{
+    auto it = vec.begin();
+    std::advance(it, pos);
+    vec.erase(it);
+}
 
 namespace configuration
 {
@@ -73,13 +76,7 @@ namespace configuration
     {
         if (_trainingProgramData->count(trainingProgramId) == 0)
         {
-            throw Core::Kernel::InvalidValueException(
-                "Configuration",
-                "TrainingProgramConfigurationControl",
-                "id",
-                "The training program with the given ID does not exist.",
-                std::to_string(trainingProgramId)
-            );
+            throw std::runtime_error(fmt::format("There is no training program with ID {}", trainingProgramId));
         }
         return &(*_trainingProgramData)[trainingProgramId];
     }
@@ -88,14 +85,7 @@ namespace configuration
     {
         if (position < 0 || position >= data->Entries.size())
         {
-            throw Core::Kernel::IndexOutOfBoundsException(
-                "Configuration",
-                "TrainingProgramConfigurationControl",
-                variableName,
-                0,
-                (int)data->Entries.size() - 1,
-                position
-            );
+            throw std::runtime_error(fmt::format("{} {} is invalid: Should be between 0 and {}", variableName, position, (int)data->Entries.size() - 1));
         }
     }
 }
