@@ -33,6 +33,9 @@ namespace training
 
             // Provide information for the flow control UI
             _currentTrainingProgramState = TrainingProgramState::WaitingForStart;
+            _currentFlowData.SelectedTrainingProgramIndex = (uint16_t)std::distance(
+                _trainingProgramList.TrainingProgramOrder.begin(), 
+                std::find(_trainingProgramList.TrainingProgramOrder.begin(), _trainingProgramList.TrainingProgramOrder.end(), trainingProgramId));
             _currentFlowData.StartingIsPossible = true;
             _currentFlowData.PausingIsPossible = false;
             _currentFlowData.ResumingIsPossible = false;
@@ -56,6 +59,7 @@ namespace training
 
         // Provide information for the flow control UI
         _currentTrainingProgramState = TrainingProgramState::Uninitialized;
+        _currentFlowData.SelectedTrainingProgramIndex.reset();
         _currentFlowData.StartingIsPossible = false;
         _currentFlowData.PausingIsPossible = false;
         _currentFlowData.ResumingIsPossible = false;

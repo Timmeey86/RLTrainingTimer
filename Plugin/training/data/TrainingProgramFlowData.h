@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <string>
+#include <optional>
 
 namespace training
 {
@@ -18,6 +19,7 @@ namespace training
 	{
 	public:
 		std::vector<IdAndTitle> TrainingPrograms;
+		std::optional<uint16_t> SelectedTrainingProgramIndex = {};
 		bool SwitchingIsPossible;
 		bool StartingIsPossible;
 		bool PausingIsPossible;
