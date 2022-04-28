@@ -14,8 +14,11 @@ bool removeOne(std::vector<T>& vec, const T& value)
 
 namespace configuration
 {
-    TrainingProgramListConfigurationControl::TrainingProgramListConfigurationControl(std::shared_ptr<std::map<uint64_t, TrainingProgramData>> trainingProgramData)
+    TrainingProgramListConfigurationControl::TrainingProgramListConfigurationControl(
+        std::shared_ptr<std::map<uint64_t, TrainingProgramData>> trainingProgramData, 
+        std::shared_ptr<ITrainingProgramRepository> repository)
         : _trainingProgramData{ std::move(trainingProgramData) }
+        , _repository{ repository }
     {
 
     }
@@ -100,24 +103,36 @@ namespace configuration
         return (*_trainingProgramData)[trainingProgramId];
     }
 
-    /** Overrides any internal data. Use this only for restoring a saved state. */
-    void TrainingProgramListConfigurationControl::restoreData(const TrainingProgramListData& data)
+    void TrainingProgramListConfigurationControl::restoreData()
     {
+        _trainingProgramData->clear();
+        _trainingProgramOrder.clear();
+
+        // Read data from the repo
+        auto data = _repository->restoreData();
+
+        // Convert to internal data structure
         _trainingProgramOrder = data.TrainingProgramOrder;
         for (auto [id, programData] : data.TrainingProgramData)
         {
             _trainingProgramData->emplace(id, programData);
         }
 
-        notifyReceivers();
+        // Notify receivers, but do not write the file (would be kinda pointless right here)
+        notifyReceivers(true);
     }
 
-    void TrainingProgramListConfigurationControl::notifyReceivers()
+    void TrainingProgramListConfigurationControl::notifyReceivers(bool currentlyRestoringData)
     {
         auto listData = getTrainingProgramList();
         for (const auto& receiver : _receivers)
         {
             receiver->receiveListData(listData);
+        }
+
+        if (!currentlyRestoringData)
+        {
+            _repository->storeData(listData);
         }
     }
 
