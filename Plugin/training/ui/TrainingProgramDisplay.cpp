@@ -12,9 +12,10 @@ namespace training
 			drawTrainingProgramFinishedInfo(canvas, getRenderInfo(gameWrapper), gameWrapper);
 		}
 
-		if(data.NumberOfSteps == 0)
+		if(data.NumberOfSteps == 0 || !data.TrainingStepStartTime.has_value())
 		{
 			// A program with zero steps can't be run, so we can't display anything really helpful
+			// Additionally, we don't want to render anything until the program has actually started
 			return;
 		}
 
