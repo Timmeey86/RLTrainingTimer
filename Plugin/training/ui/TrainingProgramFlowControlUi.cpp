@@ -12,7 +12,7 @@ namespace training
 	{
 		_flowControl = flowControl;
 		gameWrapper->RegisterDrawable([this, gameWrapper](const CanvasWrapper& canvasWrapper) {
-			_trainingProgramDisplay->renderOneFrame(gameWrapper, canvasWrapper);
+			_trainingProgramDisplay->renderOneFrame(gameWrapper, canvasWrapper, _flowControl->getCurrentExecutionData());
 		});
 	}
 	void TrainingProgramFlowControlUi::Render()
