@@ -1,7 +1,9 @@
 #pragma once
 
 #include <bakkesmod/wrappers/canvaswrapper.h>
-#include <bakkesmod/wrappers/gamewrapper.h>
+#include <bakkesmod/wrappers/GameWrapper.h>
+
+#include <training/data/TrainingProgramExecutionData.h>
 
 namespace training
 {
@@ -24,8 +26,7 @@ namespace training
 	{
 	public:
 		/** Renders a single frame. */
-		void renderOneFrame(const std::shared_ptr<GameWrapper>& gameWrapper, CanvasWrapper canvas);
-
+		void renderOneFrame(const std::shared_ptr<GameWrapper>& gameWrapper, CanvasWrapper canvas, const TrainingProgramExecutionData& data);
 
 	private:
 
@@ -37,5 +38,7 @@ namespace training
 		RenderInfo getRenderInfo(const std::shared_ptr<GameWrapper>& gameWrapper) const;
 		void drawTrainingProgramStepTransition(CanvasWrapper& canvas, const RenderInfo& renderInfo, const std::shared_ptr<GameWrapper>& gameWrapper) const;
 		void drawTrainingProgramFinishedInfo(CanvasWrapper& canvas, const RenderInfo& renderInfo, const std::shared_ptr<GameWrapper>& gameWrapper) const;
+
+		TrainingProgramExecutionData _data;
 	};
 }
