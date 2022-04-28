@@ -132,6 +132,7 @@ namespace training
                     _currentExecutionData.TimeLeftInProgram = trainingProgramData.Duration;
                     _currentExecutionData.TrainingStepNumber = 0;
                     _currentExecutionData.TrainingFinishedTime.reset();
+                    _currentExecutionData.TrainingStepStartTime = std::chrono::steady_clock::now();
                 }
                 else
                 {
@@ -283,6 +284,7 @@ namespace training
 
             // Invalidate the execution data so the UI knows it can stop rendering this information
             _currentExecutionData.NumberOfSteps = 0;
+            _currentExecutionData.TrainingStepStartTime.reset();
         }
     }
 
