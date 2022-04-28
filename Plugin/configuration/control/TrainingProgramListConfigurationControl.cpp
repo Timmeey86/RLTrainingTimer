@@ -28,7 +28,15 @@ namespace configuration
     uint64_t TrainingProgramListConfigurationControl::addTrainingProgram()
     {
         // Since _trainingProgramData is a map ordered by keys, we can retreive a new ID by adding 1 to the last element (which is guaranteed to have the highest key)
-        auto newId = _trainingProgramData->rbegin()->first + 1;
+        uint64_t newId;
+        if (_trainingProgramData->empty())
+        {
+            newId = 0;
+        }
+        else
+        {
+            newId = _trainingProgramData->rbegin()->first + 1;
+        }
 
         auto data = TrainingProgramData{ };
         data.Id = newId;

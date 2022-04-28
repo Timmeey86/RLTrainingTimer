@@ -5,12 +5,13 @@
 #include "bakkesmod/plugin/PluginSettingsWindow.h"
 
 #include <configuration/ui/ConfigurationUi.h>
+#include <training/ui/TrainingProgramFlowControlUi.h>
 
 #include "version.h"
 
 constexpr auto plugin_version = stringify(VERSION_MAJOR) "." stringify(VERSION_MINOR) "." stringify(VERSION_PATCH) "." stringify(VERSION_BUILD);
 
-class RLTrainingTimer : public BakkesMod::Plugin::BakkesModPlugin, public configuration::ConfigurationUi//, public Ui::TrainingProgramFlowControlUi
+class RLTrainingTimer : public BakkesMod::Plugin::BakkesModPlugin, public configuration::ConfigurationUi, public training::TrainingProgramFlowControlUi
 {
 public:
 	RLTrainingTimer() = default;

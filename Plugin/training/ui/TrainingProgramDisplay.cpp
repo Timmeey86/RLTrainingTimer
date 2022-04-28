@@ -55,7 +55,8 @@ namespace training
 		// Program Name
 		canvas.SetColor(LinearColor{ 255.0f, 255.0f, 255.0f, 255.0f });
 		canvas.SetPosition(Vector2{ renderInfo.LeftBorder + (int)floor(renderInfo.Width * 0.005f), renderInfo.TopBorder + (int)floor(renderInfo.Height * 0.2f) });
-		const auto shortenedName = _data.TrainingProgramName.substr(0, 40);
+		auto shortenedName = fmt::format("{}{}", _data.TrainingIsPaused ? "PAUSED - " : "", _data.TrainingProgramName);
+		shortenedName = shortenedName.substr(0, 40);
 		canvas.DrawString(shortenedName, 1.6f * renderInfo.TextWidthFactor, 1.6f * renderInfo.TextHeightFactor);
 	}
 	void TrainingProgramDisplay::drawTrainingStepNumber(CanvasWrapper& canvas, const RenderInfo& renderInfo) const
@@ -154,7 +155,7 @@ namespace training
 		if (millisecondsSinceFinished < 5000)
 		{
 			auto stringScale = 20.0f;
-			auto textAlpha = 255.0f;
+			auto textAlpha = 255.0f - (float)millisecondsSinceFinished / 5000.0f * 255.0f;
 			auto text = "FINISHED";
 
 			drawCenteredText(text, canvas, renderInfo, gameWrapper, stringScale, textAlpha);

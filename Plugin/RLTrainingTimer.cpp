@@ -32,18 +32,22 @@ void RLTrainingTimer::onLoad()
 	// Create a handler for the execution of training programs
 	auto flowControl = std::make_shared<training::TrainingProgramFlowControl>();
 	trainingProgramListControl->registerTrainingProgramListReceiver(flowControl); // Updates the flow control whenever any training program changes, gets added, gets deleted etc
+	flowControl->hookToEvents(gameWrapper);
 
-	// Create a plugin window for starting, stopping etc programs
-	// TODO
-
-	// Create a display which will be visible while training is active
-	// TODO
-
+	// Create a plugin window for starting, stopping etc programs. This internally also creates an overlay which is displayed while training is being executed
+	initTrainingProgramFlowControlUi(gameWrapper, flowControl);
+	
 	
 	/* INITIALIZATION */
 
 	// Restore any previously stored training program
 	// TODO
+
+	// TEMP DEBUG
+	auto id = trainingProgramListControl->addTrainingProgram();
+	singleTrainingProgramControl->addEntry(id, { "First Step", std::chrono::milliseconds(10000) });
+	singleTrainingProgramControl->addEntry(id, { "Second Step", std::chrono::milliseconds(10000) });
+	singleTrainingProgramControl->addEntry(id, { "Last Step", std::chrono::milliseconds(10000) });
 
 	cvarManager->log("Loaded RLTrainingTimer plugin");
 }
