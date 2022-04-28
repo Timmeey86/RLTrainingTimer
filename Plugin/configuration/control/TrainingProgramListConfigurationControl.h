@@ -19,7 +19,10 @@ namespace configuration
 	{
 	public:
 		/** Creates an empty program list. */
-		explicit TrainingProgramListConfigurationControl(std::shared_ptr<std::map<uint64_t, TrainingProgramData>> trainingProgramData);
+		TrainingProgramListConfigurationControl(
+			std::shared_ptr<std::map<uint64_t, TrainingProgramData>> trainingProgramData,
+			std::shared_ptr<ITrainingProgramRepository> repository
+			);
 
 		/** Registers a receiver for training program list changes. */
 		void registerTrainingProgramListReceiver(std::shared_ptr<ITrainingProgramListReceiver> receiver);
@@ -39,11 +42,11 @@ namespace configuration
 		/** Provides a copy of data of a single training program (e.g. for display). */
 		TrainingProgramData getTrainingProgramData(uint64_t trainingProgramId) const;
 
-		/** Overrides any internal data. Use this only for restoring a saved state. */
-		void restoreData(const TrainingProgramListData& data);
+		/** Restores data from the repository. */
+		void restoreData();
 
 		/** Notifies any receiver about a change in the training program list. */
-		void notifyReceivers();
+		void notifyReceivers(bool currentlyRestoringData = false);
 
 	private:
 		void ensureIdDoesntExist(uint64_t trainingProgramId) const;
@@ -52,5 +55,6 @@ namespace configuration
 		std::vector<uint64_t> _trainingProgramOrder; // The order of training programs
 		std::shared_ptr<std::map<uint64_t, TrainingProgramData>> _trainingProgramData; // The training programs
 		std::vector<std::shared_ptr<ITrainingProgramListReceiver>> _receivers;
+		std::shared_ptr<ITrainingProgramRepository> _repository; // Allows storing training programs.
 	};
 }

@@ -90,6 +90,9 @@ namespace training
 			_currentFlowData.ResumingIsPossible = false;
 			_currentFlowData.StoppingIsPossible = true;
 
+			_currentExecutionData.TrainingFinishedTime.reset();
+			_currentTrainingStepNumber.reset();
+
 			// Automatically activate the first step
 			_referenceTime = std::chrono::steady_clock::now();
 			activateNextTrainingProgramStep();
@@ -274,8 +277,6 @@ namespace training
 			_currentFlowData.ResumingIsPossible = false;
 			_currentFlowData.StoppingIsPossible = false;
 
-			// Invalidate the execution data so the UI knows it can stop rendering this information
-			_currentExecutionData.NumberOfSteps = 0;
 			_currentExecutionData.TrainingStepStartTime.reset();
 		}
 	}

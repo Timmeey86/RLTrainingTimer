@@ -63,7 +63,7 @@
     <ClCompile Include="configuration\control\TrainingProgramListConfigurationControl.cpp">
       <Filter>configuration\control</Filter>
     </ClCompile>
-    <ClCompile Include="configuration\control\TrainingProgramPersistenceService.cpp">
+    <ClCompile Include="configuration\control\TrainingProgramRepository.cpp">
       <Filter>configuration\control</Filter>
     </ClCompile>
     <ClCompile Include="training\ui\TrainingProgramDisplay.cpp">
@@ -186,13 +186,7 @@
     <ClInclude Include="configuration\control\TrainingProgramListConfigurationControl.h">
       <Filter>configuration\control</Filter>
     </ClInclude>
-    <ClInclude Include="configuration\control\TrainingProgramPersistenceService.h">
-      <Filter>configuration\control</Filter>
-    </ClInclude>
-    <ClInclude Include="configuration\control\event_serializing.hpp">
-      <Filter>configuration\control</Filter>
-    </ClInclude>
-    <ClInclude Include="configuration\control\json_serializer.hpp">
+    <ClInclude Include="configuration\control\TrainingProgramRepository.h">
       <Filter>configuration\control</Filter>
     </ClInclude>
     <ClInclude Include="training\data\TrainingProgramExecutionData.h">

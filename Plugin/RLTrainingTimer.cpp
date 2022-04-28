@@ -2,6 +2,7 @@
 #include "RLTrainingTimer.h"
 
 #include <training/control/TrainingProgramFlowControl.h>
+#include <configuration/control/TrainingProgramRepository.h>
 
 BAKKESMOD_PLUGIN(RLTrainingTimer, "RL Training Timer", plugin_version, PLUGINTYPE_FREEPLAY)
 
@@ -13,9 +14,12 @@ void RLTrainingTimer::onLoad()
 
 	/* CONFIGURATION PART */
 
+	// Allow storing & restoring of training programs
+	auto trainingProgramRepository = std::make_shared<configuration::TrainingProgramRepository>(gameWrapper);
+
 	// Allow manipulating the list of training programs
 	auto trainingProgramDataMap = std::make_shared<std::map<uint64_t, configuration::TrainingProgramData>>();
-	auto trainingProgramListControl = std::make_shared<configuration::TrainingProgramListConfigurationControl>(trainingProgramDataMap);
+	auto trainingProgramListControl = std::make_shared<configuration::TrainingProgramListConfigurationControl>(trainingProgramDataMap, trainingProgramRepository);
 
 	// Allow manipulating a single training program, and notify the training program list when a program changes
 	auto notificationFunc = [trainingProgramListControl]() { trainingProgramListControl->notifyReceivers(); };
@@ -23,9 +27,6 @@ void RLTrainingTimer::onLoad()
 
 	// Initialize the plugin settings UI with those configuration objects
 	initConfigurationUi(gameWrapper, singleTrainingProgramControl, trainingProgramListControl);
-
-	// Allow storing & restoring of training programs
-	// TODO
 
 	/* TRAINING EXECUTION PART */
 
@@ -36,18 +37,11 @@ void RLTrainingTimer::onLoad()
 
 	// Create a plugin window for starting, stopping etc programs. This internally also creates an overlay which is displayed while training is being executed
 	initTrainingProgramFlowControlUi(gameWrapper, flowControl);
-	
-	
+		
 	/* INITIALIZATION */
 
 	// Restore any previously stored training program
-	// TODO
-
-	// TEMP DEBUG
-	auto id = trainingProgramListControl->addTrainingProgram();
-	singleTrainingProgramControl->addEntry(id, { "First Step", std::chrono::milliseconds(10000) });
-	singleTrainingProgramControl->addEntry(id, { "Second Step", std::chrono::milliseconds(10000) });
-	singleTrainingProgramControl->addEntry(id, { "Last Step", std::chrono::milliseconds(10000) });
+	trainingProgramListControl->restoreData();
 
 	cvarManager->log("Loaded RLTrainingTimer plugin");
 }
