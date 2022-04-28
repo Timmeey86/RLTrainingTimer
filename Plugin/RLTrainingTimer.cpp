@@ -1,6 +1,7 @@
 #include <pch.h>
 #include "RLTrainingTimer.h"
 
+#include <training/control/TrainingProgramFlowControl.h>
 
 BAKKESMOD_PLUGIN(RLTrainingTimer, "RL Training Timer", plugin_version, PLUGINTYPE_FREEPLAY)
 
@@ -10,29 +11,43 @@ void RLTrainingTimer::onLoad()
 {
 	_globalCvarManager = cvarManager;
 
-	// Connect the configuration UI and the configuration service
-	connectToAppService(_configurationAppService, gameWrapper);
+	/* CONFIGURATION PART */
 
-	// Allow storing and restoring training programs
-	_configurationPersistenceService = std::make_shared<Core::Configuration::Application::TrainingProgramPersistenceService>(
-		gameWrapper,
-		[this](const std::vector<std::shared_ptr<Core::Kernel::DomainEvent>>& events) { _configurationAppService->applyEvents(events); }
-	);
-	_configurationAppService->registerEventReceiver(_configurationPersistenceService.get());
+	// Allow manipulating the list of training programs
+	auto trainingProgramDataMap = std::make_shared<std::map<uint64_t, configuration::TrainingProgramData>>();
+	auto trainingProgramListControl = std::make_shared<configuration::TrainingProgramListConfigurationControl>(trainingProgramDataMap);
 
-	// Set up a service for actual training
-	_trainingAppService = std::make_shared<Core::Training::Application::TrainingApplicationService>();
-	_eventAdapter = std::make_shared<Adapter::RocketLeagueEventAdapter>(_trainingAppService);
-	_eventAdapter->hookToEvents(gameWrapper);
+	// Allow manipulating a single training program, and notify the training program list when a program changes
+	auto notificationFunc = [trainingProgramListControl]() { trainingProgramListControl->notifyReceivers(); };
+	auto singleTrainingProgramControl = std::make_shared<configuration::TrainingProgramConfigurationControl>(trainingProgramDataMap, notificationFunc);
 
-	// Initialize the UI to be displayed when training
-	initTrainingProgramFlowControlUi(gameWrapper, _trainingAppService);
+	// Initialize the plugin settings UI with those configuration objects
+	initConfigurationUi(gameWrapper, singleTrainingProgramControl, trainingProgramListControl);
 
-	// Connect the configuration domain (managing training programs) with the training domain (executing training programs)
-	_configurationAppService->registerEventReceiver(_trainingAppService.get());
+	// Allow storing & restoring of training programs
+	// TODO
 
-	// Now that everything was set up, restore the stored events (if available)
-	_configurationPersistenceService->restoreEvents();
+	/* TRAINING EXECUTION PART */
+
+	// Create a handler for the execution of training programs
+	auto flowControl = std::make_shared<training::TrainingProgramFlowControl>();
+	trainingProgramListControl->registerTrainingProgramListReceiver(flowControl); // Updates the flow control whenever any training program changes, gets added, gets deleted etc
+	flowControl->hookToEvents(gameWrapper);
+
+	// Create a plugin window for starting, stopping etc programs. This internally also creates an overlay which is displayed while training is being executed
+	initTrainingProgramFlowControlUi(gameWrapper, flowControl);
+	
+	
+	/* INITIALIZATION */
+
+	// Restore any previously stored training program
+	// TODO
+
+	// TEMP DEBUG
+	auto id = trainingProgramListControl->addTrainingProgram();
+	singleTrainingProgramControl->addEntry(id, { "First Step", std::chrono::milliseconds(10000) });
+	singleTrainingProgramControl->addEntry(id, { "Second Step", std::chrono::milliseconds(10000) });
+	singleTrainingProgramControl->addEntry(id, { "Last Step", std::chrono::milliseconds(10000) });
 
 	cvarManager->log("Loaded RLTrainingTimer plugin");
 }
