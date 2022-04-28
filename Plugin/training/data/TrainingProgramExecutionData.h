@@ -18,6 +18,7 @@ namespace training
 		std::chrono::milliseconds DurationOfCurrentTrainingStep;
 		std::chrono::milliseconds TimeLeftInCurrentTrainingStep;
 		std::chrono::milliseconds TimeLeftInProgram;
+		std::optional<std::chrono::steady_clock::time_point> TrainingStepStartTime; // The time at which the current step has started. This is useful for drawing something for a couple of seconds after starting the step.
 		std::optional<std::chrono::steady_clock::time_point> TrainingFinishedTime; // The time at which the training had finished. This is useful for drawing something for a couple of seconds after finishing.
 		bool TrainingIsPaused;
 	};
