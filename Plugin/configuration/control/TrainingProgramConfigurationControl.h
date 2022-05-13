@@ -44,6 +44,9 @@ namespace configuration
 		/** Changes the training pack code of the training program entry. */
 		void changeTrainingPackCode(uint64_t trainingProgramId, int position, const std::string& trainingPackCode);
 
+		/** Changes the path to the workshop map for a training step. */
+		void changeWorkshopMapPath(uint64_t trainingProgramId, int position, const std::string& workshopMapPath);
+
 		/** Changes the name of the training program. */
 		void renameProgram(uint64_t trainingProgramId, const std::string& newName);
 

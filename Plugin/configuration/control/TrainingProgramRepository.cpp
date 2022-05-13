@@ -20,7 +20,7 @@ namespace nlohmann {
 namespace configuration
 {
 	// Allow serialization of training programs
-	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(TrainingProgramEntry, Name, Duration, Type, TrainingPackCode);
+	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(TrainingProgramEntry, Name, Duration, Type, TrainingPackCode, WorkshopMapPath);
 	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(TrainingProgramData, Id, Name, Duration, Entries);
 	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(TrainingProgramListData, Version, TrainingProgramData, TrainingProgramOrder);
 
@@ -58,6 +58,7 @@ namespace configuration
 				// Add new fields, otherwise deserialization will fail
 				trainingProgramEntry["Type"] = 0;
 				trainingProgramEntry["TrainingPackCode"] = std::string();
+				trainingProgramEntry["WorkshopMapPath"] = std::string();
 			}
 		}
 		LOG("Successfully upgraded to version 1.1");

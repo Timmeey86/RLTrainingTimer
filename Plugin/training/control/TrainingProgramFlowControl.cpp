@@ -158,6 +158,8 @@ namespace training
 		case configuration::TrainingProgramEntryType::CustomTraining:
 			_gameWrapper->Execute([trainingProgramEntry](GameWrapper*) { _globalCvarManager->executeCommand(fmt::format("load_training {}", trainingProgramEntry.TrainingPackCode)); });
 			break;
+		case configuration::TrainingProgramEntryType::WorkshopMap:
+			_gameWrapper->Execute([trainingProgramEntry](GameWrapper*) { _globalCvarManager->executeCommand(fmt::format("load_workshop \"{}\"", trainingProgramEntry.WorkshopMapPath)); });
 		default:
 			// Do nothing
 			break;

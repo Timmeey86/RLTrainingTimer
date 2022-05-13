@@ -42,6 +42,7 @@ namespace configuration
 		bool addAddButton();
 		bool addTypeDropdown(uint16_t index);
 		bool addCustomTrainingCodeTextBox(uint16_t index);
+		bool addWorkshopMapPathTextBox(uint16_t index);
 
 		uint64_t _trainingProgramId = 0;
 
@@ -49,6 +50,7 @@ namespace configuration
 		std::string _programNameCache;
 		std::vector<std::string> _entryNameCache;
 		std::vector<std::string> _trainingPackCodeCache;
+		std::vector<std::string> _workshopMapPathCache;
 		std::vector<int> _durationCache; // minutes. Can't be an std::chrono type due to IMGUI
 		std::vector<int> _selectedTypeCache;
 

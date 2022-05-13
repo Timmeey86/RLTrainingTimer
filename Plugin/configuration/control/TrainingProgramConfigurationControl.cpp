@@ -79,7 +79,7 @@ namespace configuration
         auto data = internalData(trainingProgramId);
         validatePosition(data, position, "position");
 
-        if (type < TrainingProgramEntryType::Unspecified || type > TrainingProgramEntryType::CustomTraining)
+        if (type < TrainingProgramEntryType::Unspecified || type > TrainingProgramEntryType::WorkshopMap)
         {
             throw std::runtime_error(fmt::format("Value {} is not valid for enum TrainingProgramEntryType", (int)type));
         }
@@ -96,6 +96,16 @@ namespace configuration
         validatePosition(data, position, "position");
 
         data->Entries.at(position).TrainingPackCode = trainingPackCode;
+
+        _changeNotificationCallback();
+    }
+
+    void TrainingProgramConfigurationControl::changeWorkshopMapPath(uint64_t trainingProgramId, int position, const std::string& workshopMapPath)
+    {
+        auto data = internalData(trainingProgramId);
+        validatePosition(data, position, "position");
+
+        data->Entries.at(position).WorkshopMapPath = workshopMapPath;
 
         _changeNotificationCallback();
     }

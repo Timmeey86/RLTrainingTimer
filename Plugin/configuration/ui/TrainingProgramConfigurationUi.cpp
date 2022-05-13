@@ -26,6 +26,7 @@ namespace configuration
 	{
 		_entryNameCache.clear();
 		_trainingPackCodeCache.clear();
+		_workshopMapPathCache.clear();
 		_durationCache.clear();
 		_selectedTypeCache.clear();
 
@@ -35,6 +36,7 @@ namespace configuration
 		{
 			_entryNameCache.push_back(entry.Name);
 			_trainingPackCodeCache.push_back(entry.TrainingPackCode);
+			_workshopMapPathCache.push_back(entry.WorkshopMapPath);
 			_durationCache.push_back(std::chrono::duration_cast<std::chrono::minutes>(entry.Duration).count());
 			_selectedTypeCache.push_back((int)entry.Type);
 		}
@@ -71,8 +73,10 @@ namespace configuration
 			trainingProgramChanged |= addDownButton(index, index < entryNameCacheSize - 1);
 			ImGui::SameLine();
 			trainingProgramChanged |= addDeleteButton(index);
-			// New line (only visible when training pack code is selected)
+			// New line (only visible when custom training is selected)
 			trainingProgramChanged |= addCustomTrainingCodeTextBox(index);
+			// only visible when workshop map is selected
+			trainingProgramChanged |= addWorkshopMapPathTextBox(index);
 			ImGui::Separator();
 		}
 
@@ -198,6 +202,7 @@ namespace configuration
 		enumNames.emplace(0, "Default");
 		enumNames.emplace(1, "Free Play");
 		enumNames.emplace(2, "Custom Training");
+		enumNames.emplace(3, "Workshop Map");
 
 		ImGui::TextUnformatted("Type ");
 		ImGui::SameLine();
@@ -235,6 +240,28 @@ namespace configuration
 			if (ImGui::InputText(fmt::format("##trainingpackcode_{}", index).c_str(), &_trainingPackCodeCache[index]))
 			{
 				_configurationControl->changeTrainingPackCode(_trainingProgramId, index, _trainingPackCodeCache[index]);
+				changed = true;
+			}
+			ImGui::PopItemWidth();
+		}
+		return changed;
+	}
+
+	bool TrainingProgramConfigurationUi::addWorkshopMapPathTextBox(uint16_t index)
+	{
+		auto changed = false;
+
+		// Display the text box only when workshop is selected
+		if (_selectedTypeCache[index] == (int)TrainingProgramEntryType::WorkshopMap)
+		{
+			ImGui::TextUnformatted("!!! WARNING !!!");
+			ImGui::TextUnformatted("Loading workshop maps will sometimes crash the game. The reason is unknown and this plugin can't fix that.");
+			ImGui::TextUnformatted("Enter the full file path to the .upk file");
+			ImGui::TextUnformatted(fmt::format("Path ", index).c_str());
+			ImGui::SameLine();
+			if (ImGui::InputText(fmt::format("##workshopath_{}", index).c_str(), &_workshopMapPathCache[index]))
+			{
+				_configurationControl->changeWorkshopMapPath(_trainingProgramId, index, _workshopMapPathCache[index]);
 				changed = true;
 			}
 			ImGui::PopItemWidth();
