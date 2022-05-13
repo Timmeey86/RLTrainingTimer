@@ -90,6 +90,16 @@ namespace configuration
         _changeNotificationCallback();
     }
 
+    void TrainingProgramConfigurationControl::changeTrainingPackCode(uint64_t trainingProgramId, int position, const std::string& trainingPackCode)
+    {
+        auto data = internalData(trainingProgramId);
+        validatePosition(data, position, "position");
+
+        data->Entries.at(position).TrainingPackCode = trainingPackCode;
+
+        _changeNotificationCallback();
+    }
+
     void TrainingProgramConfigurationControl::renameProgram(uint64_t trainingProgramId, const std::string& newName)
     {
         auto data = internalData(trainingProgramId);

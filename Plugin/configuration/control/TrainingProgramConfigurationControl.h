@@ -41,6 +41,9 @@ namespace configuration
 		/** Changes the type of the training program entry. */
 		void changeEntryType(uint64_t trainingProgramId, int position, TrainingProgramEntryType type);
 
+		/** Changes the training pack code of the training program entry. */
+		void changeTrainingPackCode(uint64_t trainingProgramId, int position, const std::string& trainingPackCode);
+
 		/** Changes the name of the training program. */
 		void renameProgram(uint64_t trainingProgramId, const std::string& newName);
 

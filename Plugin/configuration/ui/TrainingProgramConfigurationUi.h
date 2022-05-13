@@ -41,12 +41,14 @@ namespace configuration
 		bool addDeleteButton(uint16_t index);
 		bool addAddButton();
 		bool addTypeDropdown(uint16_t index);
+		bool addCustomTrainingCodeTextBox(uint16_t index);
 
 		uint64_t _trainingProgramId = 0;
 
 		// Caches required for editing in the UI
 		std::string _programNameCache;
 		std::vector<std::string> _entryNameCache;
+		std::vector<std::string> _trainingPackCodeCache;
 		std::vector<int> _durationCache; // minutes. Can't be an std::chrono type due to IMGUI
 		std::vector<int> _selectedTypeCache;
 
