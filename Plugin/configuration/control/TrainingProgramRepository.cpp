@@ -20,7 +20,7 @@ namespace nlohmann {
 namespace configuration
 {
 	// Allow serialization of training programs
-	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(TrainingProgramEntry, Name, Duration);
+	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(TrainingProgramEntry, Name, Duration, Type, TrainingPackCode);
 	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(TrainingProgramData, Id, Name, Duration, Entries);
 	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(TrainingProgramListData, Version, TrainingProgramData, TrainingProgramOrder);
 
@@ -40,6 +40,29 @@ namespace configuration
 		os << serialized.dump(2);
 		os.flush();
 	}
+
+
+	void upgrade_from_1_0_to_1_1(json& deserialized)
+	{
+		LOG("Upgrading from version 1.0 to 1.1");
+		auto& trainingProgramListData = deserialized["TrainingProgramData"];
+
+		for (auto& trainingProgram : trainingProgramListData) {
+			LOG("Reading training program data");
+			auto& trainingProgramData = trainingProgram.at(1);
+			LOG("Reading training program entries");
+			auto& trainingProgramEntries = trainingProgramData["Entries"];
+			LOG("Patching {} training program entries", trainingProgramEntries.size());
+			for (auto& trainingProgramEntry : trainingProgramEntries)
+			{
+				// Add new fields, otherwise deserialization will fail
+				trainingProgramEntry["Type"] = 0;
+				trainingProgramEntry["TrainingPackCode"] = std::string();
+			}
+		}
+		LOG("Successfully upgraded to version 1.1");
+	}
+
 	TrainingProgramListData TrainingProgramRepository::restoreData() const
 	{
 		if (!std::filesystem::exists(_storagePath)) { return {}; }
@@ -48,8 +71,15 @@ namespace configuration
 		json deserialized;
 		is >> deserialized;
 		is.close();
+	
+		LOG("Trying to restore data");
+		auto version = deserialized["Version"];
+		LOG("Version is: {}", version);
+		if (version == "1.0")
+		{
+			upgrade_from_1_0_to_1_1(deserialized);
+		}
 
-		// TODO abort if version is not 1.0
 		return deserialized.get<TrainingProgramListData>();
 	}
 }
