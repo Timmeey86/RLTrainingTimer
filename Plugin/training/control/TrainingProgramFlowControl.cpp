@@ -5,6 +5,12 @@
 
 namespace training
 {
+	TrainingProgramFlowControl::TrainingProgramFlowControl(std::shared_ptr<GameWrapper> gameWrapper) :
+		_gameWrapper(gameWrapper)
+	{
+
+	}
+
 	void TrainingProgramFlowControl::hookToEvents(const std::shared_ptr<GameWrapper>& gameWrapper)
 	{
 		gameWrapper->HookEventPost("Function Engine.WorldInfo.EventPauseChanged", [gameWrapper, this](const std::string&) {
@@ -120,6 +126,7 @@ namespace training
 				}
 				auto trainingProgramEntry = trainingProgramData.Entries.at(_currentTrainingStepNumber.value());
 
+				switchGameModeIfNecessary(trainingProgramEntry);
 				// No change in flow state (still running)
 
 				// Provide information for the training execution UI
@@ -138,6 +145,22 @@ namespace training
 				// The training program is empty, there is nothing we can do with it
 				unselectTrainingProgram();
 			}
+		}
+	}
+
+	void TrainingProgramFlowControl::switchGameModeIfNecessary(configuration::TrainingProgramEntry& trainingProgramEntry)
+	{
+		switch (trainingProgramEntry.Type)
+		{
+		case configuration::TrainingProgramEntryType::Freeplay:
+			_gameWrapper->Execute([](GameWrapper*) { _globalCvarManager->executeCommand("load_freeplay"); });
+			break;
+		case configuration::TrainingProgramEntryType::CustomTraining:
+			_gameWrapper->Execute([trainingProgramEntry](GameWrapper*) { _globalCvarManager->executeCommand(fmt::format("load_training {}", trainingProgramEntry.TrainingPackCode)); });
+			break;
+		default:
+			// Do nothing
+			break;
 		}
 	}
 

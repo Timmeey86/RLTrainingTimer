@@ -7,6 +7,8 @@
 #include "../data/TrainingProgramFlowData.h"
 #include "../data/TrainingProgramExecutionData.h"
 
+#include <bakkesmod/wrappers/gamewrapper.h>
+
 #include <memory>
 #include <optional>
 #include <functional>
@@ -46,7 +48,7 @@ namespace training
 	{
 
 	public:
-		TrainingProgramFlowControl() = default;
+		TrainingProgramFlowControl(std::shared_ptr<GameWrapper> gameWrapper);
 
 		/** Hooks into Rocket League events in order to detect a game pause, and a game tick. */
 		void hookToEvents(const std::shared_ptr<GameWrapper>& gameWrapper);
@@ -95,6 +97,8 @@ namespace training
 		void updatePauseState();
 		/** Activates the next (or first) step of the training program. */
 		void activateNextTrainingProgramStep();
+		/** Switches to freeplay, custom training or whatever the user configured. */
+		void switchGameModeIfNecessary(configuration::TrainingProgramEntry& trainingProgramEntry);
 		/** Updates data for the UI based on the passed time and the threshold for the next step. */
 		void updateTimeInfo(const std::chrono::milliseconds& passedTime, const std::chrono::milliseconds& nextThreshold);
 
@@ -113,5 +117,7 @@ namespace training
 		std::optional<std::chrono::steady_clock::time_point> _pauseStartTime = {}; // The point in time where a pause was started
 
 		std::vector<std::chrono::milliseconds> _trainingProgramEntryEndTimes;
+
+		std::shared_ptr<GameWrapper> _gameWrapper;
 	};
 }
