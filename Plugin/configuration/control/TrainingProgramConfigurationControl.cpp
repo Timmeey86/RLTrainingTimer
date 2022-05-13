@@ -74,6 +74,42 @@ namespace configuration
         _changeNotificationCallback();
     }
 
+    void TrainingProgramConfigurationControl::changeEntryType(uint64_t trainingProgramId, int position, TrainingProgramEntryType type)
+    {
+        auto data = internalData(trainingProgramId);
+        validatePosition(data, position, "position");
+
+        if (type < TrainingProgramEntryType::Unspecified || type > TrainingProgramEntryType::WorkshopMap)
+        {
+            throw std::runtime_error(fmt::format("Value {} is not valid for enum TrainingProgramEntryType", (int)type));
+        }
+
+        auto& affectedEntry = data->Entries.at(position);
+        affectedEntry.Type = type;
+
+        _changeNotificationCallback();
+    }
+
+    void TrainingProgramConfigurationControl::changeTrainingPackCode(uint64_t trainingProgramId, int position, const std::string& trainingPackCode)
+    {
+        auto data = internalData(trainingProgramId);
+        validatePosition(data, position, "position");
+
+        data->Entries.at(position).TrainingPackCode = trainingPackCode;
+
+        _changeNotificationCallback();
+    }
+
+    void TrainingProgramConfigurationControl::changeWorkshopMapPath(uint64_t trainingProgramId, int position, const std::string& workshopMapPath)
+    {
+        auto data = internalData(trainingProgramId);
+        validatePosition(data, position, "position");
+
+        data->Entries.at(position).WorkshopMapPath = workshopMapPath;
+
+        _changeNotificationCallback();
+    }
+
     void TrainingProgramConfigurationControl::renameProgram(uint64_t trainingProgramId, const std::string& newName)
     {
         auto data = internalData(trainingProgramId);

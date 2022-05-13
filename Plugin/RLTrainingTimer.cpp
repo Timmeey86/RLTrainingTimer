@@ -31,7 +31,7 @@ void RLTrainingTimer::onLoad()
 	/* TRAINING EXECUTION PART */
 
 	// Create a handler for the execution of training programs
-	auto flowControl = std::make_shared<training::TrainingProgramFlowControl>();
+	auto flowControl = std::make_shared<training::TrainingProgramFlowControl>(gameWrapper);
 	trainingProgramListControl->registerTrainingProgramListReceiver(flowControl); // Updates the flow control whenever any training program changes, gets added, gets deleted etc
 	flowControl->hookToEvents(gameWrapper);
 
