@@ -74,6 +74,22 @@ namespace configuration
         _changeNotificationCallback();
     }
 
+    void TrainingProgramConfigurationControl::changeEntryType(uint64_t trainingProgramId, int position, TrainingProgramEntryType type)
+    {
+        auto data = internalData(trainingProgramId);
+        validatePosition(data, position, "position");
+
+        if (type < TrainingProgramEntryType::Unspecified || type > TrainingProgramEntryType::CustomTraining)
+        {
+            throw std::runtime_error(fmt::format("Value {} is not valid for enum TrainingProgramEntryType", (int)type));
+        }
+
+        auto& affectedEntry = data->Entries.at(position);
+        affectedEntry.Type = type;
+
+        _changeNotificationCallback();
+    }
+
     void TrainingProgramConfigurationControl::renameProgram(uint64_t trainingProgramId, const std::string& newName)
     {
         auto data = internalData(trainingProgramId);

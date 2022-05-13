@@ -40,6 +40,7 @@ namespace configuration
 		bool addDownButton(uint16_t index, bool hasNextEntry);
 		bool addDeleteButton(uint16_t index);
 		bool addAddButton();
+		bool addTypeDropdown(uint16_t index);
 
 		uint64_t _trainingProgramId = 0;
 
@@ -47,6 +48,7 @@ namespace configuration
 		std::string _programNameCache;
 		std::vector<std::string> _entryNameCache;
 		std::vector<int> _durationCache; // minutes. Can't be an std::chrono type due to IMGUI
+		std::vector<int> _selectedTypeCache;
 
 		std::shared_ptr<TrainingProgramConfigurationControl> _configurationControl; 
 		std::function<void()> _finishEditingCallback;
