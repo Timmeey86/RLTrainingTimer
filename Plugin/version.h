@@ -5,7 +5,7 @@
 
 #define VERSION_MINOR 0
 #define VERSION_PATCH 0
-#define VERSION_BUILD 600
+#define VERSION_BUILD 601
 
 #define stringify(a) stringify_(a)
 #define stringify_(a) #a

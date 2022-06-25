@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 /** This interface is used for being able to load training schedules from an external plugin like Prejump.
 
 	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
