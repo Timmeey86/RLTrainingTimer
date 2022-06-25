@@ -75,7 +75,6 @@
     <ClCompile Include="training\control\TrainingProgramFlowControl.cpp">
       <Filter>training\control</Filter>
     </ClCompile>
-    <ClCompile Include="configuration\control\TrainingProgramAPIProvider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -208,12 +207,6 @@
     <ClInclude Include="configuration\control\ITrainingProgramListReceiver.h">
       <Filter>configuration\control</Filter>
     </ClInclude>
-    <ClInclude Include="API\RLTrainingTimerAPI.h">
-      <Filter>API</Filter>
-    </ClInclude>
-    <ClInclude Include="configuration\control\TrainingProgramAPIProvider.h">
-      <Filter>configuration\control</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="RLTrainingTimer.rc" />
@@ -254,9 +247,6 @@
     </Filter>
     <Filter Include="training\control">
       <UniqueIdentifier>{ad4e8585-4043-4588-ab3f-08840c2dfad3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="API">
-      <UniqueIdentifier>{8182c598-ff87-4b7c-ae1b-108690b4b2ec}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

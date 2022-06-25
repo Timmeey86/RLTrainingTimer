@@ -94,7 +94,6 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="configuration\control\TrainingProgramAPIProvider.cpp" />
     <ClCompile Include="configuration\control\TrainingProgramConfigurationControl.cpp" />
     <ClCompile Include="configuration\control\TrainingProgramListConfigurationControl.cpp" />
     <ClCompile Include="configuration\control\TrainingProgramRepository.cpp" />
@@ -126,8 +125,6 @@
     <ClCompile Include="training\ui\TrainingProgramFlowControlUi.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="API\RLTrainingTimerAPI.h" />
-    <ClInclude Include="configuration\control\TrainingProgramAPIProvider.h" />
     <ClInclude Include="configuration\control\TrainingProgramConfigurationControl.h" />
     <ClInclude Include="configuration\control\TrainingProgramListConfigurationControl.h" />
     <ClInclude Include="configuration\control\TrainingProgramRepository.h" />
