@@ -8,6 +8,8 @@
 #include <training/ui/TrainingProgramFlowControlUi.h>
 
 #include "version.h"
+#include <API/RLTrainingTimerAPI.h>
+#include <DLLImportExport.h>
 
 constexpr auto plugin_version = stringify(VERSION_MAJOR) "." stringify(VERSION_MINOR) "." stringify(VERSION_PATCH) "." stringify(VERSION_BUILD);
 
@@ -20,6 +22,10 @@ public:
 	virtual void onLoad();
 	virtual void onUnload();
 
+	/** Retrieves the API for adding training programs through code. */
+	RLTrainingTimerAPI* getAPI() const;
+
 private:
+	RLTrainingTimerAPI* _api;
 };
 

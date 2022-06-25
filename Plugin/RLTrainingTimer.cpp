@@ -3,6 +3,7 @@
 
 #include <training/control/TrainingProgramFlowControl.h>
 #include <configuration/control/TrainingProgramRepository.h>
+#include <configuration/control/TrainingProgramAPIProvider.h>
 
 BAKKESMOD_PLUGIN(RLTrainingTimer, "RL Training Timer", plugin_version, PLUGINTYPE_FREEPLAY)
 
@@ -43,10 +44,21 @@ void RLTrainingTimer::onLoad()
 	// Restore any previously stored training program
 	trainingProgramListControl->restoreData();
 
+	// Allow other plugins to inject training programs
+	// Note: Raw pointer since exporting raw pointers through DLL boundaries is quite a lot safer than STL types like shared_ptr
+	_api = new TrainingProgramAPIProvider();
+
 	cvarManager->log("Loaded RLTrainingTimer plugin");
 }
 
 void RLTrainingTimer::onUnload()
 {
+	delete _api;
+	_api = nullptr;
 	cvarManager->log("Unloaded RLTrainingTimer plugin");
+}
+
+RLTrainingTimerAPI* getAPI()
+{
+
 }
