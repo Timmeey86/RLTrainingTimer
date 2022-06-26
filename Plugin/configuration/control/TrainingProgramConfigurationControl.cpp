@@ -12,14 +12,14 @@ void remove(std::vector<T>& vec, size_t pos)
 namespace configuration
 {
     TrainingProgramConfigurationControl::TrainingProgramConfigurationControl(
-        std::shared_ptr<std::map<uint64_t, TrainingProgramData>> trainingProgramData,
+        std::shared_ptr<std::map<std::string, TrainingProgramData>> trainingProgramData,
         std::function<void()> changeNotificationCallback)
         : _trainingProgramData{ std::move(trainingProgramData) }
         , _changeNotificationCallback{ std::move(changeNotificationCallback) }
     {
     }
 
-    void TrainingProgramConfigurationControl::addEntry(uint64_t trainingProgramId, const TrainingProgramEntry& entry)
+    void TrainingProgramConfigurationControl::addEntry(const std::string& trainingProgramId, const TrainingProgramEntry& entry)
     {
         auto data = internalData(trainingProgramId);
         data->Entries.push_back(entry);
@@ -28,7 +28,7 @@ namespace configuration
         _changeNotificationCallback();
     }
 
-    void TrainingProgramConfigurationControl::removeEntry(uint64_t trainingProgramId, int position)
+    void TrainingProgramConfigurationControl::removeEntry(const std::string& trainingProgramId, int position)
     {
         auto data = internalData(trainingProgramId);
         validatePosition(data, position, "position");
@@ -39,7 +39,7 @@ namespace configuration
         _changeNotificationCallback();
     }
 
-    void TrainingProgramConfigurationControl::renameEntry(uint64_t trainingProgramId, int position, const std::string& newName)
+    void TrainingProgramConfigurationControl::renameEntry(const std::string& trainingProgramId, int position, const std::string& newName)
     {
         auto data = internalData(trainingProgramId);
         validatePosition(data, position, "position");
@@ -49,7 +49,7 @@ namespace configuration
         _changeNotificationCallback();
     }
 
-    void TrainingProgramConfigurationControl::changeEntryDuration(uint64_t trainingProgramId, int position, const std::chrono::milliseconds& newDuration)
+    void TrainingProgramConfigurationControl::changeEntryDuration(const std::string& trainingProgramId, int position, const std::chrono::milliseconds& newDuration)
     {
         auto data = internalData(trainingProgramId);
         validatePosition(data, position, "position");
@@ -62,7 +62,7 @@ namespace configuration
         _changeNotificationCallback();
     }
 
-    void TrainingProgramConfigurationControl::swapEntries(uint64_t trainingProgramId, int firstPosition, int secondPosition)
+    void TrainingProgramConfigurationControl::swapEntries(const std::string& trainingProgramId, int firstPosition, int secondPosition)
     {
         auto data = internalData(trainingProgramId);
         validatePosition(data, firstPosition, "first position");
@@ -74,7 +74,7 @@ namespace configuration
         _changeNotificationCallback();
     }
 
-    void TrainingProgramConfigurationControl::changeEntryType(uint64_t trainingProgramId, int position, TrainingProgramEntryType type)
+    void TrainingProgramConfigurationControl::changeEntryType(const std::string& trainingProgramId, int position, TrainingProgramEntryType type)
     {
         auto data = internalData(trainingProgramId);
         validatePosition(data, position, "position");
@@ -90,7 +90,7 @@ namespace configuration
         _changeNotificationCallback();
     }
 
-    void TrainingProgramConfigurationControl::changeTrainingPackCode(uint64_t trainingProgramId, int position, const std::string& trainingPackCode)
+    void TrainingProgramConfigurationControl::changeTrainingPackCode(const std::string& trainingProgramId, int position, const std::string& trainingPackCode)
     {
         auto data = internalData(trainingProgramId);
         validatePosition(data, position, "position");
@@ -100,7 +100,7 @@ namespace configuration
         _changeNotificationCallback();
     }
 
-    void TrainingProgramConfigurationControl::changeWorkshopMapPath(uint64_t trainingProgramId, int position, const std::string& workshopMapPath)
+    void TrainingProgramConfigurationControl::changeWorkshopMapPath(const std::string& trainingProgramId, int position, const std::string& workshopMapPath)
     {
         auto data = internalData(trainingProgramId);
         validatePosition(data, position, "position");
@@ -110,7 +110,7 @@ namespace configuration
         _changeNotificationCallback();
     }
 
-    void TrainingProgramConfigurationControl::renameProgram(uint64_t trainingProgramId, const std::string& newName)
+    void TrainingProgramConfigurationControl::renameProgram(const std::string& trainingProgramId, const std::string& newName)
     {
         auto data = internalData(trainingProgramId);
         data->Name = newName;
@@ -118,12 +118,12 @@ namespace configuration
         _changeNotificationCallback();
     }
 
-    TrainingProgramData TrainingProgramConfigurationControl::getData(uint64_t trainingProgramId) const
+    TrainingProgramData TrainingProgramConfigurationControl::getData(const std::string& trainingProgramId) const
     {
         return *internalData(trainingProgramId);
     }
 
-    TrainingProgramData* TrainingProgramConfigurationControl::internalData(uint64_t trainingProgramId) const
+    TrainingProgramData* TrainingProgramConfigurationControl::internalData(const std::string& trainingProgramId) const
     {
         if (_trainingProgramData->count(trainingProgramId) == 0)
         {

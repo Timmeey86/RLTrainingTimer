@@ -54,7 +54,7 @@ namespace training
 		void hookToEvents(const std::shared_ptr<GameWrapper>& gameWrapper);
 
 		/** Marks a new training program as selected. This will stop any running training program. */
-		void selectTrainingProgram(uint64_t trainingProgramId);
+		void selectTrainingProgram(const std::string& trainingProgramId);
 
 		/** Resets to the initial state where no training program is selected. */
 		void unselectTrainingProgram();
@@ -102,7 +102,7 @@ namespace training
 		/** Updates data for the UI based on the passed time and the threshold for the next step. */
 		void updateTimeInfo(const std::chrono::milliseconds& passedTime, const std::chrono::milliseconds& nextThreshold);
 
-		std::optional<uint64_t> _selectedTrainingProgramId = {};
+		std::optional<std::string> _selectedTrainingProgramId = {};
 		std::optional<uint16_t> _currentTrainingStepNumber = {};
 		TrainingProgramState _currentTrainingProgramState = TrainingProgramState::Uninitialized;
 		TrainingProgramFlowData _currentFlowData;

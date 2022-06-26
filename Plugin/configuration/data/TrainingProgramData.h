@@ -15,7 +15,7 @@ namespace configuration
 	public:
 		std::vector<TrainingProgramEntry> Entries;
 		std::chrono::milliseconds Duration = {}; // Sum of entry durations. Stored separately since it changes rarely, but gets read often.
-		uint64_t Id;
+		std::string Id; // A uuid which uniquely identifies the training program. This uuid is shared with the prejump website!
 		std::string Name;
 	};
 
@@ -23,9 +23,9 @@ namespace configuration
 	struct TrainingProgramListData
 	{
 	public:
-		std::string Version = "1.1";
-		std::vector<uint64_t> TrainingProgramOrder;
-		std::unordered_map<uint64_t, TrainingProgramData> TrainingProgramData;
+		std::string Version = "1.2";
+		std::vector<std::string> TrainingProgramOrder;
+		std::unordered_map<std::string, TrainingProgramData> TrainingProgramData;
 	};
 
 	/** This interface allows testing classes which want to store and restore training programs without actually having to write to the file system. */

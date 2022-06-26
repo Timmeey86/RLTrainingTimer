@@ -77,7 +77,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalIncludeDirectories>$(ProjectDir)external\fmt\include;$(ProjectDir);$(ProjectDir)\external;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;4275</DisableSpecificWarnings>
@@ -97,6 +97,7 @@
     <ClCompile Include="configuration\control\TrainingProgramConfigurationControl.cpp" />
     <ClCompile Include="configuration\control\TrainingProgramListConfigurationControl.cpp" />
     <ClCompile Include="configuration\control\TrainingProgramRepository.cpp" />
+    <ClCompile Include="configuration\control\uuid_generator.cpp" />
     <ClCompile Include="configuration\ui\ConfigurationUi.cpp" />
     <ClCompile Include="configuration\ui\TrainingProgramConfigurationUi.cpp" />
     <ClCompile Include="configuration\ui\TrainingProgramListConfigurationUi.cpp" />
@@ -128,12 +129,14 @@
     <ClInclude Include="configuration\control\TrainingProgramConfigurationControl.h" />
     <ClInclude Include="configuration\control\TrainingProgramListConfigurationControl.h" />
     <ClInclude Include="configuration\control\TrainingProgramRepository.h" />
+    <ClInclude Include="configuration\control\uuid_generator.h" />
     <ClInclude Include="configuration\data\TrainingProgramData.h" />
     <ClInclude Include="configuration\data\TrainingProgramEntry.h" />
     <ClInclude Include="configuration\ui\ConfigurationUi.h" />
     <ClInclude Include="configuration\ui\TrainingProgramConfigurationUi.h" />
     <ClInclude Include="configuration\ui\TrainingProgramListConfigurationUi.h" />
     <ClInclude Include="configuration\control\ITrainingProgramListReceiver.h" />
+    <ClInclude Include="external\stduuid\uuid.h" />
     <ClInclude Include="training\data\TrainingProgramExecutionData.h" />
     <ClInclude Include="training\data\TrainingProgramFlowData.h" />
     <ClInclude Include="external\IMGUI\imgui_disable.h" />

@@ -19,47 +19,47 @@ namespace configuration
 	public:
 		/** Constructor. */
 		explicit TrainingProgramConfigurationControl(
-			std::shared_ptr<std::map<uint64_t, TrainingProgramData>> trainingProgramData,
+			std::shared_ptr<std::map<std::string, TrainingProgramData>> trainingProgramData,
 			std::function<void()> changeNotificationCallback
 		);
 
 		/** Adds an entry to the training program. */
-		void addEntry(uint64_t trainingProgramId, const TrainingProgramEntry& entry);
+		void addEntry(const std::string& trainingProgramId, const TrainingProgramEntry& entry);
 
 		/** Removes the entry at the given position from the training program. */
-		void removeEntry(uint64_t trainingProgramId, int position);
+		void removeEntry(const std::string& trainingProgramId, int position);
 
 		/** Renames the entry at the given position. */
-		void renameEntry(uint64_t trainingProgramId, int position, const std::string& newName);
+		void renameEntry(const std::string& trainingProgramId, int position, const std::string& newName);
 
 		/** Changes the duration of the entry at the given position. */
-		void changeEntryDuration(uint64_t trainingProgramId, int position, const std::chrono::milliseconds& newDuration);
+		void changeEntryDuration(const std::string& trainingProgramId, int position, const std::chrono::milliseconds& newDuration);
 
 		/** Swaps the positions of two entries. */
-		void swapEntries(uint64_t trainingProgramId, int firstPosition, int secondPosition);
+		void swapEntries(const std::string& trainingProgramId, int firstPosition, int secondPosition);
 
 		/** Changes the type of the training program entry. */
-		void changeEntryType(uint64_t trainingProgramId, int position, TrainingProgramEntryType type);
+		void changeEntryType(const std::string& trainingProgramId, int position, TrainingProgramEntryType type);
 
 		/** Changes the training pack code of the training program entry. */
-		void changeTrainingPackCode(uint64_t trainingProgramId, int position, const std::string& trainingPackCode);
+		void changeTrainingPackCode(const std::string& trainingProgramId, int position, const std::string& trainingPackCode);
 
 		/** Changes the path to the workshop map for a training step. */
-		void changeWorkshopMapPath(uint64_t trainingProgramId, int position, const std::string& workshopMapPath);
+		void changeWorkshopMapPath(const std::string& trainingProgramId, int position, const std::string& workshopMapPath);
 
 		/** Changes the name of the training program. */
-		void renameProgram(uint64_t trainingProgramId, const std::string& newName);
+		void renameProgram(const std::string& trainingProgramId, const std::string& newName);
 
 		/** Retrieves a copy of the training program data for the given ID. */
-		TrainingProgramData getData(uint64_t trainingProgramId) const;
+		TrainingProgramData getData(const std::string& trainingProgramId) const;
 
 	private:
 
-		TrainingProgramData* internalData(uint64_t trainingProgramId) const;
+		TrainingProgramData* internalData(const std::string& trainingProgramId) const;
 
 		void validatePosition(const TrainingProgramData* const data, int position, const std::string& variableName) const;
 
-		std::shared_ptr<std::map<uint64_t, TrainingProgramData>> _trainingProgramData;
+		std::shared_ptr<std::map<std::string, TrainingProgramData>> _trainingProgramData;
 		std::function<void()> _changeNotificationCallback;
 
 	};

@@ -75,6 +75,9 @@
     <ClCompile Include="training\control\TrainingProgramFlowControl.cpp">
       <Filter>training\control</Filter>
     </ClCompile>
+    <ClCompile Include="configuration\control\uuid_generator.cpp">
+      <Filter>configuration\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -207,6 +210,12 @@
     <ClInclude Include="configuration\control\ITrainingProgramListReceiver.h">
       <Filter>configuration\control</Filter>
     </ClInclude>
+    <ClInclude Include="external\stduuid\uuid.h">
+      <Filter>external\stduuid</Filter>
+    </ClInclude>
+    <ClInclude Include="configuration\control\uuid_generator.h">
+      <Filter>configuration\control</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="RLTrainingTimer.rc" />
@@ -247,6 +256,9 @@
     </Filter>
     <Filter Include="training\control">
       <UniqueIdentifier>{ad4e8585-4043-4588-ab3f-08840c2dfad3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="external\stduuid">
+      <UniqueIdentifier>{0a2a6001-9099-4eb0-adda-f5ab82cb12df}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

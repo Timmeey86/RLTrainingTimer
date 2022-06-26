@@ -18,7 +18,7 @@ void RLTrainingTimer::onLoad()
 	auto trainingProgramRepository = std::make_shared<configuration::TrainingProgramRepository>(gameWrapper);
 
 	// Allow manipulating the list of training programs
-	auto trainingProgramDataMap = std::make_shared<std::map<uint64_t, configuration::TrainingProgramData>>();
+	auto trainingProgramDataMap = std::make_shared<std::map<std::string, configuration::TrainingProgramData>>();
 	auto trainingProgramListControl = std::make_shared<configuration::TrainingProgramListConfigurationControl>(trainingProgramDataMap, trainingProgramRepository);
 
 	// Allow manipulating a single training program, and notify the training program list when a program changes

@@ -6,11 +6,11 @@
 
 namespace training
 {
-	/** POD struct which combines an ID and a string. */
+	/** POD struct which combines a UUID and a string. */
 	struct IdAndTitle
 	{
 	public:
-		uint64_t Id;
+		std::string Id;
 		std::string Title;
 	};
 	

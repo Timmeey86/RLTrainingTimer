@@ -9,7 +9,7 @@ namespace configuration
         std::shared_ptr<GameWrapper> gameWrapper,
         std::shared_ptr<TrainingProgramListConfigurationControl> listConfigurationControl,
         std::shared_ptr<TrainingProgramConfigurationControl> programConfigurationControl,
-        std::function<void(uint64_t)> startEditingCallback)
+        std::function<void(const std::string&)> startEditingCallback)
         : _gameWrapper{ gameWrapper }
         , _listConfigurationControl{ listConfigurationControl }
         , _programConfigurationControl{ programConfigurationControl }

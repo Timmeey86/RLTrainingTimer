@@ -22,7 +22,7 @@ namespace configuration
 		 *
 		 * This should be called before rendering a new training program.
 		 */
-		void setCurrentTrainingProgramId(uint64_t trainingProgramId);
+		void setCurrentTrainingProgramId(const std::string& trainingProgramId);
 
 		/** Renders the current settings. */
 		void renderTrainingProgram();
@@ -44,7 +44,7 @@ namespace configuration
 		bool addCustomTrainingCodeTextBox(uint16_t index);
 		bool addWorkshopMapPathTextBox(uint16_t index);
 
-		uint64_t _trainingProgramId = 0;
+		std::string _trainingProgramId = "";
 
 		// Caches required for editing in the UI
 		std::string _programNameCache;

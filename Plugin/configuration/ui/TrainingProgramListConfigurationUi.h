@@ -18,7 +18,7 @@ namespace configuration
 			std::shared_ptr<GameWrapper> gameWrapper,
 			std::shared_ptr<TrainingProgramListConfigurationControl> listConfigurationControl,
 			std::shared_ptr<TrainingProgramConfigurationControl> programConfigurationControl,
-			std::function<void(uint64_t)> startEditingCallback
+			std::function<void(const std::string&)> startEditingCallback
 		);
 
 		/** Renders the current settings */
@@ -43,7 +43,7 @@ namespace configuration
 		bool addAddButton();
 
 		// Caches requried for editing in the UI
-		std::unordered_map<uint64_t, std::string> _entryNameCache;
+		std::unordered_map<std::string, std::string> _entryNameCache;
 
 		bool _firstTime = true;
 		TrainingProgramListData _cache;
@@ -52,6 +52,6 @@ namespace configuration
 
 		std::shared_ptr<TrainingProgramListConfigurationControl> _listConfigurationControl;
 		std::shared_ptr<TrainingProgramConfigurationControl> _programConfigurationControl;
-		std::function<void(uint64_t)> _startEditingCallback;
+		std::function<void(const std::string&)> _startEditingCallback;
 	};
 }

@@ -16,7 +16,7 @@ namespace configuration
 
 	}
 
-	void TrainingProgramConfigurationUi::setCurrentTrainingProgramId(uint64_t trainingProgramId)
+	void TrainingProgramConfigurationUi::setCurrentTrainingProgramId(const std::string& trainingProgramId)
 	{
 		_trainingProgramId = trainingProgramId;
 		updateCaches();

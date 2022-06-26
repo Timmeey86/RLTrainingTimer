@@ -31,7 +31,7 @@ namespace training
 		_currentFlowData.SwitchingIsPossible = true; // We currently always allow switching
 	}
 
-	void TrainingProgramFlowControl::selectTrainingProgram(uint64_t trainingProgramId)
+	void TrainingProgramFlowControl::selectTrainingProgram(const std::string& trainingProgramId)
 	{
 		if (_trainingProgramList.TrainingProgramData.count(trainingProgramId) > 0)
 		{
@@ -308,7 +308,7 @@ namespace training
 
 	void TrainingProgramFlowControl::updateTimeInfo(const std::chrono::milliseconds& passedTime, const std::chrono::milliseconds& nextThreshold)
 	{
-		if (_selectedTrainingProgramId.has_value() && _trainingProgramList.TrainingProgramData.count(_selectedTrainingProgramId.value() > 0))
+		if (_selectedTrainingProgramId.has_value() && _trainingProgramList.TrainingProgramData.count(_selectedTrainingProgramId.value()) > 0)
 		{
 			const auto& currentTrainingProgram = _trainingProgramList.TrainingProgramData.at(_selectedTrainingProgramId.value());
 			if (_currentTrainingStepNumber.has_value() && _currentTrainingStepNumber.value() < currentTrainingProgram.Entries.size())
