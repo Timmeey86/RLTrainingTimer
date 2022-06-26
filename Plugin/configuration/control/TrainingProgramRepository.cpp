@@ -124,10 +124,8 @@ namespace configuration
 		auto& trainingProgramListData = deserialized["TrainingProgramData"];
 
 		for (auto& trainingProgram : trainingProgramListData) {
-			LOG("Reading training program data");
-			auto& trainingProgramData = trainingProgram.at(1);
 			LOG("Patching training program data");
-			trainingProgramData["ReadOnly"] = false;
+			trainingProgram["ReadOnly"] = false;
 		}
 
 		LOG("Successfully upgraded to version 1.4");
