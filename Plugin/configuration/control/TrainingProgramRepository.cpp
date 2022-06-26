@@ -22,7 +22,7 @@ namespace configuration
 {
 	// Allow serialization of training programs
 	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(TrainingProgramEntry, Name, Duration, Type, TrainingPackCode, WorkshopMapPath);
-	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(TrainingProgramData, Id, Name, Duration, Entries);
+	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(TrainingProgramData, Id, Name, Duration, Entries, ReadOnly);
 	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(TrainingProgramListData, Version, TrainingProgramData, TrainingProgramOrder, WorkshopFolderLocation);
 
 	TrainingProgramRepository::TrainingProgramRepository(const std::shared_ptr<GameWrapper>& gameWrapper)
@@ -116,6 +116,23 @@ namespace configuration
 		LOG("Successfully upgraded to version 1.3");
 	}
 
+	void upgrade_from_1_3_to_1_4(json& deserialized)
+	{
+		LOG("Upgrading from version 1.3 to 1.4");
+
+		// Set all training programs to not be read-only
+		auto& trainingProgramListData = deserialized["TrainingProgramData"];
+
+		for (auto& trainingProgram : trainingProgramListData) {
+			LOG("Reading training program data");
+			auto& trainingProgramData = trainingProgram.at(1);
+			LOG("Patching training program data");
+			trainingProgramData["ReadOnly"] = false;
+		}
+
+		LOG("Successfully upgraded to version 1.4");
+	}
+
 	TrainingProgramListData TrainingProgramRepository::restoreData() const
 	{
 		if (!std::filesystem::exists(_storagePath)) { return {}; }
@@ -137,12 +154,15 @@ namespace configuration
 			if (version == "1.1")
 			{
 				upgrade_from_1_1_to_1_2(deserialized);
-				deserialized["Version"] = "1.2";
 			}
 			if (version == "1.2")
 			{
 				upgrade_from_1_2_to_1_3(deserialized);
-				deserialized["Version"] = "1.3";
+			}
+			if (version == "1.3")
+			{
+				upgrade_from_1_3_to_1_4(deserialized);
+				deserialized["Version"] = "1.4";
 			}
 
 			return deserialized.get<TrainingProgramListData>();
