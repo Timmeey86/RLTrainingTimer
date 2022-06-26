@@ -36,6 +36,9 @@ namespace configuration
 		/** Swaps the positions of two training programs. */
 		void swapTrainingPrograms(std::string firsttrainingProgramId, std::string secondtrainingProgramId);
 
+		/** Changes the location to the workshop folder. */
+		void changeWorkshopFolderLocation(const std::string& newLocation);
+
 		/** Provides a copy of the training program list data (e.g. for display). */
 		TrainingProgramListData getTrainingProgramList() const;
 
@@ -52,6 +55,7 @@ namespace configuration
 		void ensureIdDoesntExist(std::string trainingProgramId) const;
 		void ensureIdIsKnown(std::string trainingProgramId, const std::string& parameterName) const;
 		
+		std::string _workshopFolderLocation = ""; // The location of the workshop maps folder
 		std::vector<std::string> _trainingProgramOrder; // The order of training programs
 		std::shared_ptr<std::map<std::string, TrainingProgramData>> _trainingProgramData; // The training programs
 		std::vector<std::shared_ptr<ITrainingProgramListReceiver>> _receivers;

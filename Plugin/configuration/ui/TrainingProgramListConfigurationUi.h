@@ -26,6 +26,7 @@ namespace configuration
 
 	private:
 
+		void addWorkshopFolderLocationTextBos();
 		void addTrainingControlWindowButton();
 
 		bool addProgramNameTextBox(uint16_t index, const TrainingProgramData& info);
@@ -44,6 +45,7 @@ namespace configuration
 
 		// Caches requried for editing in the UI
 		std::unordered_map<std::string, std::string> _entryNameCache;
+		std::string _workshopFolderLocation;
 
 		bool _firstTime = true;
 		TrainingProgramListData _cache;

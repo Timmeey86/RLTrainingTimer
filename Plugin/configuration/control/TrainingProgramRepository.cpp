@@ -23,7 +23,7 @@ namespace configuration
 	// Allow serialization of training programs
 	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(TrainingProgramEntry, Name, Duration, Type, TrainingPackCode, WorkshopMapPath);
 	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(TrainingProgramData, Id, Name, Duration, Entries);
-	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(TrainingProgramListData, Version, TrainingProgramData, TrainingProgramOrder);
+	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(TrainingProgramListData, Version, TrainingProgramData, TrainingProgramOrder, WorkshopFolderLocation);
 
 	TrainingProgramRepository::TrainingProgramRepository(const std::shared_ptr<GameWrapper>& gameWrapper)
 	{
@@ -106,6 +106,16 @@ namespace configuration
 		LOG("Successfully upgraded to version 1.2");
 	}
 
+	void upgrade_from_1_2_to_1_3(json& deserialized)
+	{
+		LOG("Upgrading from version 1.2 to 1.3");
+
+		// Add an entry for the new workshop folder location property
+		deserialized["WorkshopFolderLocation"] = "";
+
+		LOG("Successfully upgraded to version 1.3");
+	}
+
 	TrainingProgramListData TrainingProgramRepository::restoreData() const
 	{
 		if (!std::filesystem::exists(_storagePath)) { return {}; }
@@ -128,6 +138,11 @@ namespace configuration
 			{
 				upgrade_from_1_1_to_1_2(deserialized);
 				deserialized["Version"] = "1.2";
+			}
+			if (version == "1.2")
+			{
+				upgrade_from_1_2_to_1_3(deserialized);
+				deserialized["Version"] = "1.3";
 			}
 
 			return deserialized.get<TrainingProgramListData>();

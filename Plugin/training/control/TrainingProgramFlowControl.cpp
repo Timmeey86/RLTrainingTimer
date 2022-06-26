@@ -153,13 +153,14 @@ namespace training
 		switch (trainingProgramEntry.Type)
 		{
 		case configuration::TrainingProgramEntryType::Freeplay:
+			// TODO: Do not switch to free play if already in free play
 			_gameWrapper->Execute([](GameWrapper*) { _globalCvarManager->executeCommand("load_freeplay"); });
 			break;
 		case configuration::TrainingProgramEntryType::CustomTraining:
 			_gameWrapper->Execute([trainingProgramEntry](GameWrapper*) { _globalCvarManager->executeCommand(fmt::format("load_training {}", trainingProgramEntry.TrainingPackCode)); });
 			break;
 		case configuration::TrainingProgramEntryType::WorkshopMap:
-			_gameWrapper->Execute([trainingProgramEntry](GameWrapper*) { _globalCvarManager->executeCommand(fmt::format("load_workshop \"{}\"", trainingProgramEntry.WorkshopMapPath)); });
+			_gameWrapper->Execute([this, trainingProgramEntry](GameWrapper*) { _globalCvarManager->executeCommand(fmt::format("load_workshop \"{}\\{}\"", _trainingProgramList.WorkshopFolderLocation, trainingProgramEntry.WorkshopMapPath)); });
 		default:
 			// Do nothing
 			break;

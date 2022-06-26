@@ -23,7 +23,8 @@ namespace configuration
 	struct TrainingProgramListData
 	{
 	public:
-		std::string Version = "1.2";
+		std::string Version = "1.3";
+		std::string WorkshopFolderLocation = "";
 		std::vector<std::string> TrainingProgramOrder;
 		std::unordered_map<std::string, TrainingProgramData> TrainingProgramData;
 	};

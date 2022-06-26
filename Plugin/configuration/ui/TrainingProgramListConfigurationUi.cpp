@@ -21,6 +21,7 @@ namespace configuration
     {
         ImGui::TextUnformatted("Training control");
         addTrainingControlWindowButton();
+        addWorkshopFolderLocationTextBos();
         ImGui::Separator();
 
         ImGui::TextUnformatted("Available Training programs");
@@ -37,6 +38,7 @@ namespace configuration
         {
             _entryNameCache.emplace(id, trainingProgramData.Name);
         }
+        _workshopFolderLocation = data.WorkshopFolderLocation;
 
         auto numberOfPrograms = data.TrainingProgramOrder.size();
         for (auto index = (uint16_t)0; index < (uint16_t)numberOfPrograms; index++)
@@ -68,6 +70,13 @@ namespace configuration
         }
     }
 
+    void TrainingProgramListConfigurationUi::addWorkshopFolderLocationTextBos()
+    {
+        if (ImGui::InputText("Workshop Folder Location##workshoplocation", &_workshopFolderLocation))
+        {
+            _listConfigurationControl->changeWorkshopFolderLocation(_workshopFolderLocation);
+        }
+    }
     void TrainingProgramListConfigurationUi::addTrainingControlWindowButton()
     {
         if (ImGui::Button("Open Training Window"))

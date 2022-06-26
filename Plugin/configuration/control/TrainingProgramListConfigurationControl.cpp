@@ -74,11 +74,18 @@ namespace configuration
         }
     }
 
+    void TrainingProgramListConfigurationControl::changeWorkshopFolderLocation(const std::string& newLocation)
+    {
+        _workshopFolderLocation = newLocation;
+        notifyReceivers();
+    }
+
     /** Provides a copy of the training program list data (e.g. for display). */
     TrainingProgramListData TrainingProgramListConfigurationControl::getTrainingProgramList() const
     {
         TrainingProgramListData data;
         data.TrainingProgramOrder = std::vector<std::string>(_trainingProgramOrder);
+        data.WorkshopFolderLocation = _workshopFolderLocation;
         for (auto& [id, programData]: *_trainingProgramData)
         {
             data.TrainingProgramData.emplace(id, programData);
@@ -107,6 +114,7 @@ namespace configuration
         {
             _trainingProgramData->emplace(id, programData);
         }
+        _workshopFolderLocation = data.WorkshopFolderLocation;
 
         // Notify receivers, but do not write the file (would be kinda pointless right here)
         notifyReceivers(true);
