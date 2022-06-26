@@ -80,6 +80,25 @@ namespace configuration
         notifyReceivers();
     }
 
+    void TrainingProgramListConfigurationControl::injectTrainingProgram(const TrainingProgramData& data)
+    {
+        if (_trainingProgramData->count(data.Id) > 0)
+        {
+            LOG("Replacing existing training program with uuid {}", data.Id);
+            _trainingProgramData->erase(data.Id);
+            // We can keep the training program order, because we'll add the program right back.
+        }
+        else
+        {
+            LOG("Injecting new training program with uuid {}", data.Id);
+            _trainingProgramOrder.insert(_trainingProgramOrder.begin(), data.Id);
+        }
+        _trainingProgramData->try_emplace(data.Id, data);
+        notifyReceivers();
+
+        LOG("Successfully injected/updated training program");
+    }
+
     /** Provides a copy of the training program list data (e.g. for display). */
     TrainingProgramListData TrainingProgramListConfigurationControl::getTrainingProgramList() const
     {

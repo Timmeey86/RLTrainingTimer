@@ -39,6 +39,12 @@ namespace configuration
 		/** Changes the location to the workshop folder. */
 		void changeWorkshopFolderLocation(const std::string& newLocation);
 
+		/** Creates or replaces a training program, supplied from an external source. */
+		void injectTrainingProgram(const TrainingProgramData& data);
+
+		/** Checks if a training program exists. */
+		inline bool hasTrainingProgram(const std::string& uuid) const { return _trainingProgramData->count(uuid) > 0; }
+
 		/** Provides a copy of the training program list data (e.g. for display). */
 		TrainingProgramListData getTrainingProgramList() const;
 

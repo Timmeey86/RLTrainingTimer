@@ -101,6 +101,7 @@
     <ClCompile Include="configuration\ui\ConfigurationUi.cpp" />
     <ClCompile Include="configuration\ui\TrainingProgramConfigurationUi.cpp" />
     <ClCompile Include="configuration\ui\TrainingProgramListConfigurationUi.cpp" />
+    <ClCompile Include="injection\TrainingProgramInjector.cpp" />
     <ClCompile Include="training\control\TrainingProgramFlowControl.cpp" />
     <ClCompile Include="external\IMGUI\imgui_disable.cpp" />
     <ClCompile Include="external\fmt\src\format.cc" />
@@ -137,6 +138,7 @@
     <ClInclude Include="configuration\ui\TrainingProgramListConfigurationUi.h" />
     <ClInclude Include="configuration\control\ITrainingProgramListReceiver.h" />
     <ClInclude Include="external\stduuid\uuid.h" />
+    <ClInclude Include="injection\TrainingProgramInjector.h" />
     <ClInclude Include="training\data\TrainingProgramExecutionData.h" />
     <ClInclude Include="training\data\TrainingProgramFlowData.h" />
     <ClInclude Include="external\IMGUI\imgui_disable.h" />

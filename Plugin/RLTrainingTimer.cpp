@@ -38,18 +38,16 @@ void RLTrainingTimer::onLoad()
 	// Create a plugin window for starting, stopping etc programs. This internally also creates an overlay which is displayed while training is being executed
 	initTrainingProgramFlowControlUi(gameWrapper, flowControl);
 
-	/* INITIALIZATION */
-
 	// Restore any previously stored training program
 	trainingProgramListControl->restoreData();
 
-	cvarManager->registerNotifier("rltt_inject_and_load_training_program", [this](const std::vector<std::string>& params) {
-		cvarManager->log("Successfully called notifier across plugins");
-		for (auto param : params)
-		{
-			cvarManager->log(param);
-		}
-	}, "", PERMISSION_ALL);
+	// Allow injection training programs from other plugins
+	_trainingProgramInjector = std::make_shared<injection::TrainingProgramInjector>(
+		cvarManager,
+		trainingProgramListControl,
+		flowControl
+		);
+	_trainingProgramInjector->registerNotifiers();
 
 	cvarManager->log("Loaded RLTrainingTimer plugin");
 }

@@ -78,6 +78,9 @@
     <ClCompile Include="configuration\control\uuid_generator.cpp">
       <Filter>configuration\control</Filter>
     </ClCompile>
+    <ClCompile Include="injection\TrainingProgramInjector.cpp">
+      <Filter>injection</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -216,6 +219,9 @@
     <ClInclude Include="configuration\control\uuid_generator.h">
       <Filter>configuration\control</Filter>
     </ClInclude>
+    <ClInclude Include="injection\TrainingProgramInjector.h">
+      <Filter>injection</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="RLTrainingTimer.rc" />
@@ -259,6 +265,9 @@
     </Filter>
     <Filter Include="external\stduuid">
       <UniqueIdentifier>{0a2a6001-9099-4eb0-adda-f5ab82cb12df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="injection">
+      <UniqueIdentifier>{f8cb602d-44ee-419e-aebf-15130c456b04}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
