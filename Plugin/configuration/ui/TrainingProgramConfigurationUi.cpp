@@ -184,7 +184,17 @@ namespace configuration
 	{
 		if (ImGui::Button("##entryadd", "Add"))
 		{
-			_configurationControl->addEntry(_trainingProgramId, { "New training step", std::chrono::minutes(1) });
+			_configurationControl->addEntry(_trainingProgramId, 
+				{ 
+					"New training step", 
+					TrainingProgramEntryType::Unspecified,
+					"", // no code
+					"", // no workshop map path
+					TrainingProgramTimeMode::Timed,
+					std::chrono::minutes(1),
+					"", // no notes
+					VarianceSettings() // default
+				});
 			return true;
 		}
 		return false;

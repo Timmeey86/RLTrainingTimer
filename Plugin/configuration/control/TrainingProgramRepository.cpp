@@ -21,7 +21,8 @@ namespace nlohmann {
 namespace configuration
 {
 	// Allow serialization of training programs
-	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(TrainingProgramEntry, Name, Duration, Type, TrainingPackCode, WorkshopMapPath);
+	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(VarianceSettings, UseDefaultSettings, EnableTraining, LimitBoost, AllowMirror, PlayerVelocity, VarSpeed, VarLoc, VarLocZ, Shuffle, VarCarLoc, VarCarRot, VarSpin, VarRot);
+	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(TrainingProgramEntry, Name, Duration, Type, TrainingPackCode, WorkshopMapPath, TimeMode, Notes, Variance);
 	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(TrainingProgramData, Id, Name, Duration, Entries, ReadOnly);
 	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(TrainingProgramListData, Version, TrainingProgramData, TrainingProgramOrder, WorkshopFolderLocation);
 
@@ -131,6 +132,29 @@ namespace configuration
 		LOG("Successfully upgraded to version 1.4");
 	}
 
+	void upgrade_from_1_4_to_1_5(json& deserialized)
+	{
+		LOG("Upgrading from version 1.4 to 1.5");
+
+		// Set all training programs to not be read-only
+		auto& trainingProgramListData = deserialized["TrainingProgramData"];
+
+		for (auto& trainingProgramData : trainingProgramListData) {
+			LOG("Reading training program entries");
+			auto& trainingProgramEntries = trainingProgramData["Entries"];
+			LOG("Patching {} training program entries", trainingProgramEntries.size());
+			for (auto& trainingProgramEntry : trainingProgramEntries)
+			{
+				// Add new fields, otherwise deserialization will fail
+				trainingProgramEntry["TimeMode"] = configuration::TrainingProgramTimeMode::Timed; // in 1.4, this was the only time mode available
+				trainingProgramEntry["Notes"] = "";
+				trainingProgramEntry["Variance"] = VarianceSettings();
+			}
+		}
+
+		LOG("Successfully upgraded to version 1.5");
+	}
+
 	TrainingProgramListData TrainingProgramRepository::restoreData() const
 	{
 		if (!std::filesystem::exists(_storagePath)) { return {}; }
@@ -160,7 +184,11 @@ namespace configuration
 			if (version == "1.3")
 			{
 				upgrade_from_1_3_to_1_4(deserialized);
-				deserialized["Version"] = "1.4";
+			}
+			if (version == "1.4")
+			{
+				upgrade_from_1_4_to_1_5(deserialized);
+				deserialized["Version"] = "1.5";
 			}
 
 			return deserialized.get<TrainingProgramListData>();
