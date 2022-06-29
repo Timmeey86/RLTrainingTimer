@@ -23,7 +23,10 @@ namespace configuration
     {
         auto data = internalData(trainingProgramId);
         data->Entries.push_back(entry);
-        data->Duration += entry.Duration;
+        if (entry.TimeMode == TrainingProgramCompletionMode::Timed)
+        {
+            data->Duration += entry.Duration;
+        }
 
         _changeNotificationCallback();
     }
@@ -33,7 +36,11 @@ namespace configuration
         auto data = internalData(trainingProgramId);
         validatePosition(data, position, "position");
 
-        data->Duration -= data->Entries.at(position).Duration;
+        auto& affectedEntry = data->Entries.at(position);
+        if (affectedEntry.TimeMode == TrainingProgramCompletionMode::Timed)
+        {
+            data->Duration -= affectedEntry.Duration;
+        }
         remove(data->Entries, position);
 
         _changeNotificationCallback();
@@ -55,8 +62,12 @@ namespace configuration
         validatePosition(data, position, "position");
 
         auto& affectedEntry = data->Entries.at(position);
-        data->Duration -= affectedEntry.Duration;
-        data->Duration += newDuration;
+        if (affectedEntry.TimeMode == TrainingProgramCompletionMode::Timed)
+        {
+            data->Duration -= affectedEntry.Duration;
+            data->Duration += newDuration;
+        }
+        // Store the duration in either case, in case the time mode is changed back to Timed
         affectedEntry.Duration = newDuration;
 
         _changeNotificationCallback();
@@ -86,6 +97,27 @@ namespace configuration
 
         auto& affectedEntry = data->Entries.at(position);
         affectedEntry.Type = type;
+
+        _changeNotificationCallback();
+    }
+
+    void TrainingProgramConfigurationControl::changeEntryCompletionMode(const std::string& trainingProgramId, int position, TrainingProgramCompletionMode CompletionMode)
+    {
+        auto data = internalData(trainingProgramId);
+        validatePosition(data, position, "position");
+
+        auto& affectedEntry = data->Entries.at(position);
+        if (affectedEntry.TimeMode == TrainingProgramCompletionMode::Timed && CompletionMode != TrainingProgramCompletionMode::Timed)
+        {
+            // We don't know how long this entry will take, therefore we need to substract the duration from the total one
+            data->Duration -= affectedEntry.Duration;
+        }
+        else if (affectedEntry.TimeMode != TrainingProgramCompletionMode::Timed && CompletionMode == TrainingProgramCompletionMode::Timed)
+        {
+            // Add the duration, so switching back and forth between timed and something else will not break the result
+            data->Duration += affectedEntry.Duration;
+        }
+        affectedEntry.TimeMode = CompletionMode;
 
         _changeNotificationCallback();
     }

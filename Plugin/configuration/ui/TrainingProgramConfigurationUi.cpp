@@ -29,6 +29,7 @@ namespace configuration
 		_workshopMapPathCache.clear();
 		_durationCache.clear();
 		_selectedTypeCache.clear();
+		_selectedCompletionModeCache.clear();
 
 		auto trainingProgramData = _configurationControl->getData(_trainingProgramId);
 		_programNameCache = trainingProgramData.Name;
@@ -39,6 +40,7 @@ namespace configuration
 			_workshopMapPathCache.push_back(entry.WorkshopMapPath);
 			_durationCache.push_back(std::chrono::duration_cast<std::chrono::minutes>(entry.Duration).count());
 			_selectedTypeCache.push_back((int)entry.Type);
+			_selectedCompletionModeCache.push_back((int)entry.TimeMode);
 		}
 	}
 
@@ -64,19 +66,21 @@ namespace configuration
 			// New line!
 			trainingProgramChanged |= addProgramEntryNameTextBox(index);
 			// New line!
-			trainingProgramChanged |= addTypeDropdown(index);
-			ImGui::SameLine();
+			trainingProgramChanged |= addCompletionModeDropdown(index);
 			trainingProgramChanged |= addProgramEntryDurationTextBox(index);
-			ImGui::SameLine();
+			// New line!
+			trainingProgramChanged |= addTypeDropdown(index);
+			// New line!
+			// New line (only visible when custom training is selected)
+			trainingProgramChanged |= addCustomTrainingCodeTextBox(index);
+			// only visible when workshop map is selected
+			trainingProgramChanged |= addWorkshopMapPathTextBox(index);
+			// New line!
 			trainingProgramChanged |= addUpButton(index, index > 0);
 			ImGui::SameLine();
 			trainingProgramChanged |= addDownButton(index, index < entryNameCacheSize - 1);
 			ImGui::SameLine();
 			trainingProgramChanged |= addDeleteButton(index);
-			// New line (only visible when custom training is selected)
-			trainingProgramChanged |= addCustomTrainingCodeTextBox(index);
-			// only visible when workshop map is selected
-			trainingProgramChanged |= addWorkshopMapPathTextBox(index);
 			ImGui::Separator();
 		}
 
@@ -109,9 +113,12 @@ namespace configuration
 	void TrainingProgramConfigurationUi::addProgramDurationLabel()
 	{
 		std::chrono::minutes durationSum = {};
-		for (const auto& duration : _durationCache)
+		for (auto index = 0; index < _durationCache.size(); index++ )
 		{
-			durationSum += std::chrono::minutes(duration);
+			if (_selectedCompletionModeCache[index] == 0) // timed
+			{
+				durationSum += std::chrono::minutes(_durationCache[index]);
+			}
 		}
 		auto durationString = fmt::format("{:>3} min", durationSum.count()); // minutes max 3 digits, right aligned
 		ImGui::TextUnformatted(durationString.c_str());
@@ -131,6 +138,11 @@ namespace configuration
 	}
 	bool TrainingProgramConfigurationUi::addProgramEntryDurationTextBox(uint16_t index)
 	{
+		if (_selectedCompletionModeCache[index] != 0)
+		{
+			return false; // Duration is only available in the "timed" mode
+		}
+		ImGui::SameLine();
 		ImGui::PushItemWidth(100.0f);
 		auto textChanged = ImGui::InputInt(fmt::format("##entryduration_{}", index).c_str(), &_durationCache[index]);
 		if (textChanged)
@@ -190,7 +202,7 @@ namespace configuration
 					TrainingProgramEntryType::Unspecified,
 					"", // no code
 					"", // no workshop map path
-					TrainingProgramTimeMode::Timed,
+					TrainingProgramCompletionMode::Timed,
 					std::chrono::minutes(1),
 					"", // no notes
 					VarianceSettings() // default
@@ -198,6 +210,47 @@ namespace configuration
 			return true;
 		}
 		return false;
+	}
+
+	bool TrainingProgramConfigurationUi::addCompletionModeDropdown(uint16_t index)
+	{
+		static std::vector<const char*> selectedNames;
+		if (selectedNames.size() <= index)
+		{
+			selectedNames.push_back("");
+		}
+
+		std::unordered_map<int, std::string> enumNames;
+		enumNames.emplace(0, "Timed");
+		enumNames.emplace(1, "Pack Completion");
+
+		ImGui::TextUnformatted("Completion Mode");
+		ImGui::SameLine();
+		ImGui::PushItemWidth(150.0f);
+		auto changed = false;
+		selectedNames[index] = enumNames[_selectedCompletionModeCache[index]].c_str();
+		if (ImGui::BeginCombo(fmt::format("##completionmode_{}", index).c_str(), selectedNames[index]))
+		{
+			for (const auto& [intValue, stringValue] : enumNames)
+			{
+				const auto isSelected = intValue == _selectedCompletionModeCache[index];
+				if (ImGui::Selectable(stringValue.c_str(), isSelected))
+				{
+					_configurationControl->changeEntryCompletionMode(_trainingProgramId, index, (TrainingProgramCompletionMode)intValue);
+
+					if (intValue == 1 && _selectedTypeCache[index] != 2)
+					{
+						// "Completion Mode" only makes sense in custom training
+						_configurationControl->changeEntryType(_trainingProgramId, index, TrainingProgramEntryType::CustomTraining);
+					}
+					changed = true;
+				}
+			}
+			ImGui::EndCombo();
+		}
+		ImGui::PopItemWidth();
+
+		return changed;
 	}
 
 	bool TrainingProgramConfigurationUi::addTypeDropdown(uint16_t index)
@@ -228,6 +281,12 @@ namespace configuration
 				{
 					_configurationControl->changeEntryType(_trainingProgramId, index, (TrainingProgramEntryType)intValue);
 					changed = true;
+
+					if (intValue != 2 && _selectedCompletionModeCache[index] != 0)
+					{
+						// If anything else than custom training is selected, the only supported completion mode is "Timed"
+						_configurationControl->changeEntryCompletionMode(_trainingProgramId, index, TrainingProgramCompletionMode::Timed);
+					}
 				}
 			}
 			ImGui::EndCombo();
@@ -266,7 +325,7 @@ namespace configuration
 		{
 			ImGui::TextUnformatted("!!! WARNING !!!");
 			ImGui::TextUnformatted("Loading workshop maps will sometimes crash the game. The reason is unknown and this plugin can't fix that.");
-			ImGui::TextUnformatted("Enter the full file path to the .upk file");
+			ImGui::TextUnformatted("Enter the relative file path to the .upk file, based on the folder configured on the main configuration page");
 			ImGui::TextUnformatted(fmt::format("Path ", index).c_str());
 			ImGui::SameLine();
 			if (ImGui::InputText(fmt::format("##workshopath_{}", index).c_str(), &_workshopMapPathCache[index]))

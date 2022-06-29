@@ -210,9 +210,6 @@
     <ClInclude Include="training\control\TrainingProgramFlowControl.h">
       <Filter>training\control</Filter>
     </ClInclude>
-    <ClInclude Include="configuration\control\ITrainingProgramListReceiver.h">
-      <Filter>configuration\control</Filter>
-    </ClInclude>
     <ClInclude Include="external\stduuid\uuid.h">
       <Filter>external\stduuid</Filter>
     </ClInclude>

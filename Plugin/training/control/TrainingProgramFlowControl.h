@@ -2,7 +2,7 @@
 
 
 #include <DLLImportExport.h>
-#include <configuration/control/ITrainingProgramListReceiver.h>
+#include <configuration/data/TrainingProgramData.h>
 
 #include "../data/TrainingProgramFlowData.h"
 #include "../data/TrainingProgramExecutionData.h"

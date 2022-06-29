@@ -136,7 +136,6 @@
     <ClInclude Include="configuration\ui\ConfigurationUi.h" />
     <ClInclude Include="configuration\ui\TrainingProgramConfigurationUi.h" />
     <ClInclude Include="configuration\ui\TrainingProgramListConfigurationUi.h" />
-    <ClInclude Include="configuration\control\ITrainingProgramListReceiver.h" />
     <ClInclude Include="external\stduuid\uuid.h" />
     <ClInclude Include="injection\TrainingProgramInjector.h" />
     <ClInclude Include="training\data\TrainingProgramExecutionData.h" />

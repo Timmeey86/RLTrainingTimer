@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../data/TrainingProgramData.h"
-#include "ITrainingProgramListReceiver.h"
 
 #include <map>
 #include <memory>

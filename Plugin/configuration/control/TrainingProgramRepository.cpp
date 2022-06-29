@@ -146,7 +146,7 @@ namespace configuration
 			for (auto& trainingProgramEntry : trainingProgramEntries)
 			{
 				// Add new fields, otherwise deserialization will fail
-				trainingProgramEntry["TimeMode"] = configuration::TrainingProgramTimeMode::Timed; // in 1.4, this was the only time mode available
+				trainingProgramEntry["TimeMode"] = configuration::TrainingProgramCompletionMode::Timed; // in 1.4, this was the only time mode available
 				trainingProgramEntry["Notes"] = "";
 				trainingProgramEntry["Variance"] = VarianceSettings();
 			}

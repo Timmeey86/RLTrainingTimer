@@ -19,7 +19,7 @@ namespace configuration
 	};
 
 	/** This allows switching between using a timeout, or the completion of a training pack as a trigger. */
-	enum class TrainingProgramTimeMode
+	enum class TrainingProgramCompletionMode
 	{
 		Timed, // The entry will be executed for a fixed duration (can be paused)
 		CompletePack, // The entry will be executed until the training end screen has been reached for the current pack.
@@ -55,8 +55,8 @@ namespace configuration
 		TrainingProgramEntryType Type = TrainingProgramEntryType::Unspecified;
 		std::string TrainingPackCode; // Only set when Type = CustomTraining
 		std::string WorkshopMapPath; // Only set when Type = WorkshopMap. Contains just the end of the path; the base path is configurable in the UI
-		TrainingProgramTimeMode TimeMode = TrainingProgramTimeMode::Timed;
-		std::chrono::milliseconds Duration; // 0 if TimeMode != Timed
+		TrainingProgramCompletionMode TimeMode = TrainingProgramCompletionMode::Timed;
+		std::chrono::milliseconds Duration; // 0 if CompletionMode != Timed
 		std::string Notes; // Any kind of additional notes for this step.
 		VarianceSettings Variance;
 	};

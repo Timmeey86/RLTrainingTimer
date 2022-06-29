@@ -41,6 +41,9 @@ namespace configuration
 		/** Changes the type of the training program entry. */
 		void changeEntryType(const std::string& trainingProgramId, int position, TrainingProgramEntryType type);
 
+		/** Changes the time mode of the training program entry. */
+		void changeEntryCompletionMode(const std::string& trainingProgramId, int position, TrainingProgramCompletionMode CompletionMode);
+
 		/** Changes the training pack code of the training program entry. */
 		void changeTrainingPackCode(const std::string& trainingProgramId, int position, const std::string& trainingPackCode);
 
