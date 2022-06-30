@@ -5,13 +5,13 @@
 
 namespace training
 {
-	TrainingProgramFlowControl::TrainingProgramFlowControl(std::shared_ptr<GameWrapper> gameWrapper) :
+	TrainingProgramFlowControl::TrainingProgramFlowControl(std::shared_ptr<IGameWrapper> gameWrapper) :
 		_gameWrapper(gameWrapper)
 	{
 
 	}
 
-	void TrainingProgramFlowControl::hookToEvents(const std::shared_ptr<GameWrapper>& gameWrapper)
+	void TrainingProgramFlowControl::hookToEvents(const std::shared_ptr<IGameWrapper>& gameWrapper)
 	{
 		gameWrapper->HookEventPost("Function Engine.WorldInfo.EventPauseChanged", [gameWrapper, this](const std::string&) {
 			if (gameWrapper->IsPaused())

@@ -31,9 +31,11 @@ void RLTrainingTimer::onLoad()
 	/* TRAINING EXECUTION PART */
 
 	// Create a handler for the execution of training programs
-	auto flowControl = std::make_shared<training::TrainingProgramFlowControl>(gameWrapper);
+	// Note that we use an adapter around the game wrapper for the sole purpose of being able to unit test TrainingProgramFlowControl
+	auto gameWrapperAdapter = std::make_shared<GameWrapperAdapter>(gameWrapper);
+	auto flowControl = std::make_shared<training::TrainingProgramFlowControl>(gameWrapperAdapter);
 	trainingProgramListControl->registerTrainingProgramListReceiver(flowControl); // Updates the flow control whenever any training program changes, gets added, gets deleted etc
-	flowControl->hookToEvents(gameWrapper);
+	flowControl->hookToEvents(gameWrapperAdapter);
 
 	// Create a plugin window for starting, stopping etc programs. This internally also creates an overlay which is displayed while training is being executed
 	initTrainingProgramFlowControlUi(gameWrapper, flowControl);
@@ -41,7 +43,7 @@ void RLTrainingTimer::onLoad()
 	// Restore any previously stored training program
 	trainingProgramListControl->restoreData();
 
-	// Allow injection training programs from other plugins
+	// Allow injection training programs from other plugins, at least prejump
 	_trainingProgramInjector = std::make_shared<injection::TrainingProgramInjector>(
 		cvarManager,
 		trainingProgramListControl,
