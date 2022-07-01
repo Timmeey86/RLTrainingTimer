@@ -156,10 +156,18 @@ namespace Core::Training::Test
 	}
 	TEST_F(TrainingProgramFlowTestFixture, startSelectedTrainingProgram_when_defaultProgramIsStarted_will_notChangeGameMode)
 	{
-		sut->receiveListData(FullTrainingProgramList);
-		sut->selectTrainingProgram(FullyTimedTrainingProgramId); // This one starts with a free play step
+		// Create a fake program with just a default step
+		configuration::TrainingProgramData fakeProgram;
+		fakeProgram.Id = "Fake";
+		fakeProgram.Duration = TwoMinuteDefaultEntry.Duration;
+		fakeProgram.Entries.push_back(TwoMinuteDefaultEntry);
 		
-		_fakeGameWrapper->FakeIsInFreeplay = true;
+		configuration::TrainingProgramListData fakeList;
+		fakeList.TrainingProgramData.try_emplace(fakeProgram.Id, fakeProgram);
+		fakeList.TrainingProgramOrder.push_back(fakeProgram.Id);
+
+		sut->receiveListData(fakeList);
+		sut->selectTrainingProgram(fakeProgram.Id);
 		sut->startSelectedTrainingProgram();
 
 		EXPECT_FALSE(_fakeGameWrapper->ExecuteWasCalled);
@@ -168,6 +176,12 @@ namespace Core::Training::Test
 	// Note: For custom training / workshop maps, we want them to always be reloaded so the unit starts at the beginning
 	TEST_F(TrainingProgramFlowTestFixture, startSelectedTrainingProgram_when_alreadyInFreePlay_will_notLoadFreePlayAgain)
 	{
+		sut->receiveListData(FullTrainingProgramList);
+		sut->selectTrainingProgram(FullyTimedTrainingProgramId); // This one starts with a free play step
 
+		_fakeGameWrapper->FakeIsInFreeplay = true;
+		sut->startSelectedTrainingProgram();
+
+		EXPECT_FALSE(_fakeGameWrapper->ExecuteWasCalled);
 	}
 }
