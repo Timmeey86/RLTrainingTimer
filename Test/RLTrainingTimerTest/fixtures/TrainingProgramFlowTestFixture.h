@@ -94,7 +94,7 @@ protected:
 		_fakeGameWrapper->FakeEventPostMap.at(PauseEventName)("");
 	}
 	// Simulates an event where the game was unpaused
-	void unpauseGame()
+	void resumeGame()
 	{
 		_fakeGameWrapper->FakeIsPaused = false;
 		_fakeGameWrapper->FakeEventPostMap.at(PauseEventName)("");

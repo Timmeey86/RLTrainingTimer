@@ -48,11 +48,140 @@ namespace Core::Training::Test
 
 		EXPECT_TRUE(sut->getCurrentExecutionData().TrainingIsPaused);
 
-		unpauseGame();
+		resumeGame();
 
 		EXPECT_FALSE(sut->getCurrentExecutionData().TrainingIsPaused);
 	}
 
+
+	TEST_F(TrainingProgramFlowTestFixture, executionData_when_trainingIsPaused_will_forwardPausedState)
+	{
+		sut->receiveListData(FullTrainingProgramList);
+		sut->selectTrainingProgram(FullyTimedTrainingProgramId);
+		sut->startSelectedTrainingProgram();
+
+		EXPECT_FALSE(sut->getCurrentExecutionData().TrainingIsPaused);
+
+		sut->pauseTrainingProgram();
+
+		EXPECT_TRUE(sut->getCurrentExecutionData().TrainingIsPaused);
+
+		sut->resumeTrainingProgram();
+
+		EXPECT_FALSE(sut->getCurrentExecutionData().TrainingIsPaused);
+	}
+
+	TEST_F(TrainingProgramFlowTestFixture, flowData_when_trainingIsPaused_will_updatePauseButtons)
+	{
+		sut->receiveListData(FullTrainingProgramList);
+		sut->selectTrainingProgram(FullyTimedTrainingProgramId);
+		sut->startSelectedTrainingProgram();
+
+		auto oldFlowData = sut->getCurrentFlowData();
+		EXPECT_TRUE(oldFlowData.SelectedTrainingProgramIndex.has_value());
+		EXPECT_TRUE(oldFlowData.SwitchingIsPossible);
+		EXPECT_FALSE(oldFlowData.StartingIsPossible);
+		EXPECT_TRUE(oldFlowData.PausingIsPossible);
+		EXPECT_FALSE(oldFlowData.ResumingIsPossible);
+		EXPECT_TRUE(oldFlowData.StoppingIsPossible);
+		EXPECT_FALSE(sut->getCurrentExecutionData().TrainingIsPaused);
+
+		sut->pauseTrainingProgram();
+
+		auto flowData = sut->getCurrentFlowData();
+		EXPECT_TRUE(flowData.SelectedTrainingProgramIndex.has_value());
+		EXPECT_TRUE(flowData.SwitchingIsPossible);
+		EXPECT_FALSE(flowData.StartingIsPossible);
+		EXPECT_FALSE(flowData.PausingIsPossible);
+		EXPECT_TRUE(flowData.ResumingIsPossible);
+		EXPECT_TRUE(flowData.StoppingIsPossible);
+
+		EXPECT_TRUE(sut->getCurrentExecutionData().TrainingIsPaused);
+	}
+
+	TEST_F(TrainingProgramFlowTestFixture, flowData_when_trainingIsResumed_will_updatePauseButtons)
+	{
+		sut->receiveListData(FullTrainingProgramList);
+		sut->selectTrainingProgram(FullyTimedTrainingProgramId);
+		sut->startSelectedTrainingProgram();
+
+		auto oldFlowData = sut->getCurrentFlowData();
+
+		sut->pauseTrainingProgram();
+		sut->resumeTrainingProgram();
+
+		auto flowData = sut->getCurrentFlowData();
+		EXPECT_EQ(flowData.PausingIsPossible, oldFlowData.PausingIsPossible);
+		EXPECT_EQ(flowData.ResumingIsPossible, oldFlowData.ResumingIsPossible);
+		EXPECT_EQ(flowData.SelectedTrainingProgramIndex.has_value(), oldFlowData.SelectedTrainingProgramIndex.has_value());
+		EXPECT_EQ(flowData.StartingIsPossible, oldFlowData.StartingIsPossible);
+		EXPECT_EQ(flowData.StoppingIsPossible, oldFlowData.StoppingIsPossible);
+		EXPECT_EQ(flowData.SwitchingIsPossible, oldFlowData.SwitchingIsPossible);
+	}
+	
+	TEST_F(TrainingProgramFlowTestFixture, startingTrainingProgram_when_gameIsPaused_will_startInPausedState)
+	{
+		pauseGame();
+
+		sut->receiveListData(FullTrainingProgramList);
+		sut->selectTrainingProgram(FullyTimedTrainingProgramId);
+		sut->startSelectedTrainingProgram();
+		sut->pauseTrainingProgram();
+		sut->resumeTrainingProgram();
+
+		auto flowData = sut->getCurrentFlowData();
+		EXPECT_TRUE(flowData.SelectedTrainingProgramIndex.has_value());
+		EXPECT_TRUE(flowData.SwitchingIsPossible);
+		EXPECT_FALSE(flowData.StartingIsPossible);
+		EXPECT_TRUE(flowData.PausingIsPossible);
+		EXPECT_FALSE(flowData.ResumingIsPossible);
+		EXPECT_TRUE(flowData.StoppingIsPossible);
+
+		EXPECT_TRUE(sut->getCurrentExecutionData().TrainingIsPaused);
+	}
+
+	TEST_F(TrainingProgramFlowTestFixture, pausingAndResumingGame_when_trainingProgramIsPaused_will_notStartInPausedState)
+	{
+		sut->receiveListData(FullTrainingProgramList);
+		sut->selectTrainingProgram(FullyTimedTrainingProgramId);
+		sut->startSelectedTrainingProgram();
+		sut->pauseTrainingProgram();
+
+		pauseGame();
+		resumeGame();
+
+		auto flowData = sut->getCurrentFlowData();
+		EXPECT_TRUE(flowData.SelectedTrainingProgramIndex.has_value());
+		EXPECT_TRUE(flowData.SwitchingIsPossible);
+		EXPECT_FALSE(flowData.StartingIsPossible);
+		EXPECT_FALSE(flowData.PausingIsPossible);
+		EXPECT_TRUE(flowData.ResumingIsPossible);
+		EXPECT_TRUE(flowData.StoppingIsPossible);
+
+		EXPECT_TRUE(sut->getCurrentExecutionData().TrainingIsPaused);
+	}
+
+	TEST_F(TrainingProgramFlowTestFixture, pausingAndResumingTrainingProgram_when_gameIsPaused_will_notLeavePausedState)
+	{
+		pauseGame();
+
+		sut->receiveListData(FullTrainingProgramList);
+		sut->selectTrainingProgram(FullyTimedTrainingProgramId);
+		sut->startSelectedTrainingProgram();
+
+		sut->pauseTrainingProgram();
+		sut->resumeTrainingProgram();
+
+		auto flowData = sut->getCurrentFlowData();
+		EXPECT_TRUE(flowData.SelectedTrainingProgramIndex.has_value());
+		EXPECT_TRUE(flowData.SwitchingIsPossible);
+		EXPECT_FALSE(flowData.StartingIsPossible);
+		EXPECT_TRUE(flowData.PausingIsPossible);
+		EXPECT_FALSE(flowData.ResumingIsPossible);
+		EXPECT_TRUE(flowData.StoppingIsPossible);
+
+		EXPECT_TRUE(sut->getCurrentExecutionData().TrainingIsPaused);
+	}
 	TEST_F(TrainingProgramFlowTestFixture, selectTrainingProgram_when_programListIsEmpty_will_invalidateData)
 	{
 		sut->receiveListData(EmptyTrainingProgramList);
