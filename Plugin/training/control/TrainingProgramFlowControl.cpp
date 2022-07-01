@@ -277,10 +277,10 @@ namespace training
 			// Update the UI buttons (Note that the game state does not matter for this)
 			_currentFlowData.PausingIsPossible = !trainingProgramIsPaused;
 			_currentFlowData.ResumingIsPossible = trainingProgramIsPaused;
-
-			// Allow displaying the "Paused" state in the execution UI
-			_currentExecutionData.TrainingIsPaused = gameIsPaused || trainingProgramIsPaused;
 		}
+
+		// Allow displaying the "Paused" state in the execution UI
+		_currentExecutionData.TrainingIsPaused = gameIsPaused || trainingProgramIsPaused;
 	}
 
 	void TrainingProgramFlowControl::finishRunningTrainingProgram()

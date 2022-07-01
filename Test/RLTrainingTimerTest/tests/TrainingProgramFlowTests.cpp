@@ -27,5 +27,29 @@ namespace Core::Training::Test
 		EXPECT_TRUE(flowData.SwitchingIsPossible);
 		EXPECT_EQ(flowData.TrainingPrograms.size(), 0);
 	}
-}
 
+	template<typename mapType, typename entryType>
+	inline bool mapHasEntry(const mapType& map, const entryType& entry)
+	{
+		return map.find(entry) != map.end();
+	}
+	TEST_F(TrainingProgramFlowTestFixture, hookToEvents_when_called_will_registerEvents)
+	{
+		// Note: hookToEvents will be called within the test fixture
+		EXPECT_TRUE(mapHasEntry(_fakeGameWrapper->FakeEventPostMap, PauseEventName));
+		EXPECT_TRUE(mapHasEntry(_fakeGameWrapper->FakeEventMap, TimerTickEventName));
+	}
+
+	TEST_F(TrainingProgramFlowTestFixture, executionData_when_gameIsPaused_will_forwardPausedState)
+	{
+		EXPECT_FALSE(sut->getCurrentExecutionData().TrainingIsPaused);
+
+		pauseGame();
+
+		EXPECT_TRUE(sut->getCurrentExecutionData().TrainingIsPaused);
+
+		unpauseGame();
+
+		EXPECT_FALSE(sut->getCurrentExecutionData().TrainingIsPaused);
+	}
+}

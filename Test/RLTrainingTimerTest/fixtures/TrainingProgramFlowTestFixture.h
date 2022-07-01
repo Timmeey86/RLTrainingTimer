@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 #include "../fakes/FakeTimeProvider.h"
-#include "../mocks/IGameWrapperMock.h"
+#include "../fakes/FakeGameWrapper.h"
 #include <Plugin/training/control/TrainingProgramFlowControl.h>
 
 class TrainingProgramFlowTestFixture : public testing::Test
@@ -10,9 +10,10 @@ class TrainingProgramFlowTestFixture : public testing::Test
 public:
 	void SetUp() override
 	{
-		_gameWrapperMock = std::make_shared<::testing::StrictMock<IGameWrapperMock>>();
+		_fakeGameWrapper = std::make_shared<FakeGameWrapper>();
 		_fakeTimeProvider = std::make_shared<FakeTimeProvider>();
-		sut = std::make_unique<training::TrainingProgramFlowControl>(_gameWrapperMock, _fakeTimeProvider);
+		sut = std::make_unique<training::TrainingProgramFlowControl>(_fakeGameWrapper, _fakeTimeProvider);
+		sut->hookToEvents(_fakeGameWrapper);
 
 		IncompleteFreeplayEntry.TimeMode = configuration::TrainingProgramCompletionMode::Timed;
 		IncompleteFreeplayEntry.Type = configuration::TrainingProgramEntryType::Freeplay;
@@ -53,8 +54,21 @@ public:
 		TwoMinuteDefaultEntry.Name = "TwoMinuteDefaultEntry";
 	};
 protected:
+
+	void pauseGame()
+	{
+		_fakeGameWrapper->FakeIsPaused = true;
+		_fakeGameWrapper->FakeEventPostMap.at(PauseEventName)("");
+	}
+	void unpauseGame()
+	{
+		_fakeGameWrapper->FakeIsPaused = false;
+		_fakeGameWrapper->FakeEventPostMap.at(PauseEventName)("");
+	}
+
+
 	std::unique_ptr<training::TrainingProgramFlowControl> sut;
-	std::shared_ptr<IGameWrapperMock> _gameWrapperMock;
+	std::shared_ptr<FakeGameWrapper> _fakeGameWrapper;
 	std::shared_ptr<FakeTimeProvider> _fakeTimeProvider;
 
 	configuration::TrainingProgramEntry EmptyEntry;
@@ -69,4 +83,7 @@ protected:
 	configuration::TrainingProgramEntry OneMinuteWorkshopEntry;
 	const std::string DummyWorkshopSubPath = "FancyMap\\FancyMap.upk";
 	configuration::TrainingProgramEntry TwoMinuteDefaultEntry;
+
+	const std::string PauseEventName = "Function Engine.WorldInfo.EventPauseChanged";
+	const std::string TimerTickEventName = "Function TAGame.Replay_TA.Tick";
 };
