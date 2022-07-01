@@ -46,6 +46,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Test\GoogleTest\googletest\include;$(SolutionDir)Test\GoogleTest\googlemock\include;$(SolutionDir);$(SolutionDir)Plugin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;4275</DisableSpecificWarnings>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

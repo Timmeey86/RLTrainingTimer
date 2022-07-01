@@ -209,7 +209,7 @@ namespace training
 		auto nextThreshold = _trainingProgramEntryEndTimes[currentTrainingStepNumber];
 		auto passedTime = std::chrono::duration_cast<std::chrono::milliseconds>(_timeProvider->now() - _referenceTime);
 
-		if (passedTime > nextThreshold)
+		if (passedTime >= nextThreshold)
 		{
 			if (currentTrainingStepNumber == _trainingProgramEntryEndTimes.size() - 1)
 			{
@@ -304,14 +304,10 @@ namespace training
 	{
 		if (_selectedTrainingProgramId.has_value())
 		{
-			// Provide information for the flow control UI
-			_currentTrainingProgramState = TrainingProgramState::WaitingForStart;
-			_currentFlowData.StartingIsPossible = true;
-			_currentFlowData.PausingIsPossible = false;
-			_currentFlowData.ResumingIsPossible = false;
-			_currentFlowData.StoppingIsPossible = false;
-
-			_currentExecutionData.TrainingStepStartTime.reset();
+			// Unselect and select the training program to get the intial state again
+			auto trainingProgramId = _selectedTrainingProgramId.value();
+			unselectTrainingProgram();
+			selectTrainingProgram(trainingProgramId);
 		}
 	}
 

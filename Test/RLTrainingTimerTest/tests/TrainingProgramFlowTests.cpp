@@ -184,4 +184,63 @@ namespace Core::Training::Test
 
 		EXPECT_FALSE(_fakeGameWrapper->ExecuteWasCalled);
 	}
+
+	TEST_F(TrainingProgramFlowTestFixture, handleTimerTick_when_firstTrainingStepIsFinished_will_activateSecondTrainingStep)
+	{
+		sut->receiveListData(FullTrainingProgramList);
+		sut->selectTrainingProgram(FullyTimedTrainingProgramId);
+		sut->startSelectedTrainingProgram();
+
+		auto firstStepEndTime = _fakeTimeProvider->CurrentFakeTime + OneMinuteFreeplayEntry.Duration;
+
+		sendTimerTick(firstStepEndTime);
+
+		auto executionData = sut->getCurrentExecutionData();
+		EXPECT_EQ(executionData.TrainingStepNumber, 1);
+	}
+
+	TEST_F(TrainingProgramFlowTestFixture, handleTimerTick_when_lastTrainingStepIsFinished_will_switchToStoppedState)
+	{
+		sut->receiveListData(FullTrainingProgramList);
+		sut->selectTrainingProgram(FullyTimedTrainingProgramId);
+		sut->startSelectedTrainingProgram();
+
+		// Note: sendTimerTick will adapt _fakeTimeProvider->CurrentFakeTime, so we can just add the duration of each step each time
+		auto time = _fakeTimeProvider->CurrentFakeTime + OneMinuteFreeplayEntry.Duration;
+		sendTimerTick(time);
+		time += TwoMinuteDefaultEntry.Duration;
+		sendTimerTick(time);
+		time += OneMinuteWorkshopEntry.Duration;
+		sendTimerTick(time);
+
+		auto flowData = sut->getCurrentFlowData();
+
+		EXPECT_FALSE(flowData.PausingIsPossible);
+		EXPECT_FALSE(flowData.ResumingIsPossible);
+		EXPECT_TRUE(flowData.SelectedTrainingProgramIndex.has_value());
+		EXPECT_TRUE(flowData.StartingIsPossible);
+		EXPECT_FALSE(flowData.StoppingIsPossible);
+		EXPECT_TRUE(flowData.SwitchingIsPossible);
+	}
+
+	TEST_F(TrainingProgramFlowTestFixture, handleTimerTick_when_lastTrainingStepIsFinished_will_invalidateExecutionData)
+	{
+		sut->receiveListData(FullTrainingProgramList);
+		sut->selectTrainingProgram(FullyTimedTrainingProgramId);
+		sut->startSelectedTrainingProgram();
+
+		// Note: sendTimerTick will adapt _fakeTimeProvider->CurrentFakeTime, so we can just add the duration of each step each time
+		auto time = _fakeTimeProvider->CurrentFakeTime + OneMinuteFreeplayEntry.Duration;
+		sendTimerTick(time);
+		time += TwoMinuteDefaultEntry.Duration;
+		sendTimerTick(time);
+		time += OneMinuteWorkshopEntry.Duration;
+		sendTimerTick(time);
+
+		auto executionData = sut->getCurrentExecutionData();
+
+		ASSERT_TRUE(executionData.TrainingFinishedTime.has_value());
+		EXPECT_EQ(executionData.TrainingFinishedTime.value().time_since_epoch(), _fakeTimeProvider->CurrentFakeTime.time_since_epoch());
+		EXPECT_EQ(executionData.NumberOfSteps, 0); // This will only be initialized when starting the program.
+	}
 }

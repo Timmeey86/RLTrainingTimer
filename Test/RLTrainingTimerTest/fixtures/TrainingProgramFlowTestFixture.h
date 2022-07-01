@@ -87,15 +87,23 @@ public:
 	};
 protected:
 
+	// Simulates an event where the game was paused
 	void pauseGame()
 	{
 		_fakeGameWrapper->FakeIsPaused = true;
 		_fakeGameWrapper->FakeEventPostMap.at(PauseEventName)("");
 	}
+	// Simulates an event where the game was unpaused
 	void unpauseGame()
 	{
 		_fakeGameWrapper->FakeIsPaused = false;
 		_fakeGameWrapper->FakeEventPostMap.at(PauseEventName)("");
+	}
+	// Simulates an event where a timer tick was sent at the given point in time
+	void sendTimerTick(std::chrono::steady_clock::time_point& pointInTime)
+	{
+		_fakeTimeProvider->CurrentFakeTime = pointInTime;
+		_fakeGameWrapper->FakeEventMap.at(TimerTickEventName)("");
 	}
 
 
