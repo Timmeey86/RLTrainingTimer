@@ -143,8 +143,9 @@ namespace training
 			}
 			else if(trainingProgramData.Entries.empty())
 			{
-				// The training program is empty, there is nothing we can do with it
+				// The training program is empty, there is nothing we can do with it. We simulate unselection & selection to return to the "selected" state
 				unselectTrainingProgram();
+				selectTrainingProgram(trainingProgramData.Id);
 			}
 		}
 	}
