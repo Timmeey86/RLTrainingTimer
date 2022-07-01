@@ -105,7 +105,7 @@ namespace training
 		/** Activates the next (or first) step of the training program. */
 		void activateNextTrainingProgramStep();
 		/** Switches to freeplay, custom training or whatever the user configured. */
-		void switchGameModeIfNecessary(configuration::TrainingProgramEntry& trainingProgramEntry);
+		void switchGameModeIfNecessary(const configuration::TrainingProgramEntry& trainingProgramEntry);
 		/** Updates data for the UI based on the passed time and the threshold for the next step. */
 		void updateTimeInfo(const std::chrono::milliseconds& passedTime, const std::chrono::milliseconds& nextThreshold);
 
@@ -116,14 +116,13 @@ namespace training
 		TrainingProgramExecutionData _currentExecutionData;
 
 		configuration::TrainingProgramListData _trainingProgramList;
+		configuration::TrainingProgramEntry _currentEntry;
 
 		PausedState _trainingProgramPausedState = PausedState::NotPaused;
 		PausedState _gamePausedState = PausedState::NotPaused;
 
 		std::chrono::steady_clock::time_point _referenceTime; // The "start" time to do calculations again. Will be shifted to account for game pauses, if necessary.
 		std::optional<std::chrono::steady_clock::time_point> _pauseStartTime = {}; // The point in time where a pause was started
-
-		std::vector<std::chrono::milliseconds> _trainingProgramEntryEndTimes;
 
 		std::shared_ptr<IGameWrapper> _gameWrapper;
 		std::shared_ptr<ITimeProvider> _timeProvider;

@@ -1,6 +1,6 @@
 #include "../fixtures/TrainingProgramFlowTestFixture.h"
 
-namespace Core::Training::Test
+namespace test
 {
 	TEST_F(TrainingProgramFlowTestFixture, verify_fixture)
 	{
@@ -53,9 +53,11 @@ namespace Core::Training::Test
 		EXPECT_FALSE(sut->getCurrentExecutionData().TrainingIsPaused);
 	}
 
-
 	TEST_F(TrainingProgramFlowTestFixture, executionData_when_trainingIsPaused_will_forwardPausedState)
 	{
+
+
+
 		sut->receiveListData(FullTrainingProgramList);
 		sut->selectTrainingProgram(FullyTimedTrainingProgramId);
 		sut->startSelectedTrainingProgram();
@@ -371,5 +373,25 @@ namespace Core::Training::Test
 		ASSERT_TRUE(executionData.TrainingFinishedTime.has_value());
 		EXPECT_EQ(executionData.TrainingFinishedTime.value().time_since_epoch(), _fakeTimeProvider->CurrentFakeTime.time_since_epoch());
 		EXPECT_EQ(executionData.NumberOfSteps, 0); // This will only be initialized when starting the program.
+	}
+
+	TEST_F(TrainingProgramFlowTestFixture, handleTimerTick_when_someTimeHasPassed_will_updateTimeValuesProperly)
+	{
+		sut->receiveListData(FullTrainingProgramList);
+		sut->selectTrainingProgram(FullyTimedTrainingProgramId);
+		sut->startSelectedTrainingProgram();
+
+		// Advance to the second step
+		sendTimerTick(_fakeTimeProvider->CurrentFakeTime + OneMinuteFreeplayEntry.Duration);
+		// Advance within the second step
+		auto secondStepStartTime = _fakeTimeProvider->CurrentFakeTime;
+		auto secondStepDelta = std::chrono::milliseconds(3456);
+		sendTimerTick(_fakeTimeProvider->CurrentFakeTime + secondStepDelta);
+
+		auto executionData = sut->getCurrentExecutionData();
+
+		EXPECT_EQ(executionData.TimeLeftInCurrentTrainingStep.count(), (TwoMinuteDefaultEntry.Duration - secondStepDelta).count());
+		EXPECT_EQ(executionData.TimeLeftInProgram.count(), (TwoMinuteDefaultEntry.Duration + OneMinuteWorkshopEntry.Duration - secondStepDelta).count());
+		EXPECT_EQ(executionData.TrainingStepStartTime.value().time_since_epoch().count(), secondStepStartTime.time_since_epoch().count());
 	}
 }

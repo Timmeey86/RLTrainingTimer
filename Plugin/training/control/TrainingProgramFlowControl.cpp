@@ -33,6 +33,13 @@ namespace training
 			handleTimerTick();
 		});
 
+		_gameWrapper->HookEventPost("Function TAGame.GameEvent_TrainingEditor_TA.EndTraining", [this](const std::string&) {
+			if (trainingProgramIsActive() && _currentEntry.TimeMode == configuration::TrainingProgramCompletionMode::CompletePack)
+			{
+				activateNextTrainingProgramStep();
+			}
+		});
+
 		_currentFlowData.SwitchingIsPossible = true; // We currently always allow switching
 	}
 
@@ -84,16 +91,6 @@ namespace training
 	{
 		if (_selectedTrainingProgramId.has_value() && !trainingProgramIsActive())
 		{
-			// Precalculate program steps
-			auto trainingProgramEntryEndTime = std::chrono::milliseconds(0);
-			_trainingProgramEntryEndTimes.clear();
-			const auto& entries = _trainingProgramList.TrainingProgramData[_selectedTrainingProgramId.value()].Entries;
-			for (const auto& trainingProgramEntry : entries)
-			{
-				trainingProgramEntryEndTime += std::chrono::milliseconds(trainingProgramEntry.Duration);
-				_trainingProgramEntryEndTimes.push_back(trainingProgramEntryEndTime);
-			}
-
 			// Provide information for the flow control UI
 			_currentTrainingProgramState = TrainingProgramState::Running;
 			_currentFlowData.StartingIsPossible = false;
@@ -113,7 +110,8 @@ namespace training
 	void TrainingProgramFlowControl::activateNextTrainingProgramStep()
 	{
 		if (_selectedTrainingProgramId.has_value()
-			&& _currentTrainingProgramState == TrainingProgramState::Running
+			&& (_currentTrainingProgramState == TrainingProgramState::Running ||
+				trainingProgramIsActive()  && _currentEntry.TimeMode == configuration::TrainingProgramCompletionMode::CompletePack)
 			&& _trainingProgramList.TrainingProgramData.count(_selectedTrainingProgramId.value()) > 0)
 		{
 			const auto& trainingProgramData = _trainingProgramList.TrainingProgramData.at(_selectedTrainingProgramId.value());
@@ -129,7 +127,7 @@ namespace training
 				{
 					_currentTrainingStepNumber = _currentTrainingStepNumber.value() + 1;
 				}
-				auto trainingProgramEntry = trainingProgramData.Entries.at(_currentTrainingStepNumber.value());
+				const auto& trainingProgramEntry = trainingProgramData.Entries.at(_currentTrainingStepNumber.value());
 
 				switchGameModeIfNecessary(trainingProgramEntry);
 				// No change in flow state (still running)
@@ -144,6 +142,10 @@ namespace training
 				_currentExecutionData.TimeLeftInProgram = trainingProgramData.Duration;
 				_currentExecutionData.TrainingFinishedTime.reset();
 				_currentExecutionData.TrainingStepStartTime = _timeProvider->now();
+				_referenceTime = _currentExecutionData.TrainingStepStartTime.value();
+
+				// this allows not having to query the current entry on every single timer tick.
+				_currentEntry = trainingProgramEntry;
 			}
 			else if(trainingProgramData.Entries.empty())
 			{
@@ -154,7 +156,7 @@ namespace training
 		}
 	}
 
-	void TrainingProgramFlowControl::switchGameModeIfNecessary(configuration::TrainingProgramEntry& trainingProgramEntry)
+	void TrainingProgramFlowControl::switchGameModeIfNecessary(const configuration::TrainingProgramEntry& trainingProgramEntry)
 	{
 		switch (trainingProgramEntry.Type)
 		{
@@ -205,27 +207,30 @@ namespace training
 			return; // The "running" state is the only one in which we will ever need to make time comparisons
 		}
 		auto currentTrainingStepNumber = _currentTrainingStepNumber.value();
-
-		auto nextThreshold = _trainingProgramEntryEndTimes[currentTrainingStepNumber];
-		auto passedTime = std::chrono::duration_cast<std::chrono::milliseconds>(_timeProvider->now() - _referenceTime);
-
-		if (passedTime >= nextThreshold)
+		
+		if (_currentEntry.TimeMode == configuration::TrainingProgramCompletionMode::Timed)
 		{
-			if (currentTrainingStepNumber == _trainingProgramEntryEndTimes.size() - 1)
+			auto passedTime = std::chrono::duration_cast<std::chrono::milliseconds>(_timeProvider->now() - _referenceTime);
+
+			if (passedTime >= _currentEntry.Duration)
 			{
-				finishRunningTrainingProgram();
+				if (currentTrainingStepNumber == _currentExecutionData.NumberOfSteps - 1)
+				{
+					finishRunningTrainingProgram();
+				}
+				else
+				{
+					// The end of the current step has been reached, and there is another one
+					activateNextTrainingProgramStep();
+					// Note: We don't update time info here, this method will be called again within a couple of milliseconds, which is good enough
+				}
 			}
 			else
 			{
-				// The end of the current step has been reached, and there is another one
-				activateNextTrainingProgramStep();
-				// Note: We don't update time info here, this method will be called again within a couple of milliseconds, which is good enough
+				updateTimeInfo(passedTime, _currentEntry.Duration);
 			}
 		}
-		else
-		{
-			updateTimeInfo(passedTime, nextThreshold);
-		}
+		// else: Ignore timer ticks for untimed program entries
 	}
 
 	void TrainingProgramFlowControl::updatePauseState()
@@ -260,23 +265,27 @@ namespace training
 
 			auto flowIsPaused = (_currentTrainingProgramState != TrainingProgramState::Running);
 
-			if (!flowWasPaused && flowIsPaused)
+			// Remember the start and end of pauses in case of timed programs
+			if (_currentEntry.TimeMode == configuration::TrainingProgramCompletionMode::Timed)
 			{
-				// Pause has started
-				if (!_pauseStartTime.has_value())
+				if (!flowWasPaused && flowIsPaused)
 				{
-					// Rememeber the time when the pause started
-					_pauseStartTime = _timeProvider->now();
+					// Pause has started
+					if (!_pauseStartTime.has_value())
+					{
+						// Rememeber the time when the pause started
+						_pauseStartTime = _timeProvider->now();
+					}
 				}
-			}
-			else if (flowWasPaused && !flowIsPaused)
-			{
-				// Pause has ended
-				if (_pauseStartTime.has_value())
+				else if (flowWasPaused && !flowIsPaused)
 				{
-					// Shift the reference time forward by the duration of the pause. This way, calculations can use this time and act as if there hasn't been any pause.
-					_referenceTime = _timeProvider->now() - (_pauseStartTime.value() - _referenceTime);
-					_pauseStartTime.reset();
+					// Pause has ended
+					if (_pauseStartTime.has_value())
+					{
+						// Shift the reference time forward by the duration of the pause. This way, calculations can use this time and act as if there hasn't been any pause.
+						_referenceTime = _timeProvider->now() - (_pauseStartTime.value() - _referenceTime);
+						_pauseStartTime.reset();
+					}
 				}
 			}
 			// else: game was paused and is still paused (the fourth case should be impossible at this point)
@@ -319,9 +328,14 @@ namespace training
 			if (_currentTrainingStepNumber.has_value() && _currentTrainingStepNumber.value() < currentTrainingProgram.Entries.size())
 			{
 				_currentExecutionData.TimeLeftInCurrentTrainingStep = nextThreshold - passedTime;
-				_currentExecutionData.TimeLeftInProgram = currentTrainingProgram.Duration - passedTime;
+				_currentExecutionData.TimeLeftInProgram = -passedTime;
+				for (int index = _currentTrainingStepNumber.value(); index < currentTrainingProgram.Entries.size(); index++)
+				{
+					_currentExecutionData.TimeLeftInProgram += currentTrainingProgram.Entries.at(index).Duration;
+				}
 
 				// Fixup negative values (happens when "passedTime" doesn't match the training program duration exactly, which will probably happen almost always)
+				// Note: These fixups are historic and will probably be overriden after this method has been called anyway, but they'll stay here until that is proven.
 				if (_currentExecutionData.TimeLeftInProgram.count() < 0)
 				{
 					_currentExecutionData.TimeLeftInProgram = std::chrono::milliseconds(0);

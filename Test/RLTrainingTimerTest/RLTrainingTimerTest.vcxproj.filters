@@ -7,6 +7,9 @@
     <ClCompile Include="tests\TrainingProgramFlowTests.cpp">
       <Filter>tests</Filter>
     </ClCompile>
+    <ClCompile Include="tests\UntimedTrainingProgramFlowTests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -77,13 +77,23 @@ public:
 		MixedReadOnlyTrainingProgram.Name = "MixedReadOnlyTrainingProgram";
 		MixedReadOnlyTrainingProgram.ReadOnly = true;
 
+		UntimedTrainingProgram.Description = "Untimed Training Program";
+		UntimedTrainingProgram.Duration = std::chrono::milliseconds(0);
+		UntimedTrainingProgram.Entries.push_back(PackCompletionEntry);
+		UntimedTrainingProgram.Entries.push_back(SecondPackCompletionEntry);
+		UntimedTrainingProgram.Id = UntimedTrainingProgramId;
+		UntimedTrainingProgram.Name = "UntimedTrainingProgram";
+		UntimedTrainingProgram.ReadOnly = true;
+
 		FullTrainingProgramList.TrainingProgramData.try_emplace(EmptyTrainingProgramId, EmptyTrainingProgram);
 		FullTrainingProgramList.TrainingProgramData.try_emplace(FullyTimedTrainingProgramId, FullyTimedTrainingProgram);
 		FullTrainingProgramList.TrainingProgramData.try_emplace(MixedTrainingProgramId, MixedReadOnlyTrainingProgram);
+		FullTrainingProgramList.TrainingProgramData.try_emplace(UntimedTrainingProgramId, UntimedTrainingProgram);
 		FullTrainingProgramList.TrainingProgramOrder.push_back(EmptyTrainingProgramId);
 		FullTrainingProgramList.TrainingProgramOrder.push_back(FullyTimedTrainingProgramId);
 		FullTrainingProgramList.TrainingProgramOrder.push_back(MixedTrainingProgramId);
-		FullTrainingProgramList.WorkshopFolderLocation = WorkshopFakeBasePath;
+		FullTrainingProgramList.TrainingProgramOrder.push_back(UntimedTrainingProgramId);
+		FullTrainingProgramList.WorkshopFolderLocation = WorkshopFakeBasePath;		
 	};
 protected:
 
@@ -100,7 +110,7 @@ protected:
 		_fakeGameWrapper->FakeEventPostMap.at(PauseEventName)("");
 	}
 	// Simulates an event where a timer tick was sent at the given point in time
-	void sendTimerTick(std::chrono::steady_clock::time_point& pointInTime)
+	void sendTimerTick(const std::chrono::steady_clock::time_point& pointInTime)
 	{
 		_fakeTimeProvider->CurrentFakeTime = pointInTime;
 		_fakeGameWrapper->FakeEventMap.at(TimerTickEventName)("");
@@ -120,6 +130,8 @@ protected:
 	configuration::TrainingProgramEntry OneMinuteFreeplayEntry;
 	configuration::TrainingProgramEntry PackCompletionEntry;
 	const std::string DummyTrainingPackCode = "ABC123";
+	configuration::TrainingProgramEntry SecondPackCompletionEntry;
+	const std::string SecondTrainingPackCode = "ABCDEF";
 	configuration::TrainingProgramEntry OneMinuteWorkshopEntry;
 	const std::string DummyWorkshopSubPath = "FancyMap\\FancyMap.upk";
 	configuration::TrainingProgramEntry TwoMinuteDefaultEntry;
@@ -133,6 +145,9 @@ protected:
 
 	configuration::TrainingProgramData MixedReadOnlyTrainingProgram;
 	const std::string MixedTrainingProgramId = "{MixedReadOnlyTrainingProgram}";
+
+	configuration::TrainingProgramData UntimedTrainingProgram;
+	const std::string UntimedTrainingProgramId = "{UntimedTrainingProgram}";
 
 	configuration::TrainingProgramListData EmptyTrainingProgramList;
 	configuration::TrainingProgramListData FullTrainingProgramList;
