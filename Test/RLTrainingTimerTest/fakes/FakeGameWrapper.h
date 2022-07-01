@@ -26,9 +26,14 @@ public:
 	{
 		return FakeIsPaused;
 	}
+	bool IsInFreeplay() override
+	{
+		return FakeIsInFreeplay;
+	}
 
 	bool ExecuteWasCalled = false;
 	bool FakeIsPaused = false;
+	bool FakeIsInFreeplay = false;
 	std::unordered_map<std::string, std::function<void(std::string)>> FakeEventPostMap;
 	std::unordered_map<std::string, std::function<void(std::string)>> FakeEventMap;
 };

@@ -108,4 +108,66 @@ namespace Core::Training::Test
 		EXPECT_EQ(flowDataAfterStarting.StoppingIsPossible, flowDataBeforeStarting.StoppingIsPossible);
 		EXPECT_EQ(flowDataAfterStarting.PausingIsPossible, flowDataBeforeStarting.PausingIsPossible);
 	}
+
+	TEST_F(TrainingProgramFlowTestFixture, startSelectedTrainingProgram_when_validProgramIsStarted_will_changeToRunningState)
+	{
+		sut->receiveListData(FullTrainingProgramList);
+		sut->selectTrainingProgram(FullyTimedTrainingProgramId);
+		sut->startSelectedTrainingProgram();
+
+		auto flowData = sut->getCurrentFlowData();
+
+		EXPECT_TRUE(flowData.PausingIsPossible);
+		EXPECT_FALSE(flowData.ResumingIsPossible);
+		EXPECT_TRUE(flowData.SelectedTrainingProgramIndex.has_value());
+		EXPECT_FALSE(flowData.StartingIsPossible);
+		EXPECT_TRUE(flowData.StoppingIsPossible);
+		EXPECT_TRUE(flowData.SwitchingIsPossible);
+	}
+
+	TEST_F(TrainingProgramFlowTestFixture, startSelectedTrainingProgram_when_validProgramIsStarted_will_populateTrainingExecutionData)
+	{
+		sut->receiveListData(FullTrainingProgramList);
+		sut->selectTrainingProgram(FullyTimedTrainingProgramId);
+		sut->startSelectedTrainingProgram();
+
+		auto executionData = sut->getCurrentExecutionData();
+		
+		EXPECT_EQ(executionData.DurationOfCurrentTrainingStep, OneMinuteFreeplayEntry.Duration);
+		EXPECT_EQ(executionData.NumberOfSteps, FullyTimedTrainingProgram.Entries.size());
+		EXPECT_EQ(executionData.TimeLeftInCurrentTrainingStep, OneMinuteFreeplayEntry.Duration);
+		EXPECT_EQ(executionData.TimeLeftInProgram, FullyTimedTrainingProgram.Duration);
+		EXPECT_FALSE(executionData.TrainingFinishedTime.has_value());
+		EXPECT_FALSE(executionData.TrainingIsPaused);
+		EXPECT_EQ(executionData.TrainingProgramName, FullyTimedTrainingProgram.Name);
+		EXPECT_EQ(executionData.TrainingStepName, OneMinuteFreeplayEntry.Name);
+		EXPECT_EQ(executionData.TrainingStepNumber, 0);
+		EXPECT_EQ(executionData.TrainingStepStartTime, _fakeTimeProvider->CurrentFakeTime);
+	}
+
+	TEST_F(TrainingProgramFlowTestFixture, startSelectedTrainingProgram_when_freeplayProgramIsStarted_will_loadFreeplay)
+	{
+		sut->receiveListData(FullTrainingProgramList);
+		sut->selectTrainingProgram(FullyTimedTrainingProgramId); // This one starts with a free play step
+		sut->startSelectedTrainingProgram();
+
+		EXPECT_TRUE(_fakeGameWrapper->ExecuteWasCalled);
+		EXPECT_EQ(_fakeCVarManager->lastCommand(), "load_freeplay");
+	}
+	TEST_F(TrainingProgramFlowTestFixture, startSelectedTrainingProgram_when_defaultProgramIsStarted_will_notChangeGameMode)
+	{
+		sut->receiveListData(FullTrainingProgramList);
+		sut->selectTrainingProgram(FullyTimedTrainingProgramId); // This one starts with a free play step
+		
+		_fakeGameWrapper->FakeIsInFreeplay = true;
+		sut->startSelectedTrainingProgram();
+
+		EXPECT_FALSE(_fakeGameWrapper->ExecuteWasCalled);
+	}
+
+	// Note: For custom training / workshop maps, we want them to always be reloaded so the unit starts at the beginning
+	TEST_F(TrainingProgramFlowTestFixture, startSelectedTrainingProgram_when_alreadyInFreePlay_will_notLoadFreePlayAgain)
+	{
+
+	}
 }

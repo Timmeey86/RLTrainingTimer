@@ -69,6 +69,7 @@ robocopy $(BakkesModPath)dll $(OutDir) pluginsdk.dll bakkesmod.dll &gt; NUL</Com
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="fakes\FakeCVarManager.h" />
     <ClInclude Include="fakes\FakeGameWrapper.h" />
     <ClInclude Include="fakes\FakeTimeProvider.h" />
     <ClInclude Include="fixtures\TrainingProgramFlowTestFixture.h" />

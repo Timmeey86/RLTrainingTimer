@@ -3,6 +3,7 @@
 #include <gtest/gtest.h>
 #include "../fakes/FakeTimeProvider.h"
 #include "../fakes/FakeGameWrapper.h"
+#include "../fakes/FakeCVarManager.h"
 #include <Plugin/training/control/TrainingProgramFlowControl.h>
 
 class TrainingProgramFlowTestFixture : public testing::Test
@@ -12,8 +13,9 @@ public:
 	{
 		_fakeGameWrapper = std::make_shared<FakeGameWrapper>();
 		_fakeTimeProvider = std::make_shared<FakeTimeProvider>();
-		sut = std::make_unique<training::TrainingProgramFlowControl>(_fakeGameWrapper, _fakeTimeProvider);
-		sut->hookToEvents(_fakeGameWrapper);
+		_fakeCVarManager = std::make_shared<FakeCVarManager>();
+		sut = std::make_unique<training::TrainingProgramFlowControl>(_fakeGameWrapper, _fakeTimeProvider, _fakeCVarManager);
+		sut->hookToEvents();
 
 		IncompleteFreeplayEntry.TimeMode = configuration::TrainingProgramCompletionMode::Timed;
 		IncompleteFreeplayEntry.Type = configuration::TrainingProgramEntryType::Freeplay;
@@ -100,7 +102,7 @@ protected:
 	std::unique_ptr<training::TrainingProgramFlowControl> sut;
 	std::shared_ptr<FakeGameWrapper> _fakeGameWrapper;
 	std::shared_ptr<FakeTimeProvider> _fakeTimeProvider;
-
+	std::shared_ptr<FakeCVarManager> _fakeCVarManager;
 	configuration::TrainingProgramEntry EmptyEntry;
 	configuration::TrainingProgramEntry IncompleteFreeplayEntry;
 	configuration::TrainingProgramEntry IncompleteCustomTrainingEntry;

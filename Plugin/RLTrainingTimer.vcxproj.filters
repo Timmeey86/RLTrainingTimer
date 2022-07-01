@@ -226,6 +226,7 @@
     <ClInclude Include="training\control\ITimeProvider.h">
       <Filter>training\control</Filter>
     </ClInclude>
+    <ClInclude Include="training\control\ICVarManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="RLTrainingTimer.rc" />

@@ -38,5 +38,8 @@
     <ClInclude Include="fakes\FakeGameWrapper.h">
       <Filter>fakes</Filter>
     </ClInclude>
+    <ClInclude Include="fakes\FakeCVarManager.h">
+      <Filter>fakes</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

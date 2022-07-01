@@ -5,17 +5,21 @@
 
 namespace training
 {
-	TrainingProgramFlowControl::TrainingProgramFlowControl(std::shared_ptr<IGameWrapper> gameWrapper, std::shared_ptr<ITimeProvider> timeProvider) 
+	TrainingProgramFlowControl::TrainingProgramFlowControl(
+		std::shared_ptr<IGameWrapper> gameWrapper, 
+		std::shared_ptr<ITimeProvider> timeProvider,
+		std::shared_ptr<ICVarManager> cvarManager)
 		: _gameWrapper{ std::move(gameWrapper) }
 		, _timeProvider{ std::move(timeProvider) }
+		, _cvarManager{ std::move(cvarManager) }
 	{
 
 	}
 
-	void TrainingProgramFlowControl::hookToEvents(const std::shared_ptr<IGameWrapper>& gameWrapper)
+	void TrainingProgramFlowControl::hookToEvents()
 	{
-		gameWrapper->HookEventPost("Function Engine.WorldInfo.EventPauseChanged", [gameWrapper, this](const std::string&) {
-			if (gameWrapper->IsPaused())
+		_gameWrapper->HookEventPost("Function Engine.WorldInfo.EventPauseChanged", [this](const std::string&) {
+			if (_gameWrapper->IsPaused())
 			{
 				handleGamePauseStart();
 			}
@@ -25,7 +29,7 @@ namespace training
 			}
 		});
 
-		gameWrapper->HookEvent("Function TAGame.Replay_TA.Tick", [this](const std::string&) {
+		_gameWrapper->HookEvent("Function TAGame.Replay_TA.Tick", [this](const std::string&) {
 			handleTimerTick();
 		});
 
@@ -155,14 +159,16 @@ namespace training
 		switch (trainingProgramEntry.Type)
 		{
 		case configuration::TrainingProgramEntryType::Freeplay:
-			// TODO: Do not switch to free play if already in free play
-			_gameWrapper->Execute([](GameWrapper*) { _globalCvarManager->executeCommand("load_freeplay"); });
+			if (!_gameWrapper->IsInFreeplay())
+			{
+				_gameWrapper->Execute([this](GameWrapper*) { _cvarManager->executeCommand("load_freeplay"); });
+			}
 			break;
 		case configuration::TrainingProgramEntryType::CustomTraining:
-			_gameWrapper->Execute([trainingProgramEntry](GameWrapper*) { _globalCvarManager->executeCommand(fmt::format("load_training {}", trainingProgramEntry.TrainingPackCode)); });
+			_gameWrapper->Execute([this, trainingProgramEntry](GameWrapper*) { _cvarManager->executeCommand(fmt::format("load_training {}", trainingProgramEntry.TrainingPackCode)); });
 			break;
 		case configuration::TrainingProgramEntryType::WorkshopMap:
-			_gameWrapper->Execute([this, trainingProgramEntry](GameWrapper*) { _globalCvarManager->executeCommand(fmt::format("load_workshop \"{}\\{}\"", _trainingProgramList.WorkshopFolderLocation, trainingProgramEntry.WorkshopMapPath)); });
+			_gameWrapper->Execute([this, trainingProgramEntry](GameWrapper*) { _cvarManager->executeCommand(fmt::format("load_workshop \"{}\\{}\"", _trainingProgramList.WorkshopFolderLocation, trainingProgramEntry.WorkshopMapPath)); });
 		default:
 			// Do nothing
 			break;

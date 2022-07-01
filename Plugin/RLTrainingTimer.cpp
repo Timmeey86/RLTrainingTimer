@@ -34,9 +34,10 @@ void RLTrainingTimer::onLoad()
 	// Note that we use an adapter around the game wrapper for the sole purpose of being able to unit test TrainingProgramFlowControl
 	auto gameWrapperAdapter = std::make_shared<GameWrapperAdapter>(gameWrapper);
 	auto timeProvider = std::make_shared<SteadyClockTimeProvider>(); // Same here. Unit tests will replace this by a fake
-	auto flowControl = std::make_shared<training::TrainingProgramFlowControl>(gameWrapperAdapter, timeProvider);
+	auto cvarmanagerAdapter = std::make_shared<CVarManagerAdapter>(cvarManager);
+	auto flowControl = std::make_shared<training::TrainingProgramFlowControl>(gameWrapperAdapter, timeProvider, cvarmanagerAdapter);
 	trainingProgramListControl->registerTrainingProgramListReceiver(flowControl); // Updates the flow control whenever any training program changes, gets added, gets deleted etc
-	flowControl->hookToEvents(gameWrapperAdapter);
+	flowControl->hookToEvents();
 
 	// Create a plugin window for starting, stopping etc programs. This internally also creates an overlay which is displayed while training is being executed
 	initTrainingProgramFlowControlUi(gameWrapper, flowControl);

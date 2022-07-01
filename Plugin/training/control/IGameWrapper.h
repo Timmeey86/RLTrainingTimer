@@ -20,6 +20,7 @@ public:
 	virtual void HookEvent(std::string eventName, std::function<void(std::string eventName)> callback) = 0;
 	virtual void Execute(std::function<void(GameWrapper*)> theLambda) = 0;
 	virtual bool IsPaused() = 0;
+	virtual bool IsInFreeplay() = 0;
 };
 
 /** Since we can't modify game wrapper to inherit from the interface above, we provide an adapter to our interface instead. */
@@ -28,7 +29,7 @@ class GameWrapperAdapter : public IGameWrapper
 public:
 	GameWrapperAdapter(std::shared_ptr<GameWrapper> actualGameWrapper) 
 		: IGameWrapper()
-		, _actualGameWrapper{ actualGameWrapper }
+		, _actualGameWrapper{ std::move(actualGameWrapper) }
 	{
 	}
 
@@ -47,6 +48,10 @@ public:
 	bool IsPaused() override
 	{
 		return _actualGameWrapper->IsPaused();
+	}
+	bool IsInFreeplay() override
+	{
+		return _actualGameWrapper->IsInFreeplay();
 	}
 
 private:
