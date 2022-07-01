@@ -5,8 +5,9 @@
 
 namespace training
 {
-	TrainingProgramFlowControl::TrainingProgramFlowControl(std::shared_ptr<IGameWrapper> gameWrapper) :
-		_gameWrapper(gameWrapper)
+	TrainingProgramFlowControl::TrainingProgramFlowControl(std::shared_ptr<IGameWrapper> gameWrapper, std::shared_ptr<ITimeProvider> timeProvider) 
+		: _gameWrapper{ std::move(gameWrapper) }
+		, _timeProvider{ std::move(timeProvider) }
 	{
 
 	}
@@ -100,7 +101,7 @@ namespace training
 			_currentTrainingStepNumber.reset();
 
 			// Automatically activate the first step
-			_referenceTime = std::chrono::steady_clock::now();
+			_referenceTime = _timeProvider->now();
 			activateNextTrainingProgramStep();
 		}
 	}
@@ -138,7 +139,7 @@ namespace training
 				_currentExecutionData.TimeLeftInCurrentTrainingStep = trainingProgramEntry.Duration; // will be reduced in handleTimerTick()
 				_currentExecutionData.TimeLeftInProgram = trainingProgramData.Duration;
 				_currentExecutionData.TrainingFinishedTime.reset();
-				_currentExecutionData.TrainingStepStartTime = std::chrono::steady_clock::now();
+				_currentExecutionData.TrainingStepStartTime = _timeProvider->now();
 			}
 			else if(trainingProgramData.Entries.empty())
 			{
@@ -199,7 +200,7 @@ namespace training
 		auto currentTrainingStepNumber = _currentTrainingStepNumber.value();
 
 		auto nextThreshold = _trainingProgramEntryEndTimes[currentTrainingStepNumber];
-		auto passedTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - _referenceTime);
+		auto passedTime = std::chrono::duration_cast<std::chrono::milliseconds>(_timeProvider->now() - _referenceTime);
 
 		if (passedTime > nextThreshold)
 		{
@@ -258,7 +259,7 @@ namespace training
 				if (!_pauseStartTime.has_value())
 				{
 					// Rememeber the time when the pause started
-					_pauseStartTime = std::chrono::steady_clock::now();
+					_pauseStartTime = _timeProvider->now();
 				}
 			}
 			else if (flowWasPaused && !flowIsPaused)
@@ -267,7 +268,7 @@ namespace training
 				if (_pauseStartTime.has_value())
 				{
 					// Shift the reference time forward by the duration of the pause. This way, calculations can use this time and act as if there hasn't been any pause.
-					_referenceTime = std::chrono::steady_clock::now() - (_pauseStartTime.value() - _referenceTime);
+					_referenceTime = _timeProvider->now() - (_pauseStartTime.value() - _referenceTime);
 					_pauseStartTime.reset();
 				}
 			}
@@ -287,7 +288,7 @@ namespace training
 		if (_selectedTrainingProgramId.has_value() && _currentTrainingProgramState == TrainingProgramState::Running)
 		{
 			stopRunningTrainingProgram();
-			_currentExecutionData.TrainingFinishedTime = std::chrono::steady_clock::now();
+			_currentExecutionData.TrainingFinishedTime = _timeProvider->now();
 		}
 		// Else: Rather than throwing an exception, ignore this.
 	}

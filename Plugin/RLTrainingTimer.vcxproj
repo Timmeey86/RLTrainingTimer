@@ -140,6 +140,7 @@
     <ClInclude Include="external\stduuid\uuid.h" />
     <ClInclude Include="injection\TrainingProgramInjector.h" />
     <ClInclude Include="training\control\IGameWrapper.h" />
+    <ClInclude Include="training\control\ITimeProvider.h" />
     <ClInclude Include="training\data\TrainingProgramExecutionData.h" />
     <ClInclude Include="training\data\TrainingProgramFlowData.h" />
     <ClInclude Include="external\IMGUI\imgui_disable.h" />

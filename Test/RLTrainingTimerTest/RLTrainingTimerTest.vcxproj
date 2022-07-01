@@ -63,13 +63,14 @@ robocopy $(BakkesModPath)dll $(OutDir) pluginsdk.dll bakkesmod.dll &gt; NUL</Com
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="RLTrainingTimerTests.cpp" />
-    <ClCompile Include="core\configuration\TrainingProgramTests.cpp" />
-    <ClCompile Include="TrainingProgramFlowTests.cpp" />
+    <ClCompile Include="tests\TrainingProgramFlowTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="fakes\FakeTimeProvider.h" />
+    <ClInclude Include="fixtures\TrainingProgramFlowTestFixture.h" />
     <ClInclude Include="mocks\IGameWrapperMock.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

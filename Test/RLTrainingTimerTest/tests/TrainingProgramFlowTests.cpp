@@ -1,23 +1,7 @@
-#include <gmock/gmock.h>
-#include "mocks/IGameWrapperMock.h"
-
-#include <Plugin/training/control/TrainingProgramFlowControl.h>
+#include "../fixtures/TrainingProgramFlowTestFixture.h"
 
 namespace Core::Training::Test
 {
-	class TrainingProgramFlowTestFixture : public testing::Test
-	{
-	public:
-		void SetUp() override
-		{
-			_gameWrapperMock = std::make_shared<::testing::StrictMock<IGameWrapperMock>>();
-			sut = std::make_unique<training::TrainingProgramFlowControl>(_gameWrapperMock);
-		};
-	protected:
-		std::unique_ptr<training::TrainingProgramFlowControl> sut;
-		std::shared_ptr<IGameWrapperMock> _gameWrapperMock;
-	};
-
 	TEST_F(TrainingProgramFlowTestFixture, verify_fixture)
 	{
 		sut->receiveListData({});

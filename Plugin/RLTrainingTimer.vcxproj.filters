@@ -223,6 +223,9 @@
     <ClInclude Include="training\control\IGameWrapper.h">
       <Filter>training\control</Filter>
     </ClInclude>
+    <ClInclude Include="training\control\ITimeProvider.h">
+      <Filter>training\control</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="RLTrainingTimer.rc" />

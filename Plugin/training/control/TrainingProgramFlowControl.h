@@ -7,6 +7,7 @@
 #include "../data/TrainingProgramFlowData.h"
 #include "../data/TrainingProgramExecutionData.h"
 #include "IGameWrapper.h"
+#include "ITimeProvider.h"
 
 #include <bakkesmod/wrappers/gamewrapper.h>
 
@@ -49,7 +50,7 @@ namespace training
 	{
 
 	public:
-		TrainingProgramFlowControl(std::shared_ptr<IGameWrapper> gameWrapper);
+		TrainingProgramFlowControl(std::shared_ptr<IGameWrapper> gameWrapper, std::shared_ptr<ITimeProvider> timeProvider);
 
 		/** Hooks into Rocket League events in order to detect a game pause, and a game tick. */
 		void hookToEvents(const std::shared_ptr<IGameWrapper>& gameWrapper);
@@ -120,5 +121,6 @@ namespace training
 		std::vector<std::chrono::milliseconds> _trainingProgramEntryEndTimes;
 
 		std::shared_ptr<IGameWrapper> _gameWrapper;
+		std::shared_ptr<ITimeProvider> _timeProvider;
 	};
 }

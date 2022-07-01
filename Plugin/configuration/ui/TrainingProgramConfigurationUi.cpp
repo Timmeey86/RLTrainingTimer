@@ -238,6 +238,7 @@ namespace configuration
 				{
 					_configurationControl->changeEntryCompletionMode(_trainingProgramId, index, (TrainingProgramCompletionMode)intValue);
 
+					// TODO: Move this logic to configurationControl
 					if (intValue == 1 && _selectedTypeCache[index] != 2)
 					{
 						// "Completion Mode" only makes sense in custom training
