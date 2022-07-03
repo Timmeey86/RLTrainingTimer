@@ -73,29 +73,41 @@ namespace training
 	}
 	void TrainingProgramDisplay::drawRemainingStepTime(CanvasWrapper& canvas, const RenderInfo& renderInfo) const
 	{
-		// Remaining Step Time
 		canvas.SetPosition(Vector2{ renderInfo.LeftBorder + (int)floor(renderInfo.Width * 0.7f), renderInfo.TopBorder + (int)floor(renderInfo.Height * 0.1f) });
-		const auto remainingStepTime = std::chrono::milliseconds(_data.TimeLeftInCurrentTrainingStep);
-		const auto minutes = std::chrono::duration_cast<std::chrono::minutes>(remainingStepTime);
-		const auto seconds = std::chrono::duration_cast<std::chrono::seconds>(remainingStepTime - minutes);
-		canvas.DrawString(
-			fmt::format("Next: {}m {}s", minutes.count(), seconds.count()),
-			2.5f * renderInfo.TextWidthFactor,
-			2.5f * renderInfo.TextHeightFactor
-		);
+		if (_data.CurrentStepIsUntimed)
+		{
+			canvas.DrawString("Next: On End", 2.5f * renderInfo.TextWidthFactor, 2.5f * renderInfo.TextHeightFactor);
+		}
+		else
+		{
+			// Remaining Step Time
+			const auto remainingStepTime = std::chrono::milliseconds(_data.TimeLeftInCurrentTrainingStep);
+			const auto minutes = std::chrono::duration_cast<std::chrono::minutes>(remainingStepTime);
+			const auto seconds = std::chrono::duration_cast<std::chrono::seconds>(remainingStepTime - minutes);
+			canvas.DrawString(
+				fmt::format("Next: {}m {}s", minutes.count(), seconds.count()),
+				2.5f * renderInfo.TextWidthFactor,
+				2.5f * renderInfo.TextHeightFactor
+			);
+		}
 	}
 	void TrainingProgramDisplay::drawRemainingProgramTime(CanvasWrapper& canvas, const RenderInfo& renderInfo) const
 	{
 		// Remaining Program Time
-		canvas.SetPosition(Vector2{ renderInfo.LeftBorder + (int)floor(renderInfo.Width * 0.9f), renderInfo.TopBorder + (int)floor(renderInfo.Height * 0.2f) });
-		const auto remainingProgramTime = std::chrono::milliseconds(_data.TimeLeftInProgram);
-		const auto minutes = std::chrono::duration_cast<std::chrono::minutes>(remainingProgramTime);
-		const auto seconds = std::chrono::duration_cast<std::chrono::seconds>(remainingProgramTime - minutes);
-		canvas.DrawString(
-			fmt::format("End: {}m {}s", minutes.count(), seconds.count()),
-			2.0f * renderInfo.TextWidthFactor,
-			2.0f * renderInfo.TextHeightFactor
-		);
+		if (!_data.ProgramHasUntimedSteps)
+		{
+			canvas.SetPosition(Vector2{ renderInfo.LeftBorder + (int)floor(renderInfo.Width * 0.9f), renderInfo.TopBorder + (int)floor(renderInfo.Height * 0.2f) });
+			const auto remainingProgramTime = std::chrono::milliseconds(_data.TimeLeftInProgram);
+			const auto minutes = std::chrono::duration_cast<std::chrono::minutes>(remainingProgramTime);
+			const auto seconds = std::chrono::duration_cast<std::chrono::seconds>(remainingProgramTime - minutes);
+			canvas.DrawString(
+				fmt::format("End: {}m {}s", minutes.count(), seconds.count()),
+				2.0f * renderInfo.TextWidthFactor,
+				2.0f * renderInfo.TextHeightFactor
+			);
+		}
+		// Else: There is no information which could be drawed here.
+		// We could in theory start drawing the end again if none of the remaining steps were untimed, but that's not implemented at the moment
 	}
 
 	void drawCenteredText(const std::string& text, CanvasWrapper& canvas, const RenderInfo& renderInfo, const std::shared_ptr<GameWrapper>& gameWrapper, float stringScale, float alpha)
@@ -126,12 +138,12 @@ namespace training
 	{
 		if (_data.TrainingStepStartTime.has_value())
 		{
-			auto millisecondsInCurrentTrainingStep = (_data.DurationOfCurrentTrainingStep - _data.TimeLeftInCurrentTrainingStep).count();
-			if (millisecondsInCurrentTrainingStep < 5000)
+			auto millisecondsInCurrentTrainingStep = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - _data.TrainingStepStartTime.value());
+			if (millisecondsInCurrentTrainingStep.count() < 5000)
 			{
 				auto trainingStepName = _data.TrainingStepName;
 				// alpha: 100% for two seconds, then fade out
-				auto textAlpha = fmin(1.0f, (5000.0f - (float)millisecondsInCurrentTrainingStep) / 3000.0f) * 255.0f;
+				auto textAlpha = fmin(1.0f, (5000.0f - (float)millisecondsInCurrentTrainingStep.count()) / 3000.0f) * 255.0f;
 				auto stringScale = 10.0f;
 
 				drawCenteredText(trainingStepName, canvas, renderInfo, gameWrapper, stringScale, textAlpha);

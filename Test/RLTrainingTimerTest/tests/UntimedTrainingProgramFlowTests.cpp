@@ -44,4 +44,22 @@ namespace test
 		EXPECT_TRUE(flowData.PausingIsPossible);
 		EXPECT_TRUE(flowData.StoppingIsPossible);
 	}
+
+	TEST_F(UntimedTrainingProgramFlowTestFixture,startSelectedTrainingProgram_when_havingAtLeastOneUntimedEntry_will_setFlagInExecutionData)
+	{
+		sut->receiveListData(FullTrainingProgramList);
+		sut->selectTrainingProgram(MixedTrainingProgramId);
+		sut->startSelectedTrainingProgram();
+
+		EXPECT_EQ(sut->getCurrentExecutionData().ProgramHasUntimedSteps, true);
+	}
+
+	TEST_F(UntimedTrainingProgramFlowTestFixture, startSelectedTrainingProgram_when_havingNoUntimedENtires_will_notSetFlagInExecutionData)
+	{
+		sut->receiveListData(FullTrainingProgramList);
+		sut->selectTrainingProgram(FullyTimedTrainingProgramId);
+		sut->startSelectedTrainingProgram();
+
+		EXPECT_EQ(sut->getCurrentExecutionData().ProgramHasUntimedSteps, false);
+	}
 }

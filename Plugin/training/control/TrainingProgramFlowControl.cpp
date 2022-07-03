@@ -103,6 +103,16 @@ namespace training
 
 			// Automatically activate the first step
 			_referenceTime = _timeProvider->now();
+
+			_currentExecutionData.ProgramHasUntimedSteps = false;
+			for (auto entry : _trainingProgramList.TrainingProgramData.at(_selectedTrainingProgramId.value()).Entries)
+			{
+				if (entry.TimeMode == configuration::TrainingProgramCompletionMode::CompletePack)
+				{
+					_currentExecutionData.ProgramHasUntimedSteps = true;
+					break;
+				}
+			}
 			activateNextTrainingProgramStep();
 		}
 	}
@@ -143,6 +153,7 @@ namespace training
 				_currentExecutionData.TrainingFinishedTime.reset();
 				_currentExecutionData.TrainingStepStartTime = _timeProvider->now();
 				_referenceTime = _currentExecutionData.TrainingStepStartTime.value();
+				_currentExecutionData.CurrentStepIsUntimed = trainingProgramEntry.TimeMode != configuration::TrainingProgramCompletionMode::Timed;
 
 				// this allows not having to query the current entry on every single timer tick.
 				_currentEntry = trainingProgramEntry;
