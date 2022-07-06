@@ -2,10 +2,13 @@
 
 
 #include <DLLImportExport.h>
-#include <configuration/control/ITrainingProgramListReceiver.h>
+#include <configuration/data/TrainingProgramData.h>
 
 #include "../data/TrainingProgramFlowData.h"
 #include "../data/TrainingProgramExecutionData.h"
+#include "IGameWrapper.h"
+#include "ITimeProvider.h"
+#include "ICVarManager.h"
 
 #include <bakkesmod/wrappers/gamewrapper.h>
 
@@ -48,13 +51,17 @@ namespace training
 	{
 
 	public:
-		TrainingProgramFlowControl(std::shared_ptr<GameWrapper> gameWrapper);
+		TrainingProgramFlowControl(
+			std::shared_ptr<IGameWrapper> gameWrapper, 
+			std::shared_ptr<ITimeProvider> timeProvider,
+			std::shared_ptr<ICVarManager> cvarManager
+		);
 
 		/** Hooks into Rocket League events in order to detect a game pause, and a game tick. */
-		void hookToEvents(const std::shared_ptr<GameWrapper>& gameWrapper);
+		void hookToEvents();
 
 		/** Marks a new training program as selected. This will stop any running training program. */
-		void selectTrainingProgram(uint64_t trainingProgramId);
+		void selectTrainingProgram(const std::string& trainingProgramId);
 
 		/** Resets to the initial state where no training program is selected. */
 		void unselectTrainingProgram();
@@ -98,17 +105,18 @@ namespace training
 		/** Activates the next (or first) step of the training program. */
 		void activateNextTrainingProgramStep();
 		/** Switches to freeplay, custom training or whatever the user configured. */
-		void switchGameModeIfNecessary(configuration::TrainingProgramEntry& trainingProgramEntry);
+		void switchGameModeIfNecessary(const configuration::TrainingProgramEntry& trainingProgramEntry);
 		/** Updates data for the UI based on the passed time and the threshold for the next step. */
 		void updateTimeInfo(const std::chrono::milliseconds& passedTime, const std::chrono::milliseconds& nextThreshold);
 
-		std::optional<uint64_t> _selectedTrainingProgramId = {};
+		std::optional<std::string> _selectedTrainingProgramId = {};
 		std::optional<uint16_t> _currentTrainingStepNumber = {};
 		TrainingProgramState _currentTrainingProgramState = TrainingProgramState::Uninitialized;
 		TrainingProgramFlowData _currentFlowData;
 		TrainingProgramExecutionData _currentExecutionData;
 
 		configuration::TrainingProgramListData _trainingProgramList;
+		configuration::TrainingProgramEntry _currentEntry;
 
 		PausedState _trainingProgramPausedState = PausedState::NotPaused;
 		PausedState _gamePausedState = PausedState::NotPaused;
@@ -116,8 +124,8 @@ namespace training
 		std::chrono::steady_clock::time_point _referenceTime; // The "start" time to do calculations again. Will be shifted to account for game pauses, if necessary.
 		std::optional<std::chrono::steady_clock::time_point> _pauseStartTime = {}; // The point in time where a pause was started
 
-		std::vector<std::chrono::milliseconds> _trainingProgramEntryEndTimes;
-
-		std::shared_ptr<GameWrapper> _gameWrapper;
+		std::shared_ptr<IGameWrapper> _gameWrapper;
+		std::shared_ptr<ITimeProvider> _timeProvider;
+		std::shared_ptr<ICVarManager> _cvarManager;
 	};
 }

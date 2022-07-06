@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="RLTrainingTimerTests.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\lib\native\src\gtest\gtest-all.cc" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\lib\native\src\gmock\gmock-all.cc" />
+    <ClCompile Include="tests\TrainingProgramFlowTests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="tests\UntimedTrainingProgramFlowTests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="mocks">
+      <UniqueIdentifier>{5327bf69-8067-42b3-add5-71f7ac266b43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="fakes">
+      <UniqueIdentifier>{84ac6482-be10-494d-a2e9-06a6e5097419}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="fixtures">
+      <UniqueIdentifier>{f44aff68-36f9-41e5-b194-e2cf6e7cdcdc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tests">
+      <UniqueIdentifier>{8c3e0f7f-8223-40cc-a074-3af3f2d17cf1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="mocks\IGameWrapperMock.h">
+      <Filter>mocks</Filter>
+    </ClInclude>
+    <ClInclude Include="fakes\FakeTimeProvider.h">
+      <Filter>fakes</Filter>
+    </ClInclude>
+    <ClInclude Include="fixtures\TrainingProgramFlowTestFixture.h">
+      <Filter>fixtures</Filter>
+    </ClInclude>
+    <ClInclude Include="fakes\FakeGameWrapper.h">
+      <Filter>fakes</Filter>
+    </ClInclude>
+    <ClInclude Include="fakes\FakeCVarManager.h">
+      <Filter>fakes</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

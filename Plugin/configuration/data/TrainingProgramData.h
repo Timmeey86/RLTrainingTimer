@@ -1,5 +1,9 @@
 #pragma once
 
+/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   !!!!! KEEP THIS FILE CONSISTENT WITH THE PREJUMP PLUGIN !!!!!
+   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
+
 #include "TrainingProgramEntry.h"
 
 #include <DLLImportExport.h>
@@ -15,17 +19,20 @@ namespace configuration
 	public:
 		std::vector<TrainingProgramEntry> Entries;
 		std::chrono::milliseconds Duration = {}; // Sum of entry durations. Stored separately since it changes rarely, but gets read often.
-		uint64_t Id;
+		std::string Id; // A uuid which uniquely identifies the training program. This uuid is shared with the prejump website!
 		std::string Name;
+		std::string Description;
+		bool ReadOnly = false; // This is used so training programs from prejump can't be modified (but they can be copied and adapted, if desired)
 	};
 
 	/** POD struct for a list of training programs. */
 	struct TrainingProgramListData
 	{
 	public:
-		std::string Version = "1.1";
-		std::vector<uint64_t> TrainingProgramOrder;
-		std::unordered_map<uint64_t, TrainingProgramData> TrainingProgramData;
+		std::string Version = "1.5";
+		std::string WorkshopFolderLocation = "";
+		std::vector<std::string> TrainingProgramOrder;
+		std::unordered_map<std::string, TrainingProgramData> TrainingProgramData;
 	};
 
 	/** This interface allows testing classes which want to store and restore training programs without actually having to write to the file system. */

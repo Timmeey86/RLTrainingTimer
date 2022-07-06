@@ -6,6 +6,7 @@
 
 #include <configuration/ui/ConfigurationUi.h>
 #include <training/ui/TrainingProgramFlowControlUi.h>
+#include <injection/TrainingProgramInjector.h>
 
 #include "version.h"
 
@@ -21,5 +22,6 @@ public:
 	virtual void onUnload();
 
 private:
+	std::shared_ptr<injection::TrainingProgramInjector> _trainingProgramInjector;
 };
 

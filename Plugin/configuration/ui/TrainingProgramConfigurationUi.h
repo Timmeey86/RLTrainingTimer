@@ -22,7 +22,7 @@ namespace configuration
 		 *
 		 * This should be called before rendering a new training program.
 		 */
-		void setCurrentTrainingProgramId(uint64_t trainingProgramId);
+		void setCurrentTrainingProgramId(const std::string& trainingProgramId);
 
 		/** Renders the current settings. */
 		void renderTrainingProgram();
@@ -40,11 +40,12 @@ namespace configuration
 		bool addDownButton(uint16_t index, bool hasNextEntry);
 		bool addDeleteButton(uint16_t index);
 		bool addAddButton();
+		bool addCompletionModeDropdown(uint16_t index);
 		bool addTypeDropdown(uint16_t index);
 		bool addCustomTrainingCodeTextBox(uint16_t index);
 		bool addWorkshopMapPathTextBox(uint16_t index);
 
-		uint64_t _trainingProgramId = 0;
+		std::string _trainingProgramId = "";
 
 		// Caches required for editing in the UI
 		std::string _programNameCache;
@@ -53,6 +54,7 @@ namespace configuration
 		std::vector<std::string> _workshopMapPathCache;
 		std::vector<int> _durationCache; // minutes. Can't be an std::chrono type due to IMGUI
 		std::vector<int> _selectedTypeCache;
+		std::vector<int> _selectedCompletionModeCache;
 
 		std::shared_ptr<TrainingProgramConfigurationControl> _configurationControl; 
 		std::function<void()> _finishEditingCallback;

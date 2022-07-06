@@ -18,7 +18,7 @@ void RLTrainingTimer::onLoad()
 	auto trainingProgramRepository = std::make_shared<configuration::TrainingProgramRepository>(gameWrapper);
 
 	// Allow manipulating the list of training programs
-	auto trainingProgramDataMap = std::make_shared<std::map<uint64_t, configuration::TrainingProgramData>>();
+	auto trainingProgramDataMap = std::make_shared<std::map<std::string, configuration::TrainingProgramData>>();
 	auto trainingProgramListControl = std::make_shared<configuration::TrainingProgramListConfigurationControl>(trainingProgramDataMap, trainingProgramRepository);
 
 	// Allow manipulating a single training program, and notify the training program list when a program changes
@@ -31,17 +31,27 @@ void RLTrainingTimer::onLoad()
 	/* TRAINING EXECUTION PART */
 
 	// Create a handler for the execution of training programs
-	auto flowControl = std::make_shared<training::TrainingProgramFlowControl>(gameWrapper);
+	// Note that we use an adapter around the game wrapper for the sole purpose of being able to unit test TrainingProgramFlowControl
+	auto gameWrapperAdapter = std::make_shared<GameWrapperAdapter>(gameWrapper);
+	auto timeProvider = std::make_shared<SteadyClockTimeProvider>(); // Same here. Unit tests will replace this by a fake
+	auto cvarmanagerAdapter = std::make_shared<CVarManagerAdapter>(cvarManager);
+	auto flowControl = std::make_shared<training::TrainingProgramFlowControl>(gameWrapperAdapter, timeProvider, cvarmanagerAdapter);
 	trainingProgramListControl->registerTrainingProgramListReceiver(flowControl); // Updates the flow control whenever any training program changes, gets added, gets deleted etc
-	flowControl->hookToEvents(gameWrapper);
+	flowControl->hookToEvents();
 
 	// Create a plugin window for starting, stopping etc programs. This internally also creates an overlay which is displayed while training is being executed
 	initTrainingProgramFlowControlUi(gameWrapper, flowControl);
-		
-	/* INITIALIZATION */
 
 	// Restore any previously stored training program
 	trainingProgramListControl->restoreData();
+
+	// Allow injection training programs from other plugins, at least prejump
+	_trainingProgramInjector = std::make_shared<injection::TrainingProgramInjector>(
+		cvarManager,
+		trainingProgramListControl,
+		flowControl
+		);
+	_trainingProgramInjector->registerNotifiers();
 
 	cvarManager->log("Loaded RLTrainingTimer plugin");
 }

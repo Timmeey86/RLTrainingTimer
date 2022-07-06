@@ -1,5 +1,6 @@
 #include <pch.h>
 #include "TrainingProgramListConfigurationControl.h"
+#include "uuid_generator.h"
 
 template <typename T>
 bool removeOne(std::vector<T>& vec, const T& value)
@@ -15,7 +16,7 @@ bool removeOne(std::vector<T>& vec, const T& value)
 namespace configuration
 {
     TrainingProgramListConfigurationControl::TrainingProgramListConfigurationControl(
-        std::shared_ptr<std::map<uint64_t, TrainingProgramData>> trainingProgramData, 
+        std::shared_ptr<std::map<std::string, TrainingProgramData>> trainingProgramData,
         std::shared_ptr<ITrainingProgramRepository> repository)
         : _trainingProgramData{ std::move(trainingProgramData) }
         , _repository{ repository }
@@ -28,34 +29,23 @@ namespace configuration
         _receivers.push_back(receiver);
     }
 
-    uint64_t TrainingProgramListConfigurationControl::addTrainingProgram()
+    std::string TrainingProgramListConfigurationControl::addTrainingProgram()
     {
-        // Since _trainingProgramData is a map ordered by keys, we can retreive a new ID by adding 1 to the last element (which is guaranteed to have the highest key)
-        uint64_t newId;
-        if (_trainingProgramData->empty())
-        {
-            newId = 0;
-        }
-        else
-        {
-            newId = _trainingProgramData->rbegin()->first + 1;
-        }
-
         auto data = TrainingProgramData{ };
-        data.Id = newId;
+        data.Id = uuid_generator::generateUUID();
         data.Name = "New Training Program";
         data.Duration = std::chrono::milliseconds(0);
 
-        _trainingProgramData->emplace(newId, data);
-        _trainingProgramOrder.push_back(newId);
+        _trainingProgramData->emplace(data.Id, data);
+        _trainingProgramOrder.push_back(data.Id);
 
         notifyReceivers();
 
-        return newId;        
+        return data.Id;        
     }
 
 
-    void TrainingProgramListConfigurationControl::removeTrainingProgram(uint64_t trainingProgramId)
+    void TrainingProgramListConfigurationControl::removeTrainingProgram(std::string trainingProgramId)
     {
         ensureIdIsKnown(trainingProgramId, "training program ID");
 
@@ -65,7 +55,7 @@ namespace configuration
         notifyReceivers();
     }
 
-    void TrainingProgramListConfigurationControl::swapTrainingPrograms(uint64_t firstProgramId, uint64_t secondProgramId)
+    void TrainingProgramListConfigurationControl::swapTrainingPrograms(std::string firstProgramId, std::string secondProgramId)
     {
         ensureIdIsKnown(firstProgramId, "first training program ID");
         ensureIdIsKnown(secondProgramId, "second training program ID");
@@ -84,11 +74,37 @@ namespace configuration
         }
     }
 
+    void TrainingProgramListConfigurationControl::changeWorkshopFolderLocation(const std::string& newLocation)
+    {
+        _workshopFolderLocation = newLocation;
+        notifyReceivers();
+    }
+
+    void TrainingProgramListConfigurationControl::injectTrainingProgram(const TrainingProgramData& data)
+    {
+        if (_trainingProgramData->count(data.Id) > 0)
+        {
+            LOG("Replacing existing training program with uuid {}", data.Id);
+            _trainingProgramData->erase(data.Id);
+            // We can keep the training program order, because we'll add the program right back.
+        }
+        else
+        {
+            LOG("Injecting new training program with uuid {}", data.Id);
+            _trainingProgramOrder.insert(_trainingProgramOrder.begin(), data.Id);
+        }
+        _trainingProgramData->try_emplace(data.Id, data);
+        notifyReceivers();
+
+        LOG("Successfully injected/updated training program");
+    }
+
     /** Provides a copy of the training program list data (e.g. for display). */
     TrainingProgramListData TrainingProgramListConfigurationControl::getTrainingProgramList() const
     {
         TrainingProgramListData data;
-        data.TrainingProgramOrder = std::vector<uint64_t>(_trainingProgramOrder);
+        data.TrainingProgramOrder = std::vector<std::string>(_trainingProgramOrder);
+        data.WorkshopFolderLocation = _workshopFolderLocation;
         for (auto& [id, programData]: *_trainingProgramData)
         {
             data.TrainingProgramData.emplace(id, programData);
@@ -97,7 +113,7 @@ namespace configuration
     }
 
     /** Provides a copy of data of a single training program (e.g. for display). */
-    TrainingProgramData TrainingProgramListConfigurationControl::getTrainingProgramData(uint64_t trainingProgramId) const
+    TrainingProgramData TrainingProgramListConfigurationControl::getTrainingProgramData(std::string trainingProgramId) const
     {
         ensureIdIsKnown(trainingProgramId, "training program ID");
         return (*_trainingProgramData)[trainingProgramId];
@@ -117,6 +133,7 @@ namespace configuration
         {
             _trainingProgramData->emplace(id, programData);
         }
+        _workshopFolderLocation = data.WorkshopFolderLocation;
 
         // Notify receivers, but do not write the file (would be kinda pointless right here)
         notifyReceivers(true);
@@ -136,14 +153,14 @@ namespace configuration
         }
     }
 
-    void TrainingProgramListConfigurationControl::ensureIdDoesntExist(uint64_t trainingProgramId) const
+    void TrainingProgramListConfigurationControl::ensureIdDoesntExist(std::string trainingProgramId) const
     {
         if (_trainingProgramData->count(trainingProgramId) > 0)
         {
             throw std::runtime_error(fmt::format("There is already a training program with ID {}", trainingProgramId));
         }
     }
-    void TrainingProgramListConfigurationControl::ensureIdIsKnown(uint64_t trainingProgramId, const std::string& parameterName) const
+    void TrainingProgramListConfigurationControl::ensureIdIsKnown(std::string trainingProgramId, const std::string& parameterName) const
     {
         if (_trainingProgramData->count(trainingProgramId) == 0)
         {

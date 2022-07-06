@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Release|x64">
@@ -46,6 +46,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Test\GoogleTest\googletest\include;$(SolutionDir)Test\GoogleTest\googlemock\include;$(SolutionDir);$(SolutionDir)Plugin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;4275</DisableSpecificWarnings>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -63,11 +64,18 @@ robocopy $(BakkesModPath)dll $(OutDir) pluginsdk.dll bakkesmod.dll &gt; NUL</Com
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="RLTrainingTimerTests.cpp" />
-    <ClCompile Include="core\configuration\TrainingProgramTests.cpp" />
-    <ClCompile Include="TrainingProgramFlowTests.cpp" />
+    <ClCompile Include="tests\TrainingProgramFlowTests.cpp" />
+    <ClCompile Include="tests\UntimedTrainingProgramFlowTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="fakes\FakeCVarManager.h" />
+    <ClInclude Include="fakes\FakeGameWrapper.h" />
+    <ClInclude Include="fakes\FakeTimeProvider.h" />
+    <ClInclude Include="fixtures\TrainingProgramFlowTestFixture.h" />
+    <ClInclude Include="mocks\IGameWrapperMock.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

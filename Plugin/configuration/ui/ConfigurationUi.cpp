@@ -11,7 +11,7 @@ namespace configuration
         std::shared_ptr<TrainingProgramListConfigurationControl> programListControl)
     {
         // Function to be called when pressing "Edit" on a training program
-        auto switchToEditingFunc = [this](uint64_t trainingProgramId) {
+        auto switchToEditingFunc = [this](const std::string& trainingProgramId) {
             _singleTrainingProgramUi->setCurrentTrainingProgramId(trainingProgramId);
             _isEditing = true;
         };

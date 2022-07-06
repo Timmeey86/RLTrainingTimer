@@ -6,11 +6,11 @@
 
 namespace training
 {
-	/** POD struct which combines an ID and a string. */
+	/** POD struct which combines a UUID and a string. */
 	struct IdAndTitle
 	{
 	public:
-		uint64_t Id;
+		std::string Id;
 		std::string Title;
 	};
 	
@@ -20,10 +20,10 @@ namespace training
 	public:
 		std::vector<IdAndTitle> TrainingPrograms;
 		std::optional<uint16_t> SelectedTrainingProgramIndex = {};
-		bool SwitchingIsPossible;
-		bool StartingIsPossible;
-		bool PausingIsPossible;
-		bool ResumingIsPossible;
-		bool StoppingIsPossible;
+		bool SwitchingIsPossible = true;
+		bool StartingIsPossible = false;
+		bool PausingIsPossible = false;
+		bool ResumingIsPossible = false;
+		bool StoppingIsPossible = false;
 	};
 }

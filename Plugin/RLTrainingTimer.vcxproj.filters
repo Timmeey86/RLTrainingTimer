@@ -75,6 +75,13 @@
     <ClCompile Include="training\control\TrainingProgramFlowControl.cpp">
       <Filter>training\control</Filter>
     </ClCompile>
+    <ClCompile Include="configuration\control\uuid_generator.cpp">
+      <Filter>configuration\control</Filter>
+    </ClCompile>
+    <ClCompile Include="injection\TrainingProgramInjector.cpp">
+      <Filter>injection</Filter>
+    </ClCompile>
+    <ClCompile Include="training\control\IGameWrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -204,9 +211,22 @@
     <ClInclude Include="training\control\TrainingProgramFlowControl.h">
       <Filter>training\control</Filter>
     </ClInclude>
-    <ClInclude Include="configuration\control\ITrainingProgramListReceiver.h">
+    <ClInclude Include="external\stduuid\uuid.h">
+      <Filter>external\stduuid</Filter>
+    </ClInclude>
+    <ClInclude Include="configuration\control\uuid_generator.h">
       <Filter>configuration\control</Filter>
     </ClInclude>
+    <ClInclude Include="injection\TrainingProgramInjector.h">
+      <Filter>injection</Filter>
+    </ClInclude>
+    <ClInclude Include="training\control\IGameWrapper.h">
+      <Filter>training\control</Filter>
+    </ClInclude>
+    <ClInclude Include="training\control\ITimeProvider.h">
+      <Filter>training\control</Filter>
+    </ClInclude>
+    <ClInclude Include="training\control\ICVarManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="RLTrainingTimer.rc" />
@@ -247,6 +267,12 @@
     </Filter>
     <Filter Include="training\control">
       <UniqueIdentifier>{ad4e8585-4043-4588-ab3f-08840c2dfad3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="external\stduuid">
+      <UniqueIdentifier>{0a2a6001-9099-4eb0-adda-f5ab82cb12df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="injection">
+      <UniqueIdentifier>{f8cb602d-44ee-419e-aebf-15130c456b04}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
