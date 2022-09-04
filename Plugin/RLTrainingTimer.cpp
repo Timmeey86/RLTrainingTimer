@@ -49,7 +49,8 @@ void RLTrainingTimer::onLoad()
 	_trainingProgramInjector = std::make_shared<injection::TrainingProgramInjector>(
 		cvarManager,
 		trainingProgramListControl,
-		flowControl
+		flowControl,
+		static_cast<training::TrainingProgramFlowControlUi*>(this)
 		);
 	_trainingProgramInjector->registerNotifiers();
 

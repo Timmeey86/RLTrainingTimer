@@ -4,6 +4,7 @@
 
 #include "../control/TrainingProgramFlowControl.h"
 #include "TrainingProgramDisplay.h"
+#include "IErrorDisplay.h"
 
 #include <bakkesmod/plugin/pluginwindow.h>
 #include <bakkesmod/wrappers/gamewrapper.h>
@@ -16,8 +17,11 @@ namespace training
 	 *
 	 * Note that the main plugin class will have to inherit this class (that's the way plugin windows work in Bakkesmod)
 	 * This also means this class may only have a default constructor.
+	 * 
+	 * Since having several plugin windows open at the same time isn't quite easy in bakkesmod, we abuse this window as an error display 
+	 * in addition to what it usually does.
 	 */
-	class TrainingProgramFlowControlUi : public BakkesMod::Plugin::PluginWindow
+	class TrainingProgramFlowControlUi : public BakkesMod::Plugin::PluginWindow, public IErrorDisplay
 	{
 	public:
 		void initTrainingProgramFlowControlUi(
@@ -34,6 +38,10 @@ namespace training
 		virtual bool IsActiveOverlay() override;
 		virtual void OnOpen() override;
 		virtual void OnClose() override;
+
+		// Inherited via IErrorDisplay
+		virtual void displayErrorMessage(const std::string& shortText, const std::string& errorDescription) override;
+		virtual void clearErrorMessages() override;
 		
 	private:
 		void renderOneFrame();

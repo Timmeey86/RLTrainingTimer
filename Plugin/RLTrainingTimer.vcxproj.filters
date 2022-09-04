@@ -227,6 +227,9 @@
       <Filter>training\control</Filter>
     </ClInclude>
     <ClInclude Include="training\control\ICVarManager.h" />
+    <ClInclude Include="training\ui\IErrorDisplay.h">
+      <Filter>training\ui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="RLTrainingTimer.rc" />

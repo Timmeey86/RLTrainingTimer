@@ -30,7 +30,7 @@ namespace training
 
 		// Init GUI
 		ImGui::SetNextWindowSizeConstraints(ImVec2(200, 100), ImVec2(FLT_MAX, FLT_MAX));
-		ImGuiWindowFlags windowFlags = 0; // | ImGuiWindowFlags_MenuBar;
+		ImGuiWindowFlags windowFlags = ImGuiWindowFlags_AlwaysAutoResize; // | ImGuiWindowFlags_MenuBar;
 		if (!ImGui::Begin(GetMenuTitle().c_str(), &_isWindowOpen, windowFlags))
 		{
 			// Early out if the window is collapsed, as an optimization.
@@ -178,8 +178,23 @@ namespace training
 
 		for (const auto& exceptionMessage : _exceptionMessages)
 		{
-			ImGui::TextColored(ImVec4{ 1.0f, .0f, .0f, 1.0f }, exceptionMessage.c_str());
+			ImGui::TextColored(ImVec4{ 0.8f, .1f, .1f, 1.0f }, exceptionMessage.c_str());
 		}
 
+	}
+
+	void TrainingProgramFlowControlUi::displayErrorMessage(const std::string& shortText, const std::string& errorDescription)
+	{
+		if (!_isWindowOpen)
+		{
+			toggleMenu();
+		}
+		_exceptionMessages.emplace_back(fmt::format("{}: {}", shortText, errorDescription));
+		LOG("Error occured: {} ({})", shortText, errorDescription);
+	}
+
+	void TrainingProgramFlowControlUi::clearErrorMessages()
+	{
+		_exceptionMessages.clear();
 	}
 }

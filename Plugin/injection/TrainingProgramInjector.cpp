@@ -34,10 +34,12 @@ namespace injection
 	TrainingProgramInjector::TrainingProgramInjector(
 		std::shared_ptr<CVarManagerWrapper> cvarManager,
 		std::shared_ptr<configuration::TrainingProgramListConfigurationControl> programListControl,
-		std::shared_ptr<training::TrainingProgramFlowControl> programFlowControl)
+		std::shared_ptr<training::TrainingProgramFlowControl> programFlowControl,
+		training::IErrorDisplay* errorDisplay)
 		: _cvarManager{ std::move(cvarManager) }
 		, _programListControl{ std::move(programListControl) }
 		, _programFlowControl{ std::move(programFlowControl) }
+		, _errorDisplay{ errorDisplay }
 	{
 
 	}
@@ -50,7 +52,7 @@ namespace injection
 		_cvarManager->registerNotifier(RunProgramNotifier, [this](const std::vector<std::string>& params) {
 			if (params.size() != 2)
 			{
-				LOG("ERROR: Syntax is: {} <uuid>", RunProgramNotifier);
+				_errorDisplay->displayErrorMessage("Invalid syntax", fmt::format("Syntax is : {} <uuid>", RunProgramNotifier));
 				return;
 			}
 			executeTrainingProgram(params[1]);
@@ -64,13 +66,24 @@ namespace injection
 			}
 			executeTrainingProgram(uuid);
 		}, "", PERMISSION_ALL);
+
+		_cvarManager->registerNotifier(InjectAndRunProgramNotifier, [this](const std::vector<std::string>& params) {
+			auto uuid = receiveTrainingProgram(params);
+			if (uuid.empty())
+			{
+				return; // Log message has already been shown
+			}
+			executeTrainingProgram(uuid);
+			}, "", PERMISSION_ALL);
 	}
 
 	std::string TrainingProgramInjector::receiveTrainingProgram(const std::vector<std::string>& params)
 	{
+		_errorDisplay->clearErrorMessages();
+
 		if (params.size() != 2)
 		{
-			LOG("ERROR: Syntax is: {} <json_data>", InjectProgramNotifier);
+			_errorDisplay->displayErrorMessage("Invalid syntax", fmt::format("Syntax is : {} <json_data>", InjectProgramNotifier));
 			return std::string();
 		}
 
@@ -81,7 +94,7 @@ namespace injection
 		}
 		catch (json::exception ex)
 		{
-			LOG("ERROR: Could not parse JSON Data: {}", ex.what());
+			_errorDisplay->displayErrorMessage("Could not parse JSON Data", ex.what());
 			return std::string();
 		}
 
@@ -92,7 +105,7 @@ namespace injection
 		}
 		catch (json::exception ex)
 		{
-			LOG("ERROR: JSON Data does not match training program structure: {}", ex.what());
+			_errorDisplay->displayErrorMessage("JSON Data does not match training program structure", ex.what());
 			LOG("ERROR: JSON Data was: {}", jsonData.dump(2));
 			return std::string();
 		}
@@ -106,7 +119,7 @@ namespace injection
 	{
 		if (!_programListControl->hasTrainingProgram(uuid))
 		{
-			LOG("ERROR: Training program UUID {} is not known", uuid);
+			_errorDisplay->displayErrorMessage("Unknown training program", fmt::format("Training program UUID {} is not known", uuid));
 			return;
 		}
 

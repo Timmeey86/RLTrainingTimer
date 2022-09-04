@@ -176,6 +176,7 @@
     <ClInclude Include="external\IMGUI\imstb_truetype.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="RLTrainingTimer.h" />
+    <ClInclude Include="training\ui\IErrorDisplay.h" />
     <ClInclude Include="training\ui\TrainingProgramDisplay.h" />
     <ClInclude Include="training\ui\TrainingProgramFlowControlUi.h" />
     <ClInclude Include="version.h" />

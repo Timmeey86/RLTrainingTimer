@@ -4,6 +4,7 @@
 #include <bakkesmod/wrappers/cvarmanagerwrapper.h>
 #include <configuration/control/TrainingProgramListConfigurationControl.h>
 #include <training/control/TrainingProgramFlowControl.h>
+#include <training/ui/IErrorDisplay.h>
 
 namespace injection
 {
@@ -13,8 +14,9 @@ namespace injection
 	public:
 		explicit TrainingProgramInjector(
 			std::shared_ptr<CVarManagerWrapper> cvarManager,
-			std::shared_ptr<configuration::TrainingProgramListConfigurationControl> _programListControl,
-			std::shared_ptr<training::TrainingProgramFlowControl> _programFlowControl
+			std::shared_ptr<configuration::TrainingProgramListConfigurationControl> programListControl,
+			std::shared_ptr<training::TrainingProgramFlowControl> programFlowControl,
+			training::IErrorDisplay* errorDisplay
 		);
 
 		/** Registers the notifiers to be called by other plugins. */
@@ -33,6 +35,7 @@ namespace injection
 		std::shared_ptr<CVarManagerWrapper> _cvarManager;
 		std::shared_ptr<configuration::TrainingProgramListConfigurationControl> _programListControl;
 		std::shared_ptr<training::TrainingProgramFlowControl> _programFlowControl;
+		training::IErrorDisplay* _errorDisplay;
 		static const std::string InjectProgramNotifier;
 		static const std::string RunProgramNotifier;
 		static const std::string InjectAndRunProgramNotifier;
