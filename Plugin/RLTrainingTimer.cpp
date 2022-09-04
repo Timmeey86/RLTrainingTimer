@@ -45,7 +45,7 @@ void RLTrainingTimer::onLoad()
 	// Restore any previously stored training program
 	trainingProgramListControl->restoreData();
 
-	// Allow injection training programs from other plugins, at least prejump
+	// Allow injection of training programs from other plugins (prejump plug in as a minimum)
 	_trainingProgramInjector = std::make_shared<injection::TrainingProgramInjector>(
 		cvarManager,
 		trainingProgramListControl,
