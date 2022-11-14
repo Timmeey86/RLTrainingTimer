@@ -10,6 +10,12 @@
     <ClCompile Include="tests\UntimedTrainingProgramFlowTests.cpp">
       <Filter>tests</Filter>
     </ClCompile>
+    <ClCompile Include="tests\TrainingProgramListConfigurationControlTests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="mocks\ITrainingProgramRepositoryMock.h">
+      <Filter>mocks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

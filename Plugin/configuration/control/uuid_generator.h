@@ -13,6 +13,6 @@ public:
 private:
 	/** Initializes the generator with a random seed. */
 	static void initialize();
-	static std::shared_ptr<uuids::uuid_random_generator> _generator;
+	static std::shared_ptr<uuids::uuid_system_generator> _generator;
 
 };

@@ -394,4 +394,74 @@ namespace test
 		EXPECT_EQ(executionData.TimeLeftInProgram.count(), (TwoMinuteDefaultEntry.Duration + OneMinuteWorkshopEntry.Duration - secondStepDelta).count());
 		EXPECT_EQ(executionData.TrainingStepStartTime.value().time_since_epoch().count(), secondStepStartTime.time_since_epoch().count());
 	}
+
+	//TEST_F(TrainingProgramFlowTestFixture, skipTrainingProgramStep_when_programIsNotActive_will_doNothing)
+	//{
+	//	sut->receiveListData(FullTrainingProgramList);
+	//	sut->selectTrainingProgram(FullyTimedTrainingProgramId);
+
+	//	auto executionDataBefore = sut->getCurrentExecutionData();
+
+	//	sut->skipTrainingProgramStep();
+
+	//	auto executionDataAfter = sut->getCurrentExecutionData();
+
+	//	EXPECT_EQ(executionDataBefore.TrainingStepNumber, executionDataAfter.TrainingStepNumber);
+	//}
+
+	//TEST_F(TrainingProgramFlowTestFixture, skipTrainingProgramStep_when_programIsPaused_will_loadNextStep)
+	//{
+	//	sut->receiveListData(FullTrainingProgramList);
+	//	sut->selectTrainingProgram(FullyTimedTrainingProgramId);
+	//	sut->startSelectedTrainingProgram();
+	//	sut->pauseTrainingProgram();
+
+	//	auto executionDataBefore = sut->getCurrentExecutionData();
+
+	//	sut->skipTrainingProgramStep();
+
+	//	auto executionDataAfter = sut->getCurrentExecutionData();
+
+	//	EXPECT_EQ(executionDataAfter.TrainingStepNumber, executionDataBefore.TrainingStepNumber + 1);
+	//	// New training step needs to be properly initialized
+	//	EXPECT_EQ(executionDataAfter.TimeLeftInCurrentTrainingStep, executionDataAfter.DurationOfCurrentTrainingStep);
+	//	// Time left in program must be reduced by what was left from previous training step
+	//	EXPECT_EQ(executionDataAfter.TimeLeftInProgram, executionDataBefore.TimeLeftInProgram - executionDataBefore.TimeLeftInCurrentTrainingStep);
+	//	EXPECT_EQ(executionDataAfter.NumberOfSteps, executionDataBefore.NumberOfSteps - 1);
+	//}
+
+	//TEST_F(TrainingProgramFlowTestFixture, skipTrainingProgramStep_when_programIsRunning_will_loadNextStep)
+	//{
+	//	sut->receiveListData(FullTrainingProgramList);
+	//	sut->selectTrainingProgram(FullyTimedTrainingProgramId);
+	//	sut->startSelectedTrainingProgram();
+
+	//	auto executionDataBefore = sut->getCurrentExecutionData();
+
+	//	sut->skipTrainingProgramStep();
+
+	//	auto executionDataAfter = sut->getCurrentExecutionData();
+
+	//	EXPECT_EQ(executionDataAfter.TrainingStepNumber, executionDataBefore.TrainingStepNumber + 1);
+	//	// New training step needs to be properly initialized
+	//	EXPECT_EQ(executionDataAfter.TimeLeftInCurrentTrainingStep, executionDataAfter.DurationOfCurrentTrainingStep);
+	//	// Time left in program must be reduced by what was left from previous training step
+	//	EXPECT_EQ(executionDataAfter.TimeLeftInProgram, executionDataBefore.TimeLeftInProgram - executionDataBefore.TimeLeftInCurrentTrainingStep);
+	//	EXPECT_EQ(executionDataAfter.NumberOfSteps, executionDataBefore.NumberOfSteps - 1);
+	//}
+
+	//TEST_F(TrainingProgramFlowTestFixture, skipTrainingProgramStep_when_lastStepIsActive_will_endProgram)
+	//{
+	//	sut->receiveListData(FullTrainingProgramList);
+	//	sut->selectTrainingProgram(FullyTimedTrainingProgramId);
+	//	sut->startSelectedTrainingProgram();
+
+	//	auto executionDataBefore = sut->getCurrentExecutionData();
+
+	//	sut->skipTrainingProgramStep();
+
+	//	auto executionDataAfter = sut->getCurrentExecutionData();
+
+	//	EXPECT_EQ(executionDataBefore.TrainingStepNumber + 1, executionDataAfter.TrainingStepNumber);
+	//}
 }

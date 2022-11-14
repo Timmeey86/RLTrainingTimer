@@ -64,8 +64,10 @@ robocopy $(BakkesModPath)dll $(OutDir) pluginsdk.dll bakkesmod.dll &gt; NUL</Com
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="RLTrainingTimerTests.cpp" />
+    <ClCompile Include="mocks\ITrainingProgramRepositoryMock.h" />
     <ClCompile Include="tests\TrainingProgramFlowTests.cpp" />
     <ClCompile Include="tests\UntimedTrainingProgramFlowTests.cpp" />
+    <ClCompile Include="tests\TrainingProgramListConfigurationControlTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
