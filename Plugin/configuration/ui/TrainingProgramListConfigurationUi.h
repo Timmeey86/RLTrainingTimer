@@ -28,6 +28,7 @@ namespace configuration
 
 		void addWorkshopFolderLocationTextBos();
 		void addTrainingControlWindowButton();
+		void addLoadSaveButtons();
 
 		bool addProgramNameTextBox(uint16_t index, const TrainingProgramData& info);
 		void addProgramDurationLabel(const TrainingProgramData& info);

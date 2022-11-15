@@ -20,6 +20,7 @@ namespace configuration
     void TrainingProgramListConfigurationUi::renderTrainingProgramList()
     {
         ImGui::TextUnformatted("Training control");
+		addLoadSaveButtons();
         addTrainingControlWindowButton();
         addWorkshopFolderLocationTextBos();
         ImGui::Separator();
@@ -86,6 +87,20 @@ namespace configuration
             });
         }
     }
+
+	void TrainingProgramListConfigurationUi::addLoadSaveButtons()
+	{
+		if(ImGui::Button("Load Training programs"))
+		{
+			_listConfigurationControl->loadTrainingPrograms();
+		}
+
+		ImGui::SameLine();
+		if(ImGui::Button("Save Training programs"))
+		{
+			_listConfigurationControl->saveTrainingPrograms();
+		}
+	}
 
     bool TrainingProgramListConfigurationUi::addProgramNameTextBox(uint16_t index, const TrainingProgramData& info)
     {

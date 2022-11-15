@@ -1,6 +1,7 @@
 #include <pch.h>
 #include "TrainingProgramListConfigurationControl.h"
 #include "uuid_generator.h"
+#include "file_dialogs.h"
 
 template <typename T>
 bool removeOne(std::vector<T>& vec, const T& value)
@@ -119,13 +120,17 @@ namespace configuration
         return (*_trainingProgramData)[trainingProgramId];
     }
 
-    void TrainingProgramListConfigurationControl::restoreData()
+    void TrainingProgramListConfigurationControl::restoreData(const std::filesystem::path &path)
     {
         _trainingProgramData->clear();
         _trainingProgramOrder.clear();
 
         // Read data from the repo
-        auto data = _repository->restoreData();
+		TrainingProgramListData data;
+		if(path.empty())
+			data = _repository->restoreData();
+		else
+			data = _repository->restoreData(path);
 
         // Convert to internal data structure
         _trainingProgramOrder = data.TrainingProgramOrder;
@@ -138,6 +143,21 @@ namespace configuration
         // Notify receivers, but do not write the file (would be kinda pointless right here)
         notifyReceivers(true);
     }
+
+
+	void TrainingProgramListConfigurationControl::loadTrainingPrograms()
+    {
+		LOG("Load Training programs..");
+		auto path = file_dialogs::getOpenFilePath("", {"json"});
+		restoreData(path);
+	}
+
+	void TrainingProgramListConfigurationControl::saveTrainingPrograms()
+    {
+		LOG("Save Training programs..");
+		auto path = file_dialogs::getSaveFilePath("", {"json"});
+		_repository->storeData(getTrainingProgramList(), path);
+	}
 
     void TrainingProgramListConfigurationControl::notifyReceivers(bool currentlyRestoringData)
     {

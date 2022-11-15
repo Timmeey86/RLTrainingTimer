@@ -5,6 +5,7 @@
 #include <map>
 #include <memory>
 #include <functional>
+#include <filesystem>
 
 #include <DLLImportExport.h>
 
@@ -51,7 +52,13 @@ namespace configuration
 		TrainingProgramData getTrainingProgramData(std::string trainingProgramId) const;
 
 		/** Restores data from the repository. */
-		void restoreData();
+		void restoreData(const std::filesystem::path &path = "");
+
+		/** Displays an 'Open file' dialog and loads the data from the returned path */
+		void loadTrainingPrograms();
+
+		/** Displays an 'Save file' dialog and saves the data to the returned path */
+		void saveTrainingPrograms();
 
 		/** Notifies any receiver about a change in the training program list. */
 		void notifyReceivers(bool currentlyRestoringData = false);

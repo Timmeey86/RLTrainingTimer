@@ -10,6 +10,7 @@
 
 #include <vector>
 #include <unordered_map>
+#include <filesystem>
 
 namespace configuration
 {
@@ -44,10 +45,14 @@ namespace configuration
 	public:
 		virtual ~ITrainingProgramRepository() = default;
 
-		/** Stores the given training program list persistently. */
+		/** Stores the given training program list persistently at the default location. */
 		virtual void storeData(const TrainingProgramListData& data) = 0;
-		/** Restores the training program list from the persistent location. */
+		/** Stores the given training program list persistently at the specified location. */
+		virtual void storeData(const TrainingProgramListData& data, const std::filesystem::path &path) = 0;
+		/** Restores the training program list from the default persistent location. */
 		virtual TrainingProgramListData restoreData() const = 0;
+		/** Restores the training program list from the specified persistent location. */
+		virtual TrainingProgramListData restoreData(const std::filesystem::path &path) const = 0;
 	};
 
 	/** Simple interface for classes which consume training programs. */

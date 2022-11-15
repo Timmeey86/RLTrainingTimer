@@ -35,10 +35,16 @@ namespace configuration
 			std::filesystem::create_directories(configurationFolderPath);
 		}
 	}
+	
 	void TrainingProgramRepository::storeData(const TrainingProgramListData& data)
 	{
+		storeData(data, _storagePath);
+	}
+
+	void TrainingProgramRepository::storeData(const TrainingProgramListData& data, const std::filesystem::path &path)
+	{
 		json serialized = data;
-		std::ofstream os{ _storagePath };
+		std::ofstream os{ path };
 		os << serialized.dump(2);
 		os.flush();
 	}
@@ -157,9 +163,14 @@ namespace configuration
 
 	TrainingProgramListData TrainingProgramRepository::restoreData() const
 	{
-		if (!std::filesystem::exists(_storagePath)) { return {}; }
+		return restoreData(_storagePath);
+	}
 
-		std::ifstream is{ _storagePath };
+	TrainingProgramListData TrainingProgramRepository::restoreData(const std::filesystem::path &path) const
+	{
+		if (!std::filesystem::exists(path)) { return {}; }
+
+		std::ifstream is{ path };
 		json deserialized;
 		is >> deserialized;
 		is.close();

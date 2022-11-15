@@ -230,6 +230,9 @@
     <ClInclude Include="training\ui\IErrorDisplay.h">
       <Filter>training\ui</Filter>
     </ClInclude>
+    <ClInclude Include="file_dialogs.h">
+      <Filter>configuration\control</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="RLTrainingTimer.rc" />
