@@ -180,7 +180,7 @@ namespace training
 		switch (trainingProgramEntry.Type)
 		{
 		case configuration::TrainingProgramEntryType::Freeplay:
-			if (!_gameWrapper->IsInFreeplay())
+			if (!_gameWrapper->IsInFreeplay() || _currentEntry.Type == configuration::TrainingProgramEntryType::WorkshopMap) // IsInFreeplay() will return true for workshop maps
 			{
 				_gameWrapper->Execute([this](GameWrapper*) { _cvarManager->executeCommand("load_freeplay"); });
 			}
