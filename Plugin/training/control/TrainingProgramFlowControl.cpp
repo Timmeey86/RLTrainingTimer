@@ -60,6 +60,7 @@ namespace training
 			_currentFlowData.PausingIsPossible = false;
 			_currentFlowData.ResumingIsPossible = false;
 			_currentFlowData.StoppingIsPossible = false;
+			_currentFlowData.SkippingIsPossible = false;
 
 			// Don't provide information for the training UI just yet (but do so once the program gets started
 			_currentExecutionData.NumberOfSteps = 0;
@@ -83,6 +84,7 @@ namespace training
 		_currentFlowData.PausingIsPossible = false;
 		_currentFlowData.ResumingIsPossible = false;
 		_currentFlowData.StoppingIsPossible = false;
+		_currentFlowData.SkippingIsPossible = false;
 
 		_currentExecutionData.NumberOfSteps = 0; // Invalidates everything else
 	}
@@ -97,6 +99,7 @@ namespace training
 			_currentFlowData.PausingIsPossible = true;
 			_currentFlowData.ResumingIsPossible = false;
 			_currentFlowData.StoppingIsPossible = true;
+			_currentFlowData.SkippingIsPossible = true;
 
 			_currentExecutionData.TrainingFinishedTime.reset();
 			_currentTrainingStepNumber.reset();
@@ -157,6 +160,7 @@ namespace training
 
 				// this allows not having to query the current entry on every single timer tick.
 				_currentEntry = trainingProgramEntry;
+				_currentFlowData.SkippingIsPossible = _currentTrainingStepNumber < trainingProgramData.Entries.size() - 1;
 			}
 			else if(trainingProgramData.Entries.empty())
 			{

@@ -78,6 +78,9 @@ namespace training
 		/** Resumes the training program (Note that the game might still be paused) */
 		void resumeTrainingProgram();
 
+		/** Activates the next (or first) step of the training program. */
+		void activateNextTrainingProgramStep();
+
 		/** Receives data from the configuration context. */
 		void receiveListData(const configuration::TrainingProgramListData& data) override;
 
@@ -102,8 +105,6 @@ namespace training
 		void finishRunningTrainingProgram();
 		/** Generates pause/resume events based on the current state. */
 		void updatePauseState();
-		/** Activates the next (or first) step of the training program. */
-		void activateNextTrainingProgramStep();
 		/** Switches to freeplay, custom training or whatever the user configured. */
 		void switchGameModeIfNecessary(const configuration::TrainingProgramEntry& trainingProgramEntry);
 		/** Updates data for the UI based on the passed time and the threshold for the next step. */
