@@ -123,8 +123,7 @@ namespace training
 	void TrainingProgramFlowControl::activateNextTrainingProgramStep()
 	{
 		if (_selectedTrainingProgramId.has_value()
-			&& (_currentTrainingProgramState == TrainingProgramState::Running ||
-				trainingProgramIsActive()  && _currentEntry.TimeMode == configuration::TrainingProgramCompletionMode::CompletePack)
+			&& trainingProgramIsActive()
 			&& _trainingProgramList.TrainingProgramData.count(_selectedTrainingProgramId.value()) > 0)
 		{
 			const auto& trainingProgramData = _trainingProgramList.TrainingProgramData.at(_selectedTrainingProgramId.value());
@@ -135,9 +134,15 @@ namespace training
 				if (!_currentTrainingStepNumber.has_value())
 				{
 					_currentTrainingStepNumber = 0;
+					_currentExecutionData.TimeLeftInProgram = trainingProgramData.Duration;
 				}
 				else
 				{
+					// Reduce remaining program time when skipping in the middle of the step
+					if (_currentExecutionData.TimeLeftInCurrentTrainingStep.count() > 0)
+					{
+						_currentExecutionData.TimeLeftInProgram -= _currentExecutionData.TimeLeftInCurrentTrainingStep;
+					}
 					_currentTrainingStepNumber = _currentTrainingStepNumber.value() + 1;
 				}
 				const auto& trainingProgramEntry = trainingProgramData.Entries.at(_currentTrainingStepNumber.value());
@@ -152,7 +157,6 @@ namespace training
 				_currentExecutionData.TrainingStepName = trainingProgramEntry.Name;
 				_currentExecutionData.DurationOfCurrentTrainingStep = trainingProgramEntry.Duration;
 				_currentExecutionData.TimeLeftInCurrentTrainingStep = trainingProgramEntry.Duration; // will be reduced in handleTimerTick()
-				_currentExecutionData.TimeLeftInProgram = trainingProgramData.Duration;
 				_currentExecutionData.TrainingFinishedTime.reset();
 				_currentExecutionData.TrainingStepStartTime = _timeProvider->now();
 				_referenceTime = _currentExecutionData.TrainingStepStartTime.value();
