@@ -174,6 +174,22 @@ namespace training
 			}
 		}
 
+		ImGui::SameLine();
+		{
+			ImGui::Disable disable_stop_if_necessary(!flowData.SkippingIsPossible);
+			if (ImGui::Button("Skip") && flowData.SkippingIsPossible)
+			{
+				try
+				{
+					_flowControl->activateNextTrainingProgramStep();
+				}
+				catch (const std::runtime_error& ex)
+				{
+					_exceptionMessages.emplace_back(ex.what());
+				}
+			}
+		}
+
 		ImGui::Separator();
 
 		for (const auto& exceptionMessage : _exceptionMessages)
