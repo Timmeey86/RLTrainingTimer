@@ -20,9 +20,9 @@ namespace configuration
     void TrainingProgramListConfigurationUi::renderTrainingProgramList()
     {
         ImGui::TextUnformatted("Training control");
-		addLoadSaveButtons();
         addTrainingControlWindowButton();
         addWorkshopFolderLocationTextBos();
+		addLoadSaveButtons();
         ImGui::Separator();
 
         ImGui::TextUnformatted("Available Training programs");
@@ -31,6 +31,8 @@ namespace configuration
         bool listHasChanged = false;
         
         listHasChanged |= addAddButton();
+		ImGui::SameLine();
+		listHasChanged |= addLoadButton();
 
         // TODO: Store this in a cache and update only when something in here changes, or when returning from the single training program screen, and after initially loading data
         const auto data = _listConfigurationControl->getTrainingProgramList();
@@ -62,6 +64,8 @@ namespace configuration
             addEditButton(index, trainingProgramInfo);
             ImGui::SameLine();
             listHasChanged |= addDeleteButton(index, trainingProgramInfo);
+			ImGui::SameLine();
+            listHasChanged |= addSaveButton(index, trainingProgramInfo);
         }
 
         if (listHasChanged)
@@ -90,13 +94,13 @@ namespace configuration
 
 	void TrainingProgramListConfigurationUi::addLoadSaveButtons()
 	{
-		if(ImGui::Button("Load Training programs"))
+		if(ImGui::Button("Load"))
 		{
 			_listConfigurationControl->loadTrainingPrograms();
 		}
 
 		ImGui::SameLine();
-		if(ImGui::Button("Save Training programs"))
+		if(ImGui::Button("Save"))
 		{
 			_listConfigurationControl->saveTrainingPrograms();
 		}
@@ -164,6 +168,16 @@ namespace configuration
         return false;
     }
 
+	bool TrainingProgramListConfigurationUi::addSaveButton(uint16_t index, const TrainingProgramData& info)
+    {
+        if (ImGui::Button(fmt::format("##save_{}", index).c_str(), "Save"))
+        {
+            _listConfigurationControl->saveTrainingProgram(info.Id);
+            return true;
+        }
+        return false;
+    }
+
     bool TrainingProgramListConfigurationUi::addAddButton()
     {
         if (ImGui::Button("Add"))
@@ -173,4 +187,15 @@ namespace configuration
         }
         return false;
     }
+	
+	bool TrainingProgramListConfigurationUi::addLoadButton()
+    {
+        if (ImGui::Button("Add from file"))
+        {
+            _listConfigurationControl->loadTrainingProgram();
+            return true;
+        }
+        return false;
+    }
+
 }

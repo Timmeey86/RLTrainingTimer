@@ -42,7 +42,9 @@ namespace configuration
 			const TrainingProgramData* const nextInfo);
 		void addEditButton(uint16_t index, const TrainingProgramData& info);
 		bool addDeleteButton(uint16_t index, const TrainingProgramData& info);
+		bool addSaveButton(uint16_t index, const TrainingProgramData& info);
 		bool addAddButton();
+		bool addLoadButton();
 
 		// Caches requried for editing in the UI
 		std::unordered_map<std::string, std::string> _entryNameCache;

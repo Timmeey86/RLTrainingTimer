@@ -54,11 +54,17 @@ namespace configuration
 		/** Restores data from the repository. */
 		void restoreData(const std::filesystem::path &path = "");
 
-		/** Displays an 'Open file' dialog and loads the data from the returned path */
+		/** Displays an 'Open file' dialog and loads the data from the returned path. This replaces all training programs and other settings */
 		void loadTrainingPrograms();
 
-		/** Displays an 'Save file' dialog and saves the data to the returned path */
+		/** Displays a 'Save file' dialog and saves the data to the returned path. This includes all training programs and other settings */
 		void saveTrainingPrograms();
+
+		/** Displays an 'Load file' dialog, loads the data and adds it as a new training program */
+		void loadTrainingProgram();
+
+		/** Displays an 'Save file' dialog and saves the data for the training program with the given ID to the returned path. */
+		void saveTrainingProgram(std::string trainingProgramId);
 
 		/** Notifies any receiver about a change in the training program list. */
 		void notifyReceivers(bool currentlyRestoringData = false);
