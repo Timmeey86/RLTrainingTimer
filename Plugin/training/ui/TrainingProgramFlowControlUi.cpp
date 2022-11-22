@@ -12,7 +12,11 @@ namespace training
 	{
 		_flowControl = flowControl;
 		gameWrapper->RegisterDrawable([this, gameWrapper](const CanvasWrapper& canvasWrapper) {
-			_trainingProgramDisplay->renderOneFrame(gameWrapper, canvasWrapper, _flowControl->getCurrentExecutionData());
+			if(_barStyle == BarStyle::Default) {
+				_trainingProgramDisplayDefault->renderOneFrame(gameWrapper, canvasWrapper, _flowControl->getCurrentExecutionData());
+			} else if(_barStyle == BarStyle::Minimal) {
+				_trainingProgramDisplayMinimal->renderOneFrame(gameWrapper, canvasWrapper, _flowControl->getCurrentExecutionData());
+			}
 		});
 	}
 	void TrainingProgramFlowControlUi::Render()
