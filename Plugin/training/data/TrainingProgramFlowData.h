@@ -25,5 +25,6 @@ namespace training
 		bool PausingIsPossible = false;
 		bool ResumingIsPossible = false;
 		bool StoppingIsPossible = false;
+		bool SkippingIsPossible = false;
 	};
 }

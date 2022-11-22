@@ -18,6 +18,7 @@ namespace test
 		EXPECT_EQ(executionData.TrainingProgramName, std::string());
 		EXPECT_EQ(executionData.TrainingStepNumber, 0);
 		EXPECT_FALSE(executionData.TrainingStepStartTime.has_value());
+		EXPECT_FALSE(executionData.ProgramHasUntimedSteps);
 
 		EXPECT_FALSE(flowData.PausingIsPossible);
 		EXPECT_FALSE(flowData.ResumingIsPossible);
@@ -25,6 +26,7 @@ namespace test
 		EXPECT_FALSE(flowData.StartingIsPossible);
 		EXPECT_FALSE(flowData.StoppingIsPossible);
 		EXPECT_TRUE(flowData.SwitchingIsPossible);
+		EXPECT_FALSE(flowData.SkippingIsPossible);
 		EXPECT_EQ(flowData.TrainingPrograms.size(), 0);
 	}
 
@@ -86,6 +88,7 @@ namespace test
 		EXPECT_TRUE(oldFlowData.PausingIsPossible);
 		EXPECT_FALSE(oldFlowData.ResumingIsPossible);
 		EXPECT_TRUE(oldFlowData.StoppingIsPossible);
+		EXPECT_TRUE(oldFlowData.SkippingIsPossible);
 		EXPECT_FALSE(sut->getCurrentExecutionData().TrainingIsPaused);
 
 		sut->pauseTrainingProgram();
@@ -97,6 +100,7 @@ namespace test
 		EXPECT_FALSE(flowData.PausingIsPossible);
 		EXPECT_TRUE(flowData.ResumingIsPossible);
 		EXPECT_TRUE(flowData.StoppingIsPossible);
+		EXPECT_TRUE(flowData.SkippingIsPossible);
 
 		EXPECT_TRUE(sut->getCurrentExecutionData().TrainingIsPaused);
 	}
@@ -119,6 +123,7 @@ namespace test
 		EXPECT_EQ(flowData.StartingIsPossible, oldFlowData.StartingIsPossible);
 		EXPECT_EQ(flowData.StoppingIsPossible, oldFlowData.StoppingIsPossible);
 		EXPECT_EQ(flowData.SwitchingIsPossible, oldFlowData.SwitchingIsPossible);
+		EXPECT_EQ(flowData.SkippingIsPossible, oldFlowData.SkippingIsPossible);
 	}
 	
 	TEST_F(TrainingProgramFlowTestFixture, startingTrainingProgram_when_gameIsPaused_will_startInPausedState)
@@ -138,6 +143,7 @@ namespace test
 		EXPECT_TRUE(flowData.PausingIsPossible);
 		EXPECT_FALSE(flowData.ResumingIsPossible);
 		EXPECT_TRUE(flowData.StoppingIsPossible);
+		EXPECT_TRUE(flowData.SkippingIsPossible);
 
 		EXPECT_TRUE(sut->getCurrentExecutionData().TrainingIsPaused);
 	}
@@ -159,6 +165,7 @@ namespace test
 		EXPECT_FALSE(flowData.PausingIsPossible);
 		EXPECT_TRUE(flowData.ResumingIsPossible);
 		EXPECT_TRUE(flowData.StoppingIsPossible);
+		EXPECT_TRUE(flowData.SkippingIsPossible);
 
 		EXPECT_TRUE(sut->getCurrentExecutionData().TrainingIsPaused);
 	}
@@ -181,6 +188,7 @@ namespace test
 		EXPECT_TRUE(flowData.PausingIsPossible);
 		EXPECT_FALSE(flowData.ResumingIsPossible);
 		EXPECT_TRUE(flowData.StoppingIsPossible);
+		EXPECT_TRUE(flowData.SkippingIsPossible);
 
 		EXPECT_TRUE(sut->getCurrentExecutionData().TrainingIsPaused);
 	}
@@ -196,6 +204,7 @@ namespace test
 		EXPECT_FALSE(flowData.PausingIsPossible);
 		EXPECT_FALSE(flowData.ResumingIsPossible);
 		EXPECT_FALSE(flowData.StoppingIsPossible);
+		EXPECT_FALSE(flowData.SkippingIsPossible);
 
 		EXPECT_EQ(sut->getCurrentExecutionData().NumberOfSteps, 0);
 	}
@@ -214,6 +223,7 @@ namespace test
 		EXPECT_FALSE(flowData.PausingIsPossible);
 		EXPECT_FALSE(flowData.ResumingIsPossible);
 		EXPECT_FALSE(flowData.StoppingIsPossible);
+		EXPECT_FALSE(flowData.SkippingIsPossible);
 
 		EXPECT_EQ(sut->getCurrentExecutionData().NumberOfSteps, EmptyTrainingProgram.Entries.size());
 	}
@@ -238,6 +248,7 @@ namespace test
 		EXPECT_EQ(flowDataAfterStarting.ResumingIsPossible, flowDataBeforeStarting.ResumingIsPossible);
 		EXPECT_EQ(flowDataAfterStarting.StoppingIsPossible, flowDataBeforeStarting.StoppingIsPossible);
 		EXPECT_EQ(flowDataAfterStarting.PausingIsPossible, flowDataBeforeStarting.PausingIsPossible);
+		EXPECT_EQ(flowDataAfterStarting.SkippingIsPossible, flowDataBeforeStarting.SkippingIsPossible);
 	}
 
 	TEST_F(TrainingProgramFlowTestFixture, startSelectedTrainingProgram_when_validProgramIsStarted_will_changeToRunningState)
@@ -254,6 +265,7 @@ namespace test
 		EXPECT_FALSE(flowData.StartingIsPossible);
 		EXPECT_TRUE(flowData.StoppingIsPossible);
 		EXPECT_TRUE(flowData.SwitchingIsPossible);
+		EXPECT_TRUE(flowData.SkippingIsPossible);
 	}
 
 	TEST_F(TrainingProgramFlowTestFixture, startSelectedTrainingProgram_when_validProgramIsStarted_will_populateTrainingExecutionData)
@@ -274,6 +286,7 @@ namespace test
 		EXPECT_EQ(executionData.TrainingStepName, OneMinuteFreeplayEntry.Name);
 		EXPECT_EQ(executionData.TrainingStepNumber, 0);
 		EXPECT_EQ(executionData.TrainingStepStartTime, _fakeTimeProvider->CurrentFakeTime);
+		EXPECT_FALSE(executionData.ProgramHasUntimedSteps);
 	}
 
 	TEST_F(TrainingProgramFlowTestFixture, startSelectedTrainingProgram_when_freeplayProgramIsStarted_will_loadFreeplay)
@@ -352,6 +365,7 @@ namespace test
 		EXPECT_TRUE(flowData.StartingIsPossible);
 		EXPECT_FALSE(flowData.StoppingIsPossible);
 		EXPECT_TRUE(flowData.SwitchingIsPossible);
+		EXPECT_FALSE(flowData.SkippingIsPossible);
 	}
 
 	TEST_F(TrainingProgramFlowTestFixture, handleTimerTick_when_lastTrainingStepIsFinished_will_invalidateExecutionData)
@@ -395,73 +409,71 @@ namespace test
 		EXPECT_EQ(executionData.TrainingStepStartTime.value().time_since_epoch().count(), secondStepStartTime.time_since_epoch().count());
 	}
 
-	//TEST_F(TrainingProgramFlowTestFixture, skipTrainingProgramStep_when_programIsNotActive_will_doNothing)
-	//{
-	//	sut->receiveListData(FullTrainingProgramList);
-	//	sut->selectTrainingProgram(FullyTimedTrainingProgramId);
+	TEST_F(TrainingProgramFlowTestFixture, skipTrainingProgramStep_when_programIsNotActive_will_doNothing)
+	{
+		sut->receiveListData(FullTrainingProgramList);
+		sut->selectTrainingProgram(FullyTimedTrainingProgramId);
 
-	//	auto executionDataBefore = sut->getCurrentExecutionData();
+		auto executionDataBefore = sut->getCurrentExecutionData();
 
-	//	sut->skipTrainingProgramStep();
+		sut->activateNextTrainingProgramStep();
 
-	//	auto executionDataAfter = sut->getCurrentExecutionData();
+		auto executionDataAfter = sut->getCurrentExecutionData();
 
-	//	EXPECT_EQ(executionDataBefore.TrainingStepNumber, executionDataAfter.TrainingStepNumber);
-	//}
+		EXPECT_EQ(executionDataBefore.TrainingStepNumber, executionDataAfter.TrainingStepNumber);
+	}
 
-	//TEST_F(TrainingProgramFlowTestFixture, skipTrainingProgramStep_when_programIsPaused_will_loadNextStep)
-	//{
-	//	sut->receiveListData(FullTrainingProgramList);
-	//	sut->selectTrainingProgram(FullyTimedTrainingProgramId);
-	//	sut->startSelectedTrainingProgram();
-	//	sut->pauseTrainingProgram();
+	TEST_F(TrainingProgramFlowTestFixture, skipTrainingProgramStep_when_programIsPaused_will_loadNextStep)
+	{
+		sut->receiveListData(FullTrainingProgramList);
+		sut->selectTrainingProgram(FullyTimedTrainingProgramId);
+		sut->startSelectedTrainingProgram();
+		sut->pauseTrainingProgram();
 
-	//	auto executionDataBefore = sut->getCurrentExecutionData();
+		auto executionDataBefore = sut->getCurrentExecutionData();
 
-	//	sut->skipTrainingProgramStep();
+		sut->activateNextTrainingProgramStep();
 
-	//	auto executionDataAfter = sut->getCurrentExecutionData();
+		auto executionDataAfter = sut->getCurrentExecutionData();
 
-	//	EXPECT_EQ(executionDataAfter.TrainingStepNumber, executionDataBefore.TrainingStepNumber + 1);
-	//	// New training step needs to be properly initialized
-	//	EXPECT_EQ(executionDataAfter.TimeLeftInCurrentTrainingStep, executionDataAfter.DurationOfCurrentTrainingStep);
-	//	// Time left in program must be reduced by what was left from previous training step
-	//	EXPECT_EQ(executionDataAfter.TimeLeftInProgram, executionDataBefore.TimeLeftInProgram - executionDataBefore.TimeLeftInCurrentTrainingStep);
-	//	EXPECT_EQ(executionDataAfter.NumberOfSteps, executionDataBefore.NumberOfSteps - 1);
-	//}
+		EXPECT_EQ(executionDataAfter.TrainingStepNumber, executionDataBefore.TrainingStepNumber + 1);
+		// New training step needs to be properly initialized
+		EXPECT_EQ(executionDataAfter.TimeLeftInCurrentTrainingStep.count(), executionDataAfter.DurationOfCurrentTrainingStep.count());
+		// Time left in program must be reduced by what was left from previous training step
+		EXPECT_EQ(executionDataAfter.TimeLeftInProgram.count(), (executionDataBefore.TimeLeftInProgram - executionDataBefore.TimeLeftInCurrentTrainingStep).count());
+	}
 
-	//TEST_F(TrainingProgramFlowTestFixture, skipTrainingProgramStep_when_programIsRunning_will_loadNextStep)
-	//{
-	//	sut->receiveListData(FullTrainingProgramList);
-	//	sut->selectTrainingProgram(FullyTimedTrainingProgramId);
-	//	sut->startSelectedTrainingProgram();
+	TEST_F(TrainingProgramFlowTestFixture, skipTrainingProgramStep_when_programIsRunning_will_loadNextStep)
+	{
+		sut->receiveListData(FullTrainingProgramList);
+		sut->selectTrainingProgram(FullyTimedTrainingProgramId);
+		sut->startSelectedTrainingProgram();
 
-	//	auto executionDataBefore = sut->getCurrentExecutionData();
+		auto executionDataBefore = sut->getCurrentExecutionData();
 
-	//	sut->skipTrainingProgramStep();
+		sut->activateNextTrainingProgramStep();
 
-	//	auto executionDataAfter = sut->getCurrentExecutionData();
+		auto executionDataAfter = sut->getCurrentExecutionData();
 
-	//	EXPECT_EQ(executionDataAfter.TrainingStepNumber, executionDataBefore.TrainingStepNumber + 1);
-	//	// New training step needs to be properly initialized
-	//	EXPECT_EQ(executionDataAfter.TimeLeftInCurrentTrainingStep, executionDataAfter.DurationOfCurrentTrainingStep);
-	//	// Time left in program must be reduced by what was left from previous training step
-	//	EXPECT_EQ(executionDataAfter.TimeLeftInProgram, executionDataBefore.TimeLeftInProgram - executionDataBefore.TimeLeftInCurrentTrainingStep);
-	//	EXPECT_EQ(executionDataAfter.NumberOfSteps, executionDataBefore.NumberOfSteps - 1);
-	//}
+		EXPECT_EQ(executionDataAfter.TrainingStepNumber, executionDataBefore.TrainingStepNumber + 1);
+		// New training step needs to be properly initialized
+		EXPECT_EQ(executionDataAfter.TimeLeftInCurrentTrainingStep.count(), executionDataAfter.DurationOfCurrentTrainingStep.count());
+		// Time left in program must be reduced by what was left from previous training step
+		EXPECT_EQ(executionDataAfter.TimeLeftInProgram.count(), (executionDataBefore.TimeLeftInProgram - executionDataBefore.TimeLeftInCurrentTrainingStep).count());
+	}
 
-	//TEST_F(TrainingProgramFlowTestFixture, skipTrainingProgramStep_when_lastStepIsActive_will_endProgram)
-	//{
-	//	sut->receiveListData(FullTrainingProgramList);
-	//	sut->selectTrainingProgram(FullyTimedTrainingProgramId);
-	//	sut->startSelectedTrainingProgram();
+	TEST_F(TrainingProgramFlowTestFixture, skipTrainingProgramStep_when_lastStepIsActive_will_endProgram)
+	{
+		sut->receiveListData(FullTrainingProgramList);
+		sut->selectTrainingProgram(FullyTimedTrainingProgramId);
+		sut->startSelectedTrainingProgram();
 
-	//	auto executionDataBefore = sut->getCurrentExecutionData();
+		auto executionDataBefore = sut->getCurrentExecutionData();
 
-	//	sut->skipTrainingProgramStep();
+		sut->activateNextTrainingProgramStep();
 
-	//	auto executionDataAfter = sut->getCurrentExecutionData();
+		auto executionDataAfter = sut->getCurrentExecutionData();
 
-	//	EXPECT_EQ(executionDataBefore.TrainingStepNumber + 1, executionDataAfter.TrainingStepNumber);
-	//}
+		EXPECT_EQ(executionDataBefore.TrainingStepNumber + 1, executionDataAfter.TrainingStepNumber);
+	}
 }
