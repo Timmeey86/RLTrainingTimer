@@ -182,10 +182,6 @@ namespace configuration
         if (ImGui::Button(fmt::format("##save_{}", index).c_str(), "Export"))
         {
             auto path = file_dialogs::getSaveFilePath("", { "json" });
-            if (!path.string().ends_with(".json"))
-            {
-                path += ".json";
-            }
             _listConfigurationControl->exportSingleTrainingProgram(info.Id, path.string());
             return true;
         }
