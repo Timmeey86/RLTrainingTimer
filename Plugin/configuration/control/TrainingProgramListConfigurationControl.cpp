@@ -1,28 +1,8 @@
+// TODO: Move file access to TrainingProgramRepository
+
 #include <pch.h>
 #include "TrainingProgramListConfigurationControl.h"
 #include "uuid_generator.h"
-#include "file_dialogs.h"
-#include <external/nlohmann/json.hpp>
-#include <ostream>
-#include <fstream>
-
-using json = nlohmann::json;
-
-// Allow serialization of std::chrono::milliseconds
-namespace nlohmann {
-	template <>
-	struct adl_serializer<std::chrono::milliseconds> {
-		static void to_json(json& j, const std::chrono::milliseconds& ms) { j = ms.count(); }
-		static void from_json(const json& j, std::chrono::milliseconds& ms) { ms = std::chrono::milliseconds(j); }
-	};
-}
-
-namespace configuration
-{
-	// Allow serialization of training programs
-	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(configuration::TrainingProgramEntry, Name, Duration, Type, TrainingPackCode, WorkshopMapPath);
-	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(configuration::TrainingProgramData, Id, Name, Duration, Entries, ReadOnly);
-}
 
 
 template <typename T>
@@ -142,17 +122,22 @@ namespace configuration
         return (*_trainingProgramData)[trainingProgramId];
     }
 
-    void TrainingProgramListConfigurationControl::restoreData(const std::filesystem::path &path)
+    void TrainingProgramListConfigurationControl::restoreWholeTrainingProgramList(const std::string& location)
     {
+        LOG("Importing training program list");
         _trainingProgramData->clear();
         _trainingProgramOrder.clear();
 
         // Read data from the repo
 		TrainingProgramListData data;
-		if(path.empty())
-			data = _repository->restoreData();
-		else
-			data = _repository->restoreData(path);
+        if (location.empty())
+        {
+            data = _repository->restoreData();
+        }
+        else
+        {
+            data = _repository->restoreData(location);
+        }
 
         // Convert to internal data structure
         _trainingProgramOrder = data.TrainingProgramOrder;
@@ -166,85 +151,30 @@ namespace configuration
         notifyReceivers(true);
     }
 
-
-	void TrainingProgramListConfigurationControl::loadTrainingPrograms()
+    void TrainingProgramListConfigurationControl::storeWholeTrainingProgramList(const std::string& location) const
     {
-		LOG("Load Training programs..");
-		auto path = file_dialogs::getOpenFilePath("", {"json"});
-		restoreData(path);
-	}
+        LOG("Exporting whole training program list");
+        _repository->storeData(getTrainingProgramList(), location);
+    }
 
-	void TrainingProgramListConfigurationControl::saveTrainingPrograms()
+    /** Imports a single training program from the repository and adds it to the list. */
+    void TrainingProgramListConfigurationControl::importSingleTrainingProgram(const std::string& location)
     {
-		LOG("Save Training programs..");
-		auto path = file_dialogs::getSaveFilePath("", {"json"});
-		_repository->storeData(getTrainingProgramList(), path);
-	}
+        LOG("Importing single training program..");
+        auto trainingProgram = _repository->importSingleTrainingProgram(location);
+        if (!trainingProgram.Id.empty())
+        {
+            injectTrainingProgram(trainingProgram);
+        }
+    }
 
-	void TrainingProgramListConfigurationControl::loadTrainingProgram()
+    /** Stores a single training program to the repository. */
+    void TrainingProgramListConfigurationControl::exportSingleTrainingProgram(std::string trainingProgramId, const std::string& location) const
     {
-		LOG("Load Training program..");
-		// get a file path to load from
-		auto path = file_dialogs::getOpenFilePath("", {"json"});
-		if (!std::filesystem::exists(path)) { 
-			LOG("File does not exist");
-			return; 
-		}
-
-		// load the full contents of the file into a string
-		std::string serialized;
-		std::stringstream buffer;
-		std::ifstream is{ path };
-		buffer << is.rdbuf();
-		is.close();
-		serialized = buffer.str();
-
-		// try to parse it as json
-		json jsonData;
-		try
-		{
-			jsonData = json::parse(serialized);
-		}
-		catch (json::exception ex)
-		{
-			LOG("Could not parse JSON Data: {}", ex.what());
-			LOG("ERROR: Data in file was: {}", serialized);
-			return;
-		}
-
-		// try to parse as training program
-		TrainingProgramData trainingProgramData;
-		try
-		{
-			trainingProgramData = jsonData.get<configuration::TrainingProgramData>();
-		}
-		catch (json::exception ex)
-		{
-			LOG("JSON Data does not match training program structure: {}", ex.what());
-			LOG("ERROR: JSON Data was: {}", jsonData.dump(2));
-			return;
-		}
-
-		// inject the loaded training program
-		injectTrainingProgram(trainingProgramData);
-	}
-
-	void TrainingProgramListConfigurationControl::saveTrainingProgram(std::string trainingProgramId)
-    {
-		LOG("Save Training program {}..", trainingProgramId);
-		// get a file path to save to
-		auto path = file_dialogs::getSaveFilePath("", {"json"});
-		
-		// get the training program data
-		auto trainingProgramData = getTrainingProgramData(trainingProgramId);
-		// serialize it to json
-		json jsonData = trainingProgramData;
-		
-		// write the json to the path
-		std::ofstream os{ path };
-		os << jsonData.dump(2);
-		os.flush();
-	}
+        LOG("Exporting single training program..");
+        auto trainingProgram = getTrainingProgramData(trainingProgramId);
+        _repository->exportSingleTrainingProgram(trainingProgram, location);
+    }
 
     void TrainingProgramListConfigurationControl::notifyReceivers(bool currentlyRestoringData)
     {

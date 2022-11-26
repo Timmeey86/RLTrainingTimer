@@ -82,6 +82,9 @@
       <Filter>injection</Filter>
     </ClCompile>
     <ClCompile Include="training\control\IGameWrapper.cpp" />
+    <ClCompile Include="configuration\control\TrainingProgramDataPatcher.cpp">
+      <Filter>configuration\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -231,6 +234,9 @@
       <Filter>training\ui</Filter>
     </ClInclude>
     <ClInclude Include="file_dialogs.h">
+      <Filter>configuration\control</Filter>
+    </ClInclude>
+    <ClInclude Include="configuration\control\TrainingProgramDataPatcher.h">
       <Filter>configuration\control</Filter>
     </ClInclude>
   </ItemGroup>

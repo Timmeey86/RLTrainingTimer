@@ -52,19 +52,16 @@ namespace configuration
 		TrainingProgramData getTrainingProgramData(std::string trainingProgramId) const;
 
 		/** Restores data from the repository. */
-		void restoreData(const std::filesystem::path &path = "");
+		void restoreWholeTrainingProgramList(const std::string& location = "");
 
-		/** Displays an 'Open file' dialog and loads the data from the returned path. This replaces all training programs and other settings */
-		void loadTrainingPrograms();
+		/** Stores the current data to the repository. */
+		void storeWholeTrainingProgramList(const std::string& location = "") const;
 
-		/** Displays a 'Save file' dialog and saves the data to the returned path. This includes all training programs and other settings */
-		void saveTrainingPrograms();
+		/** Imports a single training program from the repository and adds it to the list. */
+		void importSingleTrainingProgram(const std::string& location);
 
-		/** Displays an 'Load file' dialog, loads the data and adds it as a new training program */
-		void loadTrainingProgram();
-
-		/** Displays an 'Save file' dialog and saves the data for the training program with the given ID to the returned path. */
-		void saveTrainingProgram(std::string trainingProgramId);
+		/** Stores a single training program to the repository. */
+		void exportSingleTrainingProgram(std::string trainingProgramId, const std::string& location) const;
 
 		/** Notifies any receiver about a change in the training program list. */
 		void notifyReceivers(bool currentlyRestoringData = false);

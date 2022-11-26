@@ -1,5 +1,6 @@
 #include <pch.h>
 #include "TrainingProgramListConfigurationUi.h"
+#include "file_dialogs.h"
 #include <IMGUI/imgui_stdlib.h>
 #include <IMGUI/imgui_disable.h>
 
@@ -96,13 +97,15 @@ namespace configuration
 	{
 		if(ImGui::Button("Load"))
 		{
-			_listConfigurationControl->loadTrainingPrograms();
+            auto path = file_dialogs::getOpenFilePath("", { "json" });
+			_listConfigurationControl->restoreWholeTrainingProgramList(path.string());
 		}
 
 		ImGui::SameLine();
 		if(ImGui::Button("Save"))
 		{
-			_listConfigurationControl->saveTrainingPrograms();
+            auto path = file_dialogs::getSaveFilePath("", { "json" });
+			_listConfigurationControl->storeWholeTrainingProgramList(path.string());
 		}
 	}
 
@@ -172,7 +175,8 @@ namespace configuration
     {
         if (ImGui::Button(fmt::format("##save_{}", index).c_str(), "Save"))
         {
-            _listConfigurationControl->saveTrainingProgram(info.Id);
+            auto path = file_dialogs::getSaveFilePath("", { "json" });
+            _listConfigurationControl->exportSingleTrainingProgram(info.Id, path.string());
             return true;
         }
         return false;
@@ -192,7 +196,8 @@ namespace configuration
     {
         if (ImGui::Button("Add from file"))
         {
-            _listConfigurationControl->loadTrainingProgram();
+            auto path = file_dialogs::getOpenFilePath("", { "json" });
+            _listConfigurationControl->importSingleTrainingProgram(path.string());
             return true;
         }
         return false;

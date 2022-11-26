@@ -36,7 +36,9 @@ namespace configuration
 		std::unordered_map<std::string, TrainingProgramData> TrainingProgramData;
 	};
 
-	/** This interface allows testing classes which want to store and restore training programs without actually having to write to the file system. */
+	/** This interface decouples file system handling from the remainder of the code, allowing easy changes like switching storage to a REST service
+		instead of the file system, for example. Additionally, it allows easy testing of classes which rely on repository functionality by allowing mock or fake objects.
+	*/
 	class RLTT_IMPORT_EXPORT ITrainingProgramRepository
 	{
 	protected:
@@ -48,11 +50,16 @@ namespace configuration
 		/** Stores the given training program list persistently at the default location. */
 		virtual void storeData(const TrainingProgramListData& data) = 0;
 		/** Stores the given training program list persistently at the specified location. */
-		virtual void storeData(const TrainingProgramListData& data, const std::filesystem::path &path) = 0;
+		virtual void storeData(const TrainingProgramListData& data, const std::string& location) = 0;
 		/** Restores the training program list from the default persistent location. */
 		virtual TrainingProgramListData restoreData() const = 0;
 		/** Restores the training program list from the specified persistent location. */
-		virtual TrainingProgramListData restoreData(const std::filesystem::path &path) const = 0;
+		virtual TrainingProgramListData restoreData(const std::string& location) const = 0;
+
+		/** Exports a single training program persistently at the specified location in order to allow the user to share it with others. */
+		virtual void exportSingleTrainingProgram(const TrainingProgramData& data, const std::string& location) = 0;
+		/** Imports a single training program from the specified persistent location. */
+		virtual TrainingProgramData importSingleTrainingProgram(const std::string& location) const = 0;
 	};
 
 	/** Simple interface for classes which consume training programs. */
