@@ -1,6 +1,9 @@
+// TODO: Move file access to TrainingProgramRepository
+
 #include <pch.h>
 #include "TrainingProgramListConfigurationControl.h"
 #include "uuid_generator.h"
+
 
 template <typename T>
 bool removeOne(std::vector<T>& vec, const T& value)
@@ -119,13 +122,22 @@ namespace configuration
         return (*_trainingProgramData)[trainingProgramId];
     }
 
-    void TrainingProgramListConfigurationControl::restoreData()
+    void TrainingProgramListConfigurationControl::restoreWholeTrainingProgramList(const std::string& location)
     {
+        LOG("Importing training program list");
         _trainingProgramData->clear();
         _trainingProgramOrder.clear();
 
         // Read data from the repo
-        auto data = _repository->restoreData();
+		TrainingProgramListData data;
+        if (location.empty())
+        {
+            data = _repository->restoreData();
+        }
+        else
+        {
+            data = _repository->restoreData(location);
+        }
 
         // Convert to internal data structure
         _trainingProgramOrder = data.TrainingProgramOrder;
@@ -137,6 +149,31 @@ namespace configuration
 
         // Notify receivers, but do not write the file (would be kinda pointless right here)
         notifyReceivers(true);
+    }
+
+    void TrainingProgramListConfigurationControl::storeWholeTrainingProgramList(const std::string& location) const
+    {
+        LOG("Exporting whole training program list");
+        _repository->storeData(getTrainingProgramList(), location);
+    }
+
+    /** Imports a single training program from the repository and adds it to the list. */
+    void TrainingProgramListConfigurationControl::importSingleTrainingProgram(const std::string& location)
+    {
+        LOG("Importing single training program..");
+        auto trainingProgram = _repository->importSingleTrainingProgram(location);
+        if (!trainingProgram.Id.empty())
+        {
+            injectTrainingProgram(trainingProgram);
+        }
+    }
+
+    /** Stores a single training program to the repository. */
+    void TrainingProgramListConfigurationControl::exportSingleTrainingProgram(std::string trainingProgramId, const std::string& location) const
+    {
+        LOG("Exporting single training program..");
+        auto trainingProgram = getTrainingProgramData(trainingProgramId);
+        _repository->exportSingleTrainingProgram(trainingProgram, location);
     }
 
     void TrainingProgramListConfigurationControl::notifyReceivers(bool currentlyRestoringData)
