@@ -23,7 +23,12 @@ namespace configuration
         ImGui::TextUnformatted("Training control");
         addTrainingControlWindowButton();
         addWorkshopFolderLocationTextBos();
+
+        ImGui::Separator();
+
+        ImGui::TextUnformatted("Backup");
 		addLoadSaveButtons();
+
         ImGui::Separator();
 
         ImGui::TextUnformatted("Available Training programs");
@@ -95,14 +100,15 @@ namespace configuration
 
 	void TrainingProgramListConfigurationUi::addLoadSaveButtons()
 	{
-		if(ImGui::Button("Load"))
+
+		if(ImGui::Button("Export All"))
 		{
             auto path = file_dialogs::getOpenFilePath("", { "json" });
 			_listConfigurationControl->restoreWholeTrainingProgramList(path.string());
 		}
 
 		ImGui::SameLine();
-		if(ImGui::Button("Save"))
+		if(ImGui::Button("Import and Override All"))
 		{
             auto path = file_dialogs::getSaveFilePath("", { "json" });
 			_listConfigurationControl->storeWholeTrainingProgramList(path.string());
@@ -173,9 +179,13 @@ namespace configuration
 
 	bool TrainingProgramListConfigurationUi::addSaveButton(uint16_t index, const TrainingProgramData& info)
     {
-        if (ImGui::Button(fmt::format("##save_{}", index).c_str(), "Save"))
+        if (ImGui::Button(fmt::format("##save_{}", index).c_str(), "Export"))
         {
             auto path = file_dialogs::getSaveFilePath("", { "json" });
+            if (!path.string().ends_with(".json"))
+            {
+                path += ".json";
+            }
             _listConfigurationControl->exportSingleTrainingProgram(info.Id, path.string());
             return true;
         }
@@ -194,7 +204,7 @@ namespace configuration
 	
 	bool TrainingProgramListConfigurationUi::addLoadButton()
     {
-        if (ImGui::Button("Add from file"))
+        if (ImGui::Button("Import from file"))
         {
             auto path = file_dialogs::getOpenFilePath("", { "json" });
             _listConfigurationControl->importSingleTrainingProgram(path.string());
