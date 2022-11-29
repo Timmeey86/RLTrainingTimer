@@ -4,6 +4,8 @@
 #include <external/IMGUI/imgui.h>
 #include <external/IMGUI/imgui_disable.h>
 
+#define RLTRAININGTIMER_CVAR_BARSTYLE "RLTrainingTimer_barstyle"
+
 namespace training
 {
 	void TrainingProgramFlowControlUi::initTrainingProgramFlowControlUi(
@@ -13,7 +15,7 @@ namespace training
 	{
 		_flowControl = flowControl;
 		_cvarManager = std::move(cvarManager);
-		auto cvar = _cvarManager->registerCvar("RLTrainingTimer_barstyle", "default", "Bottom bar style [default, minimal, none]");
+		auto cvar = _cvarManager->registerCvar(RLTRAININGTIMER_CVAR_BARSTYLE, "default", "Bottom bar style [default, minimal, none]");
 		cvar.addOnValueChanged([this](std::string oldValue, CVarWrapper cvar) {
             auto str = cvar.getStringValue();
 			if(str == "default") {
@@ -49,7 +51,7 @@ namespace training
 		}
 
 		// Init GUI
-		ImGui::SetNextWindowSizeConstraints(ImVec2(200, 100), ImVec2(FLT_MAX, FLT_MAX));
+		ImGui::SetNextWindowSizeConstraints(ImVec2(200, 120), ImVec2(FLT_MAX, FLT_MAX));
 		ImGuiWindowFlags windowFlags = ImGuiWindowFlags_AlwaysAutoResize; // | ImGuiWindowFlags_MenuBar;
 		if (!ImGui::Begin(GetMenuTitle().c_str(), &_isWindowOpen, windowFlags))
 		{
@@ -133,6 +135,9 @@ namespace training
 			}
 			ImGui::EndCombo();
 		}
+
+		addBarStyleDropdown();
+
 		{
 			ImGui::Disable disable_start_if_necessary(!flowData.StartingIsPossible);
 			if (ImGui::Button("Start") && flowData.StartingIsPossible)
@@ -217,6 +222,34 @@ namespace training
 			ImGui::TextColored(ImVec4{ 0.8f, .1f, .1f, 1.0f }, exceptionMessage.c_str());
 		}
 
+	}
+
+	bool TrainingProgramFlowControlUi::addBarStyleDropdown()
+	{
+		std::vector<std::string> enumNames = { "default", "minimal", "none" };
+		auto barStyleCvar = _cvarManager->getCvar(RLTRAININGTIMER_CVAR_BARSTYLE);
+		std::string currentBarStyle = barStyleCvar.getStringValue();
+		
+		ImGui::PushItemWidth(150.0f);
+		auto changed = false;
+		if (ImGui::BeginCombo("##barstyle", currentBarStyle.c_str()))
+		{
+			for (const auto& name : enumNames)
+			{
+				const auto isSelected = name == currentBarStyle;
+				if (ImGui::Selectable(name.c_str(), isSelected))
+				{
+					barStyleCvar.setValue(name);
+					changed = true;
+				}
+			}
+			ImGui::EndCombo();
+		}
+		ImGui::PopItemWidth();
+		ImGui::SameLine();
+		ImGui::TextUnformatted("Bottom bar style");
+
+		return changed;
 	}
 
 	void TrainingProgramFlowControlUi::displayErrorMessage(const std::string& shortText, const std::string& errorDescription)

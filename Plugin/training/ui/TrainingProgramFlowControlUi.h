@@ -56,6 +56,7 @@ namespace training
 			None
 		};
 		BarStyle _barStyle = BarStyle::Default;
+		bool addBarStyleDropdown();
 
 		std::vector<std::string> _exceptionMessages;
 		std::shared_ptr<CVarManagerWrapper> _cvarManager;
