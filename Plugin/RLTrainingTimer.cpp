@@ -40,7 +40,7 @@ void RLTrainingTimer::onLoad()
 	flowControl->hookToEvents();
 
 	// Create a plugin window for starting, stopping etc programs. This internally also creates an overlay which is displayed while training is being executed
-	initTrainingProgramFlowControlUi(gameWrapper, flowControl);
+	initTrainingProgramFlowControlUi(gameWrapper, flowControl, cvarManager);
 
 	// Restore any previously stored training program
 	trainingProgramListControl->restoreData();

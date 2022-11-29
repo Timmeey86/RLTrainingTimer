@@ -8,9 +8,25 @@ namespace training
 {
 	void TrainingProgramFlowControlUi::initTrainingProgramFlowControlUi(
 		std::shared_ptr<GameWrapper> gameWrapper,
-		std::shared_ptr<TrainingProgramFlowControl> flowControl)
+		std::shared_ptr<TrainingProgramFlowControl> flowControl,
+		std::shared_ptr<CVarManagerWrapper> cvarManager)
 	{
 		_flowControl = flowControl;
+		_cvarManager = std::move(cvarManager);
+		auto cvar = _cvarManager->registerCvar("RLTrainingTimer_barstyle", "default", "Bottom bar style [default, minimal, none]");
+		cvar.addOnValueChanged([this](std::string oldValue, CVarWrapper cvar) {
+            auto str = cvar.getStringValue();
+			if(str == "default") {
+				_barStyle = BarStyle::Default;
+			} else if(str == "minimal") {
+				_barStyle = BarStyle::Minimal;
+			} else if(str == "none") {
+				_barStyle = BarStyle::None;
+			} else {
+				_cvarManager->log("Unknown barstyle '" + str + "'");
+			}
+        });
+
 		gameWrapper->RegisterDrawable([this, gameWrapper](const CanvasWrapper& canvasWrapper) {
 			if(_barStyle == BarStyle::Default) {
 				_trainingProgramDisplayDefault->renderOneFrame(gameWrapper, canvasWrapper, _flowControl->getCurrentExecutionData());

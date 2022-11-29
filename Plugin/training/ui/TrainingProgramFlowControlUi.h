@@ -25,7 +25,8 @@ namespace training
 	public:
 		void initTrainingProgramFlowControlUi(
 			std::shared_ptr<GameWrapper> gameWrapper, 
-			std::shared_ptr<TrainingProgramFlowControl> flowControl
+			std::shared_ptr<TrainingProgramFlowControl> flowControl,
+			std::shared_ptr<CVarManagerWrapper> cvarManager
 		);
 
 		// Inherited via PluginWindow
@@ -57,6 +58,7 @@ namespace training
 		BarStyle _barStyle = BarStyle::Default;
 
 		std::vector<std::string> _exceptionMessages;
+		std::shared_ptr<CVarManagerWrapper> _cvarManager;
 		std::shared_ptr<TrainingProgramFlowControl> _flowControl = nullptr;
 		std::shared_ptr<TrainingProgramDisplay> _trainingProgramDisplayDefault = std::make_shared<TrainingProgramDisplayDefault>();
 		std::shared_ptr<TrainingProgramDisplay> _trainingProgramDisplayMinimal = std::make_shared<TrainingProgramDisplayMinimal>();
