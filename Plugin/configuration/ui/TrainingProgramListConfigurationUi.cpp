@@ -1,5 +1,6 @@
 #include <pch.h>
 #include "TrainingProgramListConfigurationUi.h"
+#include "file_dialogs.h"
 #include <IMGUI/imgui_stdlib.h>
 #include <IMGUI/imgui_disable.h>
 
@@ -22,6 +23,12 @@ namespace configuration
         ImGui::TextUnformatted("Training control");
         addTrainingControlWindowButton();
         addWorkshopFolderLocationTextBos();
+
+        ImGui::Separator();
+
+        ImGui::TextUnformatted("Backup");
+		addLoadSaveButtons();
+
         ImGui::Separator();
 
         ImGui::TextUnformatted("Available Training programs");
@@ -30,6 +37,8 @@ namespace configuration
         bool listHasChanged = false;
         
         listHasChanged |= addAddButton();
+		ImGui::SameLine();
+		listHasChanged |= addLoadButton();
 
         // TODO: Store this in a cache and update only when something in here changes, or when returning from the single training program screen, and after initially loading data
         const auto data = _listConfigurationControl->getTrainingProgramList();
@@ -61,6 +70,8 @@ namespace configuration
             addEditButton(index, trainingProgramInfo);
             ImGui::SameLine();
             listHasChanged |= addDeleteButton(index, trainingProgramInfo);
+			ImGui::SameLine();
+            listHasChanged |= addSaveButton(index, trainingProgramInfo);
         }
 
         if (listHasChanged)
@@ -86,6 +97,23 @@ namespace configuration
             });
         }
     }
+
+	void TrainingProgramListConfigurationUi::addLoadSaveButtons()
+	{
+
+		if(ImGui::Button("Export All"))
+		{
+            auto path = file_dialogs::getOpenFilePath("", { "json" });
+			_listConfigurationControl->restoreWholeTrainingProgramList(path.string());
+		}
+
+		ImGui::SameLine();
+		if(ImGui::Button("Import and Override All"))
+		{
+            auto path = file_dialogs::getSaveFilePath("", { "json" });
+			_listConfigurationControl->storeWholeTrainingProgramList(path.string());
+		}
+	}
 
     bool TrainingProgramListConfigurationUi::addProgramNameTextBox(uint16_t index, const TrainingProgramData& info)
     {
@@ -149,6 +177,17 @@ namespace configuration
         return false;
     }
 
+	bool TrainingProgramListConfigurationUi::addSaveButton(uint16_t index, const TrainingProgramData& info)
+    {
+        if (ImGui::Button(fmt::format("##save_{}", index).c_str(), "Export"))
+        {
+            auto path = file_dialogs::getSaveFilePath("", { "json" });
+            _listConfigurationControl->exportSingleTrainingProgram(info.Id, path.string());
+            return true;
+        }
+        return false;
+    }
+
     bool TrainingProgramListConfigurationUi::addAddButton()
     {
         if (ImGui::Button("Add"))
@@ -158,4 +197,16 @@ namespace configuration
         }
         return false;
     }
+	
+	bool TrainingProgramListConfigurationUi::addLoadButton()
+    {
+        if (ImGui::Button("Import from file"))
+        {
+            auto path = file_dialogs::getOpenFilePath("", { "json" });
+            _listConfigurationControl->importSingleTrainingProgram(path.string());
+            return true;
+        }
+        return false;
+    }
+
 }

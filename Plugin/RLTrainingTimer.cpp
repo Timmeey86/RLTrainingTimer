@@ -43,7 +43,7 @@ void RLTrainingTimer::onLoad()
 	initTrainingProgramFlowControlUi(gameWrapper, flowControl, cvarManager);
 
 	// Restore any previously stored training program
-	trainingProgramListControl->restoreData();
+	trainingProgramListControl->restoreWholeTrainingProgramList();
 
 	// Allow injection of training programs from other plugins (prejump plug in as a minimum)
 	_trainingProgramInjector = std::make_shared<injection::TrainingProgramInjector>(

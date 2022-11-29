@@ -79,6 +79,9 @@
       <Filter>injection</Filter>
     </ClCompile>
     <ClCompile Include="training\control\IGameWrapper.cpp" />
+    <ClCompile Include="configuration\control\TrainingProgramDataPatcher.cpp">
+      <Filter>configuration\control</Filter>
+    </ClCompile>
     <ClCompile Include="training\ui\TrainingProgramDisplay\TrainingProgramDisplayDefault.cpp">
       <Filter>training\ui\TrainingProgramDisplay</Filter>
     </ClCompile>
@@ -230,10 +233,16 @@
     <ClInclude Include="training\ui\IErrorDisplay.h">
       <Filter>training\ui</Filter>
     </ClInclude>
-    <ClInclude Include="training\ui\TrainingProgramDisplay\TrainingProgramDisplayDefault.h">
-      <Filter>training\ui\TrainingProgramDisplay</Filter>
+    <ClInclude Include="file_dialogs.h">
+      <Filter>configuration\control</Filter>
+    </ClInclude>
+    <ClInclude Include="configuration\control\TrainingProgramDataPatcher.h">
+      <Filter>configuration\control</Filter>
     </ClInclude>
     <ClInclude Include="training\ui\TrainingProgramDisplay\TrainingProgramDisplay.h">
+      <Filter>training\ui\TrainingProgramDisplay</Filter>
+    </ClInclude>
+    <ClInclude Include="training\ui\TrainingProgramDisplay\TrainingProgramDisplayDefault.h">
       <Filter>training\ui\TrainingProgramDisplay</Filter>
     </ClInclude>
     <ClInclude Include="training\ui\TrainingProgramDisplay\TrainingProgramDisplayMinimal.h">
@@ -287,7 +296,7 @@
       <UniqueIdentifier>{f8cb602d-44ee-419e-aebf-15130c456b04}</UniqueIdentifier>
     </Filter>
     <Filter Include="training\ui\TrainingProgramDisplay">
-      <UniqueIdentifier>{b4d1ff55-d2d6-4a59-99ab-8f9ab11f5f85}</UniqueIdentifier>
+      <UniqueIdentifier>{38c165f7-160a-4887-958a-3ba5b72bf687}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

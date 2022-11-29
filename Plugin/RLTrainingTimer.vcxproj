@@ -95,6 +95,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="configuration\control\TrainingProgramConfigurationControl.cpp" />
+    <ClCompile Include="configuration\control\TrainingProgramDataPatcher.cpp" />
     <ClCompile Include="configuration\control\TrainingProgramListConfigurationControl.cpp" />
     <ClCompile Include="configuration\control\TrainingProgramRepository.cpp" />
     <ClCompile Include="configuration\control\uuid_generator.cpp" />
@@ -130,6 +131,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="configuration\control\TrainingProgramConfigurationControl.h" />
+    <ClInclude Include="configuration\control\TrainingProgramDataPatcher.h" />
     <ClInclude Include="configuration\control\TrainingProgramListConfigurationControl.h" />
     <ClInclude Include="configuration\control\TrainingProgramRepository.h" />
     <ClInclude Include="configuration\control\uuid_generator.h" />
@@ -139,6 +141,7 @@
     <ClInclude Include="configuration\ui\TrainingProgramConfigurationUi.h" />
     <ClInclude Include="configuration\ui\TrainingProgramListConfigurationUi.h" />
     <ClInclude Include="external\stduuid\uuid.h" />
+    <ClInclude Include="file_dialogs.h" />
     <ClInclude Include="injection\TrainingProgramInjector.h" />
     <ClInclude Include="training\control\ICVarManager.h" />
     <ClInclude Include="training\control\IGameWrapper.h" />
