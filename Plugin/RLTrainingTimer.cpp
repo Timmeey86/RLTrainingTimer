@@ -4,13 +4,17 @@
 #include <training/control/TrainingProgramFlowControl.h>
 #include <configuration/control/TrainingProgramRepository.h>
 
+#include <external/BakkesModWiki/PersistentStorage.h>
+
 BAKKESMOD_PLUGIN(RLTrainingTimer, "RL Training Timer", plugin_version, PLUGINTYPE_FREEPLAY)
 
 std::shared_ptr<CVarManagerWrapper> _globalCvarManager;
+std::shared_ptr<PersistentStorage> _globalPersistentStorage;
 
 void RLTrainingTimer::onLoad()
 {
 	_globalCvarManager = cvarManager;
+	_globalPersistentStorage = std::make_shared<PersistentStorage>(this, "RLTrainingTimer", true, true); // auto write & auto load
 
 	/* CONFIGURATION PART */
 
@@ -40,7 +44,7 @@ void RLTrainingTimer::onLoad()
 	flowControl->hookToEvents();
 
 	// Create a plugin window for starting, stopping etc programs. This internally also creates an overlay which is displayed while training is being executed
-	initTrainingProgramFlowControlUi(gameWrapper, flowControl, cvarManager);
+	initTrainingProgramFlowControlUi(gameWrapper, flowControl, cvarManager, _globalPersistentStorage);
 
 	// Restore any previously stored training program
 	trainingProgramListControl->restoreWholeTrainingProgramList();

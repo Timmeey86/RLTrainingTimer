@@ -102,6 +102,7 @@
     <ClCompile Include="configuration\ui\ConfigurationUi.cpp" />
     <ClCompile Include="configuration\ui\TrainingProgramConfigurationUi.cpp" />
     <ClCompile Include="configuration\ui\TrainingProgramListConfigurationUi.cpp" />
+    <ClCompile Include="external\BakkesModWiki\PersistentStorage.cpp" />
     <ClCompile Include="injection\TrainingProgramInjector.cpp" />
     <ClCompile Include="training\control\IGameWrapper.cpp" />
     <ClCompile Include="training\control\TrainingProgramFlowControl.cpp" />
@@ -140,6 +141,7 @@
     <ClInclude Include="configuration\ui\ConfigurationUi.h" />
     <ClInclude Include="configuration\ui\TrainingProgramConfigurationUi.h" />
     <ClInclude Include="configuration\ui\TrainingProgramListConfigurationUi.h" />
+    <ClInclude Include="external\BakkesModWiki\PersistentStorage.h" />
     <ClInclude Include="external\stduuid\uuid.h" />
     <ClInclude Include="file_dialogs.h" />
     <ClInclude Include="injection\TrainingProgramInjector.h" />

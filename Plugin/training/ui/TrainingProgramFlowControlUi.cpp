@@ -11,11 +11,13 @@ namespace training
 	void TrainingProgramFlowControlUi::initTrainingProgramFlowControlUi(
 		std::shared_ptr<GameWrapper> gameWrapper,
 		std::shared_ptr<TrainingProgramFlowControl> flowControl,
-		std::shared_ptr<CVarManagerWrapper> cvarManager)
+		std::shared_ptr<CVarManagerWrapper> cvarManager,
+		std::shared_ptr<PersistentStorage> persistentStorage)
 	{
 		_flowControl = flowControl;
 		_cvarManager = std::move(cvarManager);
-		auto cvar = _cvarManager->registerCvar(RLTRAININGTIMER_CVAR_BARSTYLE, "default", "Bottom bar style [default, minimal, none]");
+		_persistentStorage = std::move(persistentStorage);
+		auto cvar = _persistentStorage->RegisterPersistentCvar(RLTRAININGTIMER_CVAR_BARSTYLE, "default", "Bottom bar style [default, minimal, none]");
 		cvar.addOnValueChanged([this](std::string oldValue, CVarWrapper cvar) {
             auto str = cvar.getStringValue();
 			if(str == "default") {
@@ -25,7 +27,7 @@ namespace training
 			} else if(str == "none") {
 				_barStyle = BarStyle::None;
 			} else {
-				_cvarManager->log("Unknown barstyle '" + str + "'");
+				LOG("Unknown barstyle '{}'", str);
 			}
         });
 
@@ -227,8 +229,8 @@ namespace training
 	bool TrainingProgramFlowControlUi::addBarStyleDropdown()
 	{
 		std::vector<std::string> enumNames = { "default", "minimal", "none" };
-		auto barStyleCvar = _cvarManager->getCvar(RLTRAININGTIMER_CVAR_BARSTYLE);
-		std::string currentBarStyle = barStyleCvar.getStringValue();
+		auto cvar = _cvarManager->getCvar(RLTRAININGTIMER_CVAR_BARSTYLE);
+		std::string currentBarStyle = cvar.getStringValue();
 		
 		ImGui::PushItemWidth(150.0f);
 		auto changed = false;
@@ -239,7 +241,7 @@ namespace training
 				const auto isSelected = name == currentBarStyle;
 				if (ImGui::Selectable(name.c_str(), isSelected))
 				{
-					barStyleCvar.setValue(name);
+					cvar.setValue(name);
 					changed = true;
 				}
 			}
