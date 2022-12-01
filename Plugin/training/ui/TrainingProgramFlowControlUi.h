@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../control/TrainingProgramFlowControl.h"
-#include "TrainingProgramDisplay/TrainingProgramDisplayDefault.h"
-#include "TrainingProgramDisplay/TrainingProgramDisplayMinimal.h"
+#include "TrainingProgramDisplay/BlueBarDisplay.h"
+#include "TrainingProgramDisplay/MinimalDisplay.h"
 #include "IErrorDisplay.h"
 
 #include <bakkesmod/plugin/pluginwindow.h>
@@ -53,18 +53,18 @@ namespace training
 		bool _isWindowOpen = false;
 
 		enum class BarStyle {
-			Default,
+			BlueBar,
 			Minimal,
 			None
 		};
-		BarStyle _barStyle = BarStyle::Default;
+		BarStyle _barStyle = BarStyle::Minimal;
 		bool addBarStyleDropdown();
 
 		std::vector<std::string> _exceptionMessages;
 		std::shared_ptr<PersistentStorage> _persistentStorage;
 		std::shared_ptr<CVarManagerWrapper> _cvarManager;
 		std::shared_ptr<TrainingProgramFlowControl> _flowControl = nullptr;
-		std::shared_ptr<TrainingProgramDisplay> _trainingProgramDisplayDefault = std::make_shared<TrainingProgramDisplayDefault>();
-		std::shared_ptr<TrainingProgramDisplay> _trainingProgramDisplayMinimal = std::make_shared<TrainingProgramDisplayMinimal>();
+		std::shared_ptr<TrainingProgramDisplay> _BlueBarDisplay = std::make_shared<BlueBarDisplay>();
+		std::shared_ptr<TrainingProgramDisplay> _MinimalDisplay = std::make_shared<MinimalDisplay>();
 	};
 }

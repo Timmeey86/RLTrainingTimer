@@ -1,19 +1,19 @@
 #include "pch.h"
-#include "TrainingProgramDisplayMinimal.h"
+#include "MinimalDisplay.h"
 
 namespace training
 {
-	void TrainingProgramDisplayMinimal::renderOneFrame(const std::shared_ptr<GameWrapper>& gameWrapper, CanvasWrapper canvas, const TrainingProgramExecutionData& data)
+	void MinimalDisplay::renderOneFrame(const std::shared_ptr<GameWrapper>& gameWrapper, CanvasWrapper canvas, const TrainingProgramExecutionData& data)
 	{
 		TrainingProgramDisplay::renderOneFrame(gameWrapper, canvas, data);
 		auto renderInfo = getRenderInfo(gameWrapper);
 		drawInfo(canvas, renderInfo);
 	}
 
-	RenderInfo TrainingProgramDisplayMinimal::getRenderInfo(const std::shared_ptr<GameWrapper>& gameWrapper) const
+	RenderInfo MinimalDisplay::getRenderInfo(const std::shared_ptr<GameWrapper>& gameWrapper) const
 	{
 		auto renderInfo = RenderInfo{};
-		renderInfo.LeftBorder = 0.0f;
+		renderInfo.LeftBorder = 0;
 		renderInfo.RightBorder = gameWrapper->GetScreenSize().X;
 		renderInfo.BottomBorder = gameWrapper->GetScreenSize().Y;
 		renderInfo.TopBorder = (int)((float)renderInfo.BottomBorder * 0.98f);
@@ -26,7 +26,7 @@ namespace training
 		return renderInfo;
 	}
 
-	void TrainingProgramDisplayMinimal::drawInfo(CanvasWrapper& canvas, const RenderInfo& renderInfo) const
+	void MinimalDisplay::drawInfo(CanvasWrapper& canvas, const RenderInfo& renderInfo) const
 	{
 		// Background
 		// default color
@@ -80,10 +80,10 @@ namespace training
 		float centerX = renderInfo.LeftBorder + (renderInfo.Width / 2.0f);
 
 		// bakground
-		Vector2 min { centerX - (stringSize.X / 2.0f), renderInfo.TopBorder };
-		Vector2 max { centerX + (stringSize.X / 2.0f), renderInfo.BottomBorder };
-		min.X -= 50.0f;
-		max.X += 50.0f;
+		Vector2 min { (int)(centerX - (stringSize.X / 2.0f)), renderInfo.TopBorder };
+		Vector2 max { (int)(centerX + (stringSize.X / 2.0f)), renderInfo.BottomBorder };
+		min.X -= 50;
+		max.X += 50;
 		canvas.SetColor(bgColor);
 		canvas.DrawRect(min, max);
 

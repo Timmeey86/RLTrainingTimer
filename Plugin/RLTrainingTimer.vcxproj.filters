@@ -82,15 +82,11 @@
     <ClCompile Include="configuration\control\TrainingProgramDataPatcher.cpp">
       <Filter>configuration\control</Filter>
     </ClCompile>
-    <ClCompile Include="training\ui\TrainingProgramDisplay\TrainingProgramDisplayDefault.cpp">
-      <Filter>training\ui\TrainingProgramDisplay</Filter>
-    </ClCompile>
-    <ClCompile Include="training\ui\TrainingProgramDisplay\TrainingProgramDisplayMinimal.cpp">
-      <Filter>training\ui\TrainingProgramDisplay</Filter>
-    </ClCompile>
     <ClCompile Include="external\BakkesModWiki\PersistentStorage.cpp">
       <Filter>external\BakkesModWiki</Filter>
     </ClCompile>
+    <ClCompile Include="training\ui\TrainingProgramDisplay\BlueBarDisplay.cpp" />
+    <ClCompile Include="training\ui\TrainingProgramDisplay\MinimalDisplay.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -245,15 +241,11 @@
     <ClInclude Include="training\ui\TrainingProgramDisplay\TrainingProgramDisplay.h">
       <Filter>training\ui\TrainingProgramDisplay</Filter>
     </ClInclude>
-    <ClInclude Include="training\ui\TrainingProgramDisplay\TrainingProgramDisplayDefault.h">
-      <Filter>training\ui\TrainingProgramDisplay</Filter>
-    </ClInclude>
-    <ClInclude Include="training\ui\TrainingProgramDisplay\TrainingProgramDisplayMinimal.h">
-      <Filter>training\ui\TrainingProgramDisplay</Filter>
-    </ClInclude>
     <ClInclude Include="external\BakkesModWiki\PersistentStorage.h">
       <Filter>external\BakkesModWiki</Filter>
     </ClInclude>
+    <ClInclude Include="training\ui\TrainingProgramDisplay\BlueBarDisplay.h" />
+    <ClInclude Include="training\ui\TrainingProgramDisplay\MinimalDisplay.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="RLTrainingTimer.rc" />

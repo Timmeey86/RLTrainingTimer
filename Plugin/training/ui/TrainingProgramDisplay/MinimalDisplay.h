@@ -8,7 +8,7 @@ namespace training
 	* Minimal style
 	*/
 
-	class TrainingProgramDisplayMinimal : public TrainingProgramDisplay
+	class MinimalDisplay : public TrainingProgramDisplay
 	{
 	public:
 		/** Renders a single frame. */

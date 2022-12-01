@@ -21,7 +21,7 @@ namespace training
 		float TextHeightFactor;
 	};
 	
-	/** This class is responsible for rendering information about the current training session to the screen. */
+	/** Abstract base class for training program displays. */
 	class TrainingProgramDisplay
 	{
 	public:

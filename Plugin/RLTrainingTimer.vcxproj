@@ -126,8 +126,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="RLTrainingTimer.cpp" />
-    <ClCompile Include="training\ui\TrainingProgramDisplay\TrainingProgramDisplayDefault.cpp" />
-    <ClCompile Include="training\ui\TrainingProgramDisplay\TrainingProgramDisplayMinimal.cpp" />
+    <ClCompile Include="training\ui\TrainingProgramDisplay\BlueBarDisplay.cpp" />
+    <ClCompile Include="training\ui\TrainingProgramDisplay\MinimalDisplay.cpp" />
     <ClCompile Include="training\ui\TrainingProgramFlowControlUi.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -183,9 +183,9 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="RLTrainingTimer.h" />
     <ClInclude Include="training\ui\IErrorDisplay.h" />
+    <ClInclude Include="training\ui\TrainingProgramDisplay\BlueBarDisplay.h" />
+    <ClInclude Include="training\ui\TrainingProgramDisplay\MinimalDisplay.h" />
     <ClInclude Include="training\ui\TrainingProgramDisplay\TrainingProgramDisplay.h" />
-    <ClInclude Include="training\ui\TrainingProgramDisplay\TrainingProgramDisplayDefault.h" />
-    <ClInclude Include="training\ui\TrainingProgramDisplay\TrainingProgramDisplayMinimal.h" />
     <ClInclude Include="training\ui\TrainingProgramFlowControlUi.h" />
     <ClInclude Include="version.h" />
   </ItemGroup>

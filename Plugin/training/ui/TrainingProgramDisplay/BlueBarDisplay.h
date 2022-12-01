@@ -8,7 +8,7 @@ namespace training
 	* Default style
 	*/
 
-	class TrainingProgramDisplayDefault : public TrainingProgramDisplay
+	class BlueBarDisplay : public TrainingProgramDisplay
 	{
 	public:
 		/** Renders a single frame. */

@@ -8,6 +8,10 @@
 
 namespace training
 {
+	const std::string BlueBarStyleName = "blue bar (more visible)";
+	const std::string MinimalStyleName = "minimal (less annoying)";
+	const std::string HiddenStyleName = "none (hide)";
+
 	void TrainingProgramFlowControlUi::initTrainingProgramFlowControlUi(
 		std::shared_ptr<GameWrapper> gameWrapper,
 		std::shared_ptr<TrainingProgramFlowControl> flowControl,
@@ -17,25 +21,30 @@ namespace training
 		_flowControl = flowControl;
 		_cvarManager = std::move(cvarManager);
 		_persistentStorage = std::move(persistentStorage);
-		auto cvar = _persistentStorage->RegisterPersistentCvar(RLTRAININGTIMER_CVAR_BARSTYLE, "default", "Bottom bar style [default, minimal, none]");
+		auto cvar = _persistentStorage->RegisterPersistentCvar(
+			RLTRAININGTIMER_CVAR_BARSTYLE, 
+			"minimal", 
+			fmt::format("Bottom bar style [{}, {}, {}]", BlueBarStyleName, MinimalStyleName, HiddenStyleName).c_str()
+		);
 		cvar.addOnValueChanged([this](std::string oldValue, CVarWrapper cvar) {
             auto str = cvar.getStringValue();
-			if(str == "default") {
-				_barStyle = BarStyle::Default;
-			} else if(str == "minimal") {
+			if(str == BlueBarStyleName) {
+				_barStyle = BarStyle::BlueBar;
+			} else if(str == MinimalStyleName) {
 				_barStyle = BarStyle::Minimal;
-			} else if(str == "none") {
+			} else if(str == HiddenStyleName) {
 				_barStyle = BarStyle::None;
 			} else {
 				LOG("Unknown barstyle '{}'", str);
+				_barStyle = BarStyle::None;
 			}
         });
 
 		gameWrapper->RegisterDrawable([this, gameWrapper](const CanvasWrapper& canvasWrapper) {
-			if(_barStyle == BarStyle::Default) {
-				_trainingProgramDisplayDefault->renderOneFrame(gameWrapper, canvasWrapper, _flowControl->getCurrentExecutionData());
+			if(_barStyle == BarStyle::BlueBar) {
+				_BlueBarDisplay->renderOneFrame(gameWrapper, canvasWrapper, _flowControl->getCurrentExecutionData());
 			} else if(_barStyle == BarStyle::Minimal) {
-				_trainingProgramDisplayMinimal->renderOneFrame(gameWrapper, canvasWrapper, _flowControl->getCurrentExecutionData());
+				_MinimalDisplay->renderOneFrame(gameWrapper, canvasWrapper, _flowControl->getCurrentExecutionData());
 			}
 		});
 	}
@@ -228,11 +237,11 @@ namespace training
 
 	bool TrainingProgramFlowControlUi::addBarStyleDropdown()
 	{
-		std::vector<std::string> enumNames = { "default", "minimal", "none" };
+		std::vector<std::string> enumNames = { MinimalStyleName, BlueBarStyleName, HiddenStyleName };
 		auto cvar = _cvarManager->getCvar(RLTRAININGTIMER_CVAR_BARSTYLE);
 		std::string currentBarStyle = cvar.getStringValue();
 		
-		ImGui::PushItemWidth(150.0f);
+		ImGui::PushItemWidth(200.0f);
 		auto changed = false;
 		if (ImGui::BeginCombo("##barstyle", currentBarStyle.c_str()))
 		{
