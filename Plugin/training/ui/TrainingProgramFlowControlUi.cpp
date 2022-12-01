@@ -4,15 +4,48 @@
 #include <external/IMGUI/imgui.h>
 #include <external/IMGUI/imgui_disable.h>
 
+#define RLTRAININGTIMER_CVAR_BARSTYLE "RLTrainingTimer_barstyle"
+
 namespace training
 {
+	const std::string BlueBarStyleName = "blue bar (more visible)";
+	const std::string MinimalStyleName = "minimal (less annoying)";
+	const std::string HiddenStyleName = "none (hide)";
+
 	void TrainingProgramFlowControlUi::initTrainingProgramFlowControlUi(
 		std::shared_ptr<GameWrapper> gameWrapper,
-		std::shared_ptr<TrainingProgramFlowControl> flowControl)
+		std::shared_ptr<TrainingProgramFlowControl> flowControl,
+		std::shared_ptr<CVarManagerWrapper> cvarManager,
+		std::shared_ptr<PersistentStorage> persistentStorage)
 	{
 		_flowControl = flowControl;
+		_cvarManager = std::move(cvarManager);
+		_persistentStorage = std::move(persistentStorage);
+		auto cvar = _persistentStorage->RegisterPersistentCvar(
+			RLTRAININGTIMER_CVAR_BARSTYLE, 
+			"minimal", 
+			fmt::format("Bottom bar style [{}, {}, {}]", BlueBarStyleName, MinimalStyleName, HiddenStyleName).c_str()
+		);
+		cvar.addOnValueChanged([this](std::string oldValue, CVarWrapper cvar) {
+            auto str = cvar.getStringValue();
+			if(str == BlueBarStyleName) {
+				_barStyle = BarStyle::BlueBar;
+			} else if(str == MinimalStyleName) {
+				_barStyle = BarStyle::Minimal;
+			} else if(str == HiddenStyleName) {
+				_barStyle = BarStyle::None;
+			} else {
+				LOG("Unknown barstyle '{}'", str);
+				_barStyle = BarStyle::None;
+			}
+        });
+
 		gameWrapper->RegisterDrawable([this, gameWrapper](const CanvasWrapper& canvasWrapper) {
-			_trainingProgramDisplay->renderOneFrame(gameWrapper, canvasWrapper, _flowControl->getCurrentExecutionData());
+			if(_barStyle == BarStyle::BlueBar) {
+				_BlueBarDisplay->renderOneFrame(gameWrapper, canvasWrapper, _flowControl->getCurrentExecutionData());
+			} else if(_barStyle == BarStyle::Minimal) {
+				_MinimalDisplay->renderOneFrame(gameWrapper, canvasWrapper, _flowControl->getCurrentExecutionData());
+			}
 		});
 	}
 	void TrainingProgramFlowControlUi::Render()
@@ -29,7 +62,7 @@ namespace training
 		}
 
 		// Init GUI
-		ImGui::SetNextWindowSizeConstraints(ImVec2(200, 100), ImVec2(FLT_MAX, FLT_MAX));
+		ImGui::SetNextWindowSizeConstraints(ImVec2(200, 120), ImVec2(FLT_MAX, FLT_MAX));
 		ImGuiWindowFlags windowFlags = ImGuiWindowFlags_AlwaysAutoResize; // | ImGuiWindowFlags_MenuBar;
 		if (!ImGui::Begin(GetMenuTitle().c_str(), &_isWindowOpen, windowFlags))
 		{
@@ -113,6 +146,9 @@ namespace training
 			}
 			ImGui::EndCombo();
 		}
+
+		addBarStyleDropdown();
+
 		{
 			ImGui::Disable disable_start_if_necessary(!flowData.StartingIsPossible);
 			if (ImGui::Button("Start") && flowData.StartingIsPossible)
@@ -197,6 +233,34 @@ namespace training
 			ImGui::TextColored(ImVec4{ 0.8f, .1f, .1f, 1.0f }, exceptionMessage.c_str());
 		}
 
+	}
+
+	bool TrainingProgramFlowControlUi::addBarStyleDropdown()
+	{
+		std::vector<std::string> enumNames = { MinimalStyleName, BlueBarStyleName, HiddenStyleName };
+		auto cvar = _cvarManager->getCvar(RLTRAININGTIMER_CVAR_BARSTYLE);
+		std::string currentBarStyle = cvar.getStringValue();
+		
+		ImGui::PushItemWidth(200.0f);
+		auto changed = false;
+		if (ImGui::BeginCombo("##barstyle", currentBarStyle.c_str()))
+		{
+			for (const auto& name : enumNames)
+			{
+				const auto isSelected = name == currentBarStyle;
+				if (ImGui::Selectable(name.c_str(), isSelected))
+				{
+					cvar.setValue(name);
+					changed = true;
+				}
+			}
+			ImGui::EndCombo();
+		}
+		ImGui::PopItemWidth();
+		ImGui::SameLine();
+		ImGui::TextUnformatted("Bottom bar style");
+
+		return changed;
 	}
 
 	void TrainingProgramFlowControlUi::displayErrorMessage(const std::string& shortText, const std::string& errorDescription)

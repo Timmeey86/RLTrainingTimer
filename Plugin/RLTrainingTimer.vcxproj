@@ -102,6 +102,7 @@
     <ClCompile Include="configuration\ui\ConfigurationUi.cpp" />
     <ClCompile Include="configuration\ui\TrainingProgramConfigurationUi.cpp" />
     <ClCompile Include="configuration\ui\TrainingProgramListConfigurationUi.cpp" />
+    <ClCompile Include="external\BakkesModWiki\PersistentStorage.cpp" />
     <ClCompile Include="injection\TrainingProgramInjector.cpp" />
     <ClCompile Include="training\control\IGameWrapper.cpp" />
     <ClCompile Include="training\control\TrainingProgramFlowControl.cpp" />
@@ -125,7 +126,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="RLTrainingTimer.cpp" />
-    <ClCompile Include="training\ui\TrainingProgramDisplay.cpp" />
+    <ClCompile Include="training\ui\TrainingProgramDisplay\BlueBarDisplay.cpp" />
+    <ClCompile Include="training\ui\TrainingProgramDisplay\MinimalDisplay.cpp" />
     <ClCompile Include="training\ui\TrainingProgramFlowControlUi.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -139,6 +141,7 @@
     <ClInclude Include="configuration\ui\ConfigurationUi.h" />
     <ClInclude Include="configuration\ui\TrainingProgramConfigurationUi.h" />
     <ClInclude Include="configuration\ui\TrainingProgramListConfigurationUi.h" />
+    <ClInclude Include="external\BakkesModWiki\PersistentStorage.h" />
     <ClInclude Include="external\stduuid\uuid.h" />
     <ClInclude Include="file_dialogs.h" />
     <ClInclude Include="injection\TrainingProgramInjector.h" />
@@ -180,7 +183,9 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="RLTrainingTimer.h" />
     <ClInclude Include="training\ui\IErrorDisplay.h" />
-    <ClInclude Include="training\ui\TrainingProgramDisplay.h" />
+    <ClInclude Include="training\ui\TrainingProgramDisplay\BlueBarDisplay.h" />
+    <ClInclude Include="training\ui\TrainingProgramDisplay\MinimalDisplay.h" />
+    <ClInclude Include="training\ui\TrainingProgramDisplay\TrainingProgramDisplay.h" />
     <ClInclude Include="training\ui\TrainingProgramFlowControlUi.h" />
     <ClInclude Include="version.h" />
   </ItemGroup>

@@ -66,9 +66,6 @@
     <ClCompile Include="configuration\control\TrainingProgramRepository.cpp">
       <Filter>configuration\control</Filter>
     </ClCompile>
-    <ClCompile Include="training\ui\TrainingProgramDisplay.cpp">
-      <Filter>training\ui</Filter>
-    </ClCompile>
     <ClCompile Include="training\ui\TrainingProgramFlowControlUi.cpp">
       <Filter>training\ui</Filter>
     </ClCompile>
@@ -85,6 +82,11 @@
     <ClCompile Include="configuration\control\TrainingProgramDataPatcher.cpp">
       <Filter>configuration\control</Filter>
     </ClCompile>
+    <ClCompile Include="external\BakkesModWiki\PersistentStorage.cpp">
+      <Filter>external\BakkesModWiki</Filter>
+    </ClCompile>
+    <ClCompile Include="training\ui\TrainingProgramDisplay\BlueBarDisplay.cpp" />
+    <ClCompile Include="training\ui\TrainingProgramDisplay\MinimalDisplay.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -205,9 +207,6 @@
     <ClInclude Include="training\data\TrainingProgramFlowData.h">
       <Filter>training\data</Filter>
     </ClInclude>
-    <ClInclude Include="training\ui\TrainingProgramDisplay.h">
-      <Filter>training\ui</Filter>
-    </ClInclude>
     <ClInclude Include="training\ui\TrainingProgramFlowControlUi.h">
       <Filter>training\ui</Filter>
     </ClInclude>
@@ -239,6 +238,14 @@
     <ClInclude Include="configuration\control\TrainingProgramDataPatcher.h">
       <Filter>configuration\control</Filter>
     </ClInclude>
+    <ClInclude Include="training\ui\TrainingProgramDisplay\TrainingProgramDisplay.h">
+      <Filter>training\ui\TrainingProgramDisplay</Filter>
+    </ClInclude>
+    <ClInclude Include="external\BakkesModWiki\PersistentStorage.h">
+      <Filter>external\BakkesModWiki</Filter>
+    </ClInclude>
+    <ClInclude Include="training\ui\TrainingProgramDisplay\BlueBarDisplay.h" />
+    <ClInclude Include="training\ui\TrainingProgramDisplay\MinimalDisplay.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="RLTrainingTimer.rc" />
@@ -285,6 +292,12 @@
     </Filter>
     <Filter Include="injection">
       <UniqueIdentifier>{f8cb602d-44ee-419e-aebf-15130c456b04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="training\ui\TrainingProgramDisplay">
+      <UniqueIdentifier>{38c165f7-160a-4887-958a-3ba5b72bf687}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="external\BakkesModWiki">
+      <UniqueIdentifier>{d286dc7b-6a97-4517-9771-e33f57c5e6fa}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -1,11 +1,11 @@
 #include "pch.h"
-#include "TrainingProgramDisplay.h"
+#include "BlueBarDisplay.h"
 
 namespace training
 {
-	void TrainingProgramDisplay::renderOneFrame(const std::shared_ptr<GameWrapper>& gameWrapper, CanvasWrapper canvas, const TrainingProgramExecutionData& data)
+	void BlueBarDisplay::renderOneFrame(const std::shared_ptr<GameWrapper>& gameWrapper, CanvasWrapper canvas, const TrainingProgramExecutionData& data)
 	{
-		_data = data;
+		TrainingProgramDisplay::renderOneFrame(gameWrapper, canvas, data);
 
 		if (data.TrainingFinishedTime.has_value())
 		{
@@ -29,7 +29,7 @@ namespace training
 		drawTrainingProgramStepTransition(canvas, renderInfo, gameWrapper);
 	}
 
-	RenderInfo TrainingProgramDisplay::getRenderInfo(const std::shared_ptr<GameWrapper>& gameWrapper) const
+	RenderInfo BlueBarDisplay::getRenderInfo(const std::shared_ptr<GameWrapper>& gameWrapper) const
 	{
 		auto renderInfo = RenderInfo{};
 		renderInfo.LeftBorder = 0;
@@ -45,13 +45,13 @@ namespace training
 		return renderInfo;
 	}
 
-	void TrainingProgramDisplay::drawPanelBackground(CanvasWrapper& canvas, const RenderInfo& renderInfo) const
+	void BlueBarDisplay::drawPanelBackground(CanvasWrapper& canvas, const RenderInfo& renderInfo) const
 	{
 		// Background
 		canvas.SetColor(LinearColor{ 0.0f, 0.0f, 255.0f, 150.0f });
 		canvas.DrawRect(Vector2{ renderInfo.LeftBorder, renderInfo.TopBorder }, Vector2{ renderInfo.RightBorder, renderInfo.BottomBorder });
 	}
-	void TrainingProgramDisplay::drawProgramName(CanvasWrapper& canvas, const RenderInfo& renderInfo) const
+	void BlueBarDisplay::drawProgramName(CanvasWrapper& canvas, const RenderInfo& renderInfo) const
 	{
 		// Program Name
 		canvas.SetColor(LinearColor{ 255.0f, 255.0f, 255.0f, 255.0f });
@@ -60,7 +60,7 @@ namespace training
 		shortenedName = shortenedName.substr(0, 40);
 		canvas.DrawString(shortenedName, 1.6f * renderInfo.TextWidthFactor, 1.6f * renderInfo.TextHeightFactor);
 	}
-	void TrainingProgramDisplay::drawTrainingStepNumber(CanvasWrapper& canvas, const RenderInfo& renderInfo) const
+	void BlueBarDisplay::drawTrainingStepNumber(CanvasWrapper& canvas, const RenderInfo& renderInfo) const
 	{
 		// Training Step Number and Name
 		canvas.SetPosition(Vector2{ renderInfo.LeftBorder + (int)floor(renderInfo.Width * 0.25f), renderInfo.TopBorder + (int)floor(renderInfo.Height * 0.1f) });
@@ -71,7 +71,7 @@ namespace training
 			2.5f * renderInfo.TextHeightFactor
 		);
 	}
-	void TrainingProgramDisplay::drawRemainingStepTime(CanvasWrapper& canvas, const RenderInfo& renderInfo) const
+	void BlueBarDisplay::drawRemainingStepTime(CanvasWrapper& canvas, const RenderInfo& renderInfo) const
 	{
 		canvas.SetPosition(Vector2{ renderInfo.LeftBorder + (int)floor(renderInfo.Width * 0.7f), renderInfo.TopBorder + (int)floor(renderInfo.Height * 0.1f) });
 		if (_data.CurrentStepIsUntimed)
@@ -91,7 +91,7 @@ namespace training
 			);
 		}
 	}
-	void TrainingProgramDisplay::drawRemainingProgramTime(CanvasWrapper& canvas, const RenderInfo& renderInfo) const
+	void BlueBarDisplay::drawRemainingProgramTime(CanvasWrapper& canvas, const RenderInfo& renderInfo) const
 	{
 		// Remaining Program Time
 		if (!_data.ProgramHasUntimedSteps)
@@ -110,7 +110,7 @@ namespace training
 		// We could in theory start drawing the end again if none of the remaining steps were untimed, but that's not implemented at the moment
 	}
 
-	void drawCenteredText(const std::string& text, CanvasWrapper& canvas, const RenderInfo& renderInfo, const std::shared_ptr<GameWrapper>& gameWrapper, float stringScale, float alpha)
+	void BlueBarDisplay::drawCenteredText(const std::string& text, CanvasWrapper& canvas, const RenderInfo& renderInfo, const std::shared_ptr<GameWrapper>& gameWrapper, float stringScale, float alpha) const
 	{
 		auto screenSize = gameWrapper->GetScreenSize();
 		Vector2F textSize = {};
@@ -134,7 +134,7 @@ namespace training
 		canvas.DrawString(text, stringScale * renderInfo.TextWidthFactor, stringScale * renderInfo.TextHeightFactor, true);
 	}
 
-	void TrainingProgramDisplay::drawTrainingProgramStepTransition(CanvasWrapper& canvas, const RenderInfo& renderInfo, const std::shared_ptr<GameWrapper>& gameWrapper) const
+	void BlueBarDisplay::drawTrainingProgramStepTransition(CanvasWrapper& canvas, const RenderInfo& renderInfo, const std::shared_ptr<GameWrapper>& gameWrapper) const
 	{
 		if (_data.TrainingStepStartTime.has_value())
 		{
@@ -162,7 +162,7 @@ namespace training
 		}
 	}
 
-	void TrainingProgramDisplay::drawTrainingProgramFinishedInfo(CanvasWrapper& canvas, const RenderInfo& renderInfo, const std::shared_ptr<GameWrapper>& gameWrapper) const
+	void BlueBarDisplay::drawTrainingProgramFinishedInfo(CanvasWrapper& canvas, const RenderInfo& renderInfo, const std::shared_ptr<GameWrapper>& gameWrapper) const
 	{
 		auto millisecondsSinceFinished = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - _data.TrainingFinishedTime.value()).count();
 		if (millisecondsSinceFinished < 5000)
