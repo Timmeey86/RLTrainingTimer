@@ -103,15 +103,15 @@ namespace configuration
 
 		if(ImGui::Button("Export All"))
 		{
-            auto path = file_dialogs::getOpenFilePath("", { "json" });
-			_listConfigurationControl->restoreWholeTrainingProgramList(path.string());
+            auto path = file_dialogs::getSaveFilePath("", { "json" });
+			_listConfigurationControl->storeWholeTrainingProgramList(path.string());
 		}
 
 		ImGui::SameLine();
 		if(ImGui::Button("Import and Override All"))
 		{
-            auto path = file_dialogs::getSaveFilePath("", { "json" });
-			_listConfigurationControl->storeWholeTrainingProgramList(path.string());
+            auto path = file_dialogs::getOpenFilePath("", { "json" });
+			_listConfigurationControl->restoreWholeTrainingProgramList(path.string());
 		}
 	}
 
